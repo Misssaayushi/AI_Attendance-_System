@@ -23,6 +23,11 @@ FRAME_HEIGHT = 480
 RECOGNITION_TOLERANCE = 0.6  
 ENCODING_FILE = ENCODINGS_DIR / "encodings.pickle"
 
+# Face Detection Settings
+# Model: "hog" (CPU friendly) or "cnn" (GPU required)
+FACE_DETECTION_MODEL = "hog"
+FRAME_RESIZE_SCALE = 0.25  # Process at 1/4 size for speed
+
 # Logging Settings
 LOG_FILE = LOGS_DIR / "ai_system.log"
 DEBUG_MODE = True

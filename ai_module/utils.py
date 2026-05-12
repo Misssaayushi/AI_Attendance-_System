@@ -1,8 +1,13 @@
 import cv2
+import face_recognition
+import numpy as np
 import logging
 import sys
 from datetime import datetime
-from ai_module.config import LOG_FILE, DEBUG_MODE
+try:
+    from ai_module.config import LOG_FILE, DEBUG_MODE
+except ImportError:
+    from config import LOG_FILE, DEBUG_MODE
 
 def get_logger(name="AI_System"):
     """
@@ -48,6 +53,62 @@ class FrameUtils:
         Adds a text overlay to the frame.
         """
         cv2.putText(frame, text, position, cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+
+    @staticmethod
+    def draw_face_box(frame, top, right, bottom, left, label="Face"):
+        """
+        Draws a professional-looking bounding box around the detected face.
+        """
+        # Draw the main rectangle
+        cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
+
+        # Draw a solid background for the label
+        cv2.rectangle(frame, (left, top - 30), (right, top), (0, 255, 0), cv2.FILLED)
+        
+        # Add the label text
+        font = cv2.FONT_HERSHEY_DUPLEX
+        cv2.putText(frame, label, (left + 6, top - 6), font, 0.6, (255, 255, 255), 1)
+
+class FaceDetector:
+    """
+    Handles face detection logic using optimized frame processing.
+    """
+    def __init__(self, model="hog", scale=0.25):
+        self.model = model
+        self.scale = scale
+        self.logger = get_logger("FaceDetector")
+
+    def detect_faces(self, frame):
+        """
+        Detects faces in a frame after resizing and RGB conversion.
+        Returns: face_locations (list of tuples)
+        """
+        if frame is None or frame.size == 0:
+            self.logger.warning("Empty frame passed to detect_faces.")
+            return []
+
+        # 1. Resize for speed
+        small_frame = cv2.resize(frame, (0, 0), fx=self.scale, fy=self.scale)
+
+        # 2. Convert BGR to RGB (OpenCV to face_recognition format)
+        rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
+
+        # 3. Detect faces
+        face_locations = face_recognition.face_locations(rgb_small_frame, model=self.model)
+
+        # 4. Scale coordinates back up
+        scaled_locations = []
+        for (top, right, bottom, left) in face_locations:
+            # Multiply by inverse of scale (e.g., 1/0.25 = 4)
+            inv_scale = int(1 / self.scale)
+            scaled_locations.append((
+                top * inv_scale,
+                right * inv_scale,
+                bottom * inv_scale,
+                left * inv_scale
+            ))
+        
+        return scaled_locations
 
 class CameraHandler:
     """

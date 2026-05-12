@@ -4,3 +4,12 @@
 2026-05-12 23:24:48 - TestSystem - INFO - Exit command received.
 2026-05-12 23:24:48 - CameraHandler - INFO - Webcam resources released.
 2026-05-12 23:24:48 - TestSystem - INFO - Test completed cleanly.
+2026-05-13 00:29:33 - DetectionTest - INFO - Starting Face Detection Test...
+2026-05-13 00:29:38 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-13 00:29:38 - DetectionTest - INFO - Detection system active. Press 'ESC' to exit.
+2026-05-13 00:38:13 - DetectionTest - INFO - Starting Face Detection Test...
+2026-05-13 00:38:18 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-13 00:38:18 - DetectionTest - INFO - Detection system active. Press 'ESC' to exit.
+2026-05-13 00:39:19 - DetectionTest - INFO - Exit command received.
+2026-05-13 00:39:19 - CameraHandler - INFO - Webcam resources released.
+2026-05-13 00:39:19 - DetectionTest - INFO - Detection test completed.
