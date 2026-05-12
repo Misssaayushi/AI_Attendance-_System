@@ -1,0 +1,6 @@
+2026-05-12 23:24:20 - TestSystem - INFO - Starting System Test...
+2026-05-12 23:24:25 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-12 23:24:25 - TestSystem - INFO - Webcam started. Press 'ESC' to exit.
+2026-05-12 23:24:48 - TestSystem - INFO - Exit command received.
+2026-05-12 23:24:48 - CameraHandler - INFO - Webcam resources released.
+2026-05-12 23:24:48 - TestSystem - INFO - Test completed cleanly.
