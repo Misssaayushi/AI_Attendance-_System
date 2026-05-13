@@ -1,0 +1,35 @@
+# Implementation Plan - Phase 2: Face Detection System
+
+## 1. Face Detection Architecture
+The system will use a **Pipeline Pattern**. A dedicated `FaceDetector` class will ingest frames, apply optimizations, and return a list of standardized face coordinates.
+
+## 2. Frame Processing Workflow
+`Capture -> Convert (BGR to RGB) -> Resize (Downscale) -> Detect -> Scale Up Coordinates -> Render Overlays`.
+
+## 3. Detection Pipeline Strategy
+We will utilize the `face_recognition.face_locations` method with the `hog` model. This provides the best balance of speed and reliability for real-time webcam streams.
+
+## 4. Performance Optimization Approach
+- **Coordinate Scaling**: Detect on a 1/4 scale image to reduce CPU load.
+- **RGB Conversion**: OpenCV uses BGR, but the detection engine requires RGB. We will perform this conversion only on the downscaled frame.
+
+## 5. Multi-face Handling Strategy
+The detector will return a list of locations. We will iterate through this list and draw unique bounding boxes for every face detected, assigning temporary labels (e.g., "Face 1", "Face 2").
+
+## 6. Error Handling Workflow
+- **No Face Handling**: If the detection list is empty, display a "No Face Detected" status in the corner rather than attempting to draw empty boxes.
+- **Processing Failures**: Catch exceptions during the RGB conversion or detection call to prevent the entire stream from freezing.
+
+## 7. Utility Modularization Plan
+Add a `DetectionUtils` class to `utils.py` containing:
+- `draw_face_box()`: Draws professional-looking rectangles with corner accents.
+- `scale_coords()`: Helper to map small-frame coordinates back to the original frame.
+
+## 8. Debugging/Testing Strategy
+Create `tests/test_detection.py` to verify accuracy and FPS stability.
+
+## 9. Future Recognition Integration
+The output format is 100% compatible with the `face_recognition.face_encodings` method required in Phase 4.
+
+## 10. Scalability Considerations
+The detection logic is decoupled from the UI. Swapping to a CNN model later will be a single config change.

@@ -110,6 +110,54 @@ class FaceDetector:
         
         return scaled_locations
 
+class FaceValidator:
+    """
+    Validates face image quality before registration.
+    """
+    def __init__(self, blur_threshold=100, brightness_min=40, brightness_max=250, min_face_size=100):
+        self.blur_threshold = blur_threshold
+        self.brightness_min = brightness_min
+        self.brightness_max = brightness_max
+        self.min_face_size = min_face_size
+        self.logger = get_logger("FaceValidator")
+
+    def is_blurry(self, frame):
+        """Returns True if the frame is blurry."""
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        score = cv2.Laplacian(gray, cv2.CV_64F).var()
+        return score < self.blur_threshold
+
+    def get_brightness(self, frame):
+        """Returns the average brightness of the frame."""
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        return np.mean(gray)
+
+    def validate(self, frame, face_location):
+        """
+        Runs all quality checks.
+        Returns: (bool, str) - (Success, Reason/Message)
+        """
+        top, right, bottom, left = face_location
+        width = right - left
+        height = bottom - top
+
+        # 1. Check Face Size
+        if width < self.min_face_size or height < self.min_face_size:
+            return False, "Too far from camera"
+
+        # 2. Check Brightness
+        brightness = self.get_brightness(frame)
+        if brightness < self.brightness_min:
+            return False, "Too dark"
+        if brightness > self.brightness_max:
+            return False, "Too much light"
+
+        # 3. Check Blur
+        if self.is_blurry(frame):
+            return False, "Keep steady (Blurry)"
+
+        return True, "Ready"
+
 class CameraHandler:
     """
     Handles webcam initialization, frame reading, and resource cleanup.

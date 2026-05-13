@@ -19,3 +19,28 @@
 2026-05-13 09:02:02 - DetectionTest - INFO - Exit command received.
 2026-05-13 09:02:03 - CameraHandler - INFO - Webcam resources released.
 2026-05-13 09:02:03 - DetectionTest - INFO - Detection test completed.
+2026-05-13 11:06:49 - DetectionTest - INFO - Starting Face Detection Test...
+2026-05-13 11:06:54 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-13 11:06:54 - DetectionTest - INFO - Detection system active. Press 'ESC' to exit.
+2026-05-13 11:07:14 - DetectionTest - INFO - Exit command received.
+2026-05-13 11:07:14 - CameraHandler - INFO - Webcam resources released.
+2026-05-13 11:07:14 - DetectionTest - INFO - Detection test completed.
+2026-05-13 11:46:13 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-13 11:46:13 - RegisterFace - INFO - Starting capture for Aayushi. Need 20 samples.
+2026-05-13 11:46:19 - RegisterFace - DEBUG - Saved: sample_01.jpg
+2026-05-13 11:46:20 - RegisterFace - DEBUG - Saved: sample_02.jpg
+2026-05-13 11:46:20 - RegisterFace - DEBUG - Saved: sample_03.jpg
+2026-05-13 11:46:21 - RegisterFace - DEBUG - Saved: sample_04.jpg
+2026-05-13 11:46:21 - RegisterFace - DEBUG - Saved: sample_05.jpg
+2026-05-13 11:46:22 - RegisterFace - DEBUG - Saved: sample_06.jpg
+2026-05-13 11:46:24 - RegisterFace - DEBUG - Saved: sample_07.jpg
+2026-05-13 11:46:24 - RegisterFace - DEBUG - Saved: sample_08.jpg
+2026-05-13 11:46:25 - RegisterFace - DEBUG - Saved: sample_09.jpg
+2026-05-13 11:46:25 - RegisterFace - DEBUG - Saved: sample_10.jpg
+2026-05-13 11:46:26 - RegisterFace - DEBUG - Saved: sample_11.jpg
+2026-05-13 11:46:26 - RegisterFace - DEBUG - Saved: sample_12.jpg
+2026-05-13 11:46:27 - RegisterFace - DEBUG - Saved: sample_13.jpg
+2026-05-13 11:46:28 - RegisterFace - DEBUG - Saved: sample_14.jpg
+2026-05-13 11:46:28 - RegisterFace - DEBUG - Saved: sample_15.jpg
+2026-05-13 11:46:28 - RegisterFace - INFO - Registration cancelled by user.
+2026-05-13 11:46:29 - CameraHandler - INFO - Webcam resources released.

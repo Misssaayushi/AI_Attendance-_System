@@ -28,6 +28,16 @@ ENCODING_FILE = ENCODINGS_DIR / "encodings.pickle"
 FACE_DETECTION_MODEL = "hog"
 FRAME_RESIZE_SCALE = 0.25  # Process at 1/4 size for speed
 
+# Registration Settings
+CAPTURE_SAMPLE_COUNT = 20    # Number of images per student
+CAPTURE_INTERVAL = 0.5       # Seconds between captures
+CAPTURE_TIMEOUT = 60         # Max time in seconds
+MIN_FACE_SIZE = 100          # Min pixels for face box
+BLUR_THRESHOLD = 100         # Higher = stricter (less blur allowed)
+BRIGHTNESS_MIN = 40          # Min average pixel intensity
+BRIGHTNESS_MAX = 250         # Max average pixel intensity
+IMAGE_QUALITY = 90           # JPEG quality (0-100)
+
 # Logging Settings
 LOG_FILE = LOGS_DIR / "ai_system.log"
 DEBUG_MODE = True
