@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-
 # Base directory for the AI module
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -22,6 +21,8 @@ FRAME_HEIGHT = 480
 # Lower tolerance = stricter matching, Higher tolerance = more loose
 RECOGNITION_TOLERANCE = 0.6  
 ENCODING_FILE = ENCODINGS_DIR / "encodings.pickle"
+RECOGNITION_PROCESS_INTERVAL = 2  # Process every Nth frame for speed
+UNKNOWN_LABEL = "Unknown Person"
 
 # Face Detection Settings
 # Model: "hog" (CPU friendly) or "cnn" (GPU required)

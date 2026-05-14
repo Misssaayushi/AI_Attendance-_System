@@ -1,13 +1,16 @@
 import cv2
 import face_recognition
+from pathlib import Path
 import numpy as np
 import logging
 import sys
+import base64
+import pickle
 from datetime import datetime
 try:
-    from ai_module.config import LOG_FILE, DEBUG_MODE
+    from ai_module.config import LOG_FILE, DEBUG_MODE, RECOGNITION_TOLERANCE, UNKNOWN_LABEL
 except ImportError:
-    from config import LOG_FILE, DEBUG_MODE
+    from config import LOG_FILE, DEBUG_MODE, RECOGNITION_TOLERANCE, UNKNOWN_LABEL
 
 def get_logger(name="AI_System"):
     """
@@ -158,6 +161,83 @@ class FaceValidator:
 
         return True, "Ready"
 
+class EncodingManager:
+    """
+    Handles loading and managing face encodings from disk to memory.
+    """
+    def __init__(self, encoding_file):
+        self.encoding_file = Path(encoding_file)
+        self.known_encodings = []
+        self.known_names = []
+        self.logger = get_logger("EncodingManager")
+        self.load_known_faces()
+
+    def load_known_faces(self):
+        """
+        Loads the consolidated encoding file into memory.
+        """
+        if not self.encoding_file.exists():
+            self.logger.warning(f"Encoding file {self.encoding_file} not found. Recognition will not work.")
+            return
+
+        try:
+            with open(self.encoding_file, "rb") as f:
+                data = pickle.load(f)
+            
+            self.known_encodings = data.get("encodings", [])
+            self.known_names = data.get("names", [])
+            self.logger.info(f"Loaded {len(self.known_names)} face encodings into memory.")
+        except Exception as e:
+            self.logger.error(f"Failed to load encodings: {str(e)}")
+
+class FaceRecognizer:
+    """
+    Core recognition engine that compares live faces with the encoding database.
+    """
+    def __init__(self, encoding_manager, tolerance=RECOGNITION_TOLERANCE):
+        self.manager = encoding_manager
+        self.tolerance = tolerance
+        self.logger = get_logger("FaceRecognizer")
+
+    def identify(self, frame, face_location):
+        """
+        Generates encoding for a detected face and finds the best match.
+        Returns: name (str), confidence (float)
+        """
+        if not self.manager.known_encodings:
+            return UNKNOWN_LABEL, 0.0
+
+        # Generate encoding for the live face
+        # Note: face_recognition.face_encodings expects a list of locations
+        live_encodings = face_recognition.face_encodings(frame, [face_location])
+        
+        if not live_encodings:
+            return UNKNOWN_LABEL, 0.0
+        
+        live_encoding = live_encodings[0]
+
+        # 1. Check for matches
+        matches = face_recognition.compare_faces(
+            self.manager.known_encodings, 
+            live_encoding, 
+            tolerance=self.tolerance
+        )
+        
+        name = UNKNOWN_LABEL
+        
+        # 2. Use face distance to find the best match
+        face_distances = face_recognition.face_distance(self.manager.known_encodings, live_encoding)
+        best_match_index = np.argmin(face_distances)
+        
+        if matches[best_match_index]:
+            name = self.manager.known_names[best_match_index]
+            # Convert distance to a simple "Confidence" percentage
+            # (1 - distance) * 100
+            confidence = (1 - face_distances[best_match_index]) * 100
+            return name, confidence
+
+        return UNKNOWN_LABEL, 0.0
+
 class CameraHandler:
     """
     Handles webcam initialization, frame reading, and resource cleanup.
@@ -196,3 +276,38 @@ class CameraHandler:
         self.cap.release()
         cv2.destroyAllWindows()
         self.logger.info("Webcam resources released.")
+
+class Base64Utils:
+    """
+    Utilities for converting between Base64 strings (Frontend) 
+    and OpenCV images (AI Module).
+    """
+    @staticmethod
+    def base64_to_cv2(b64_string):
+        """
+        Converts a Base64 string (from React) to an OpenCV BGR image.
+        """
+        try:
+            if "base64," in b64_string:
+                b64_string = b64_string.split("base64,")[1]
+            
+            img_data = base64.b64decode(b64_string)
+            nparr = np.frombuffer(img_data, np.uint8)
+            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            return frame
+        except Exception as e:
+            get_logger("Base64Utils").error(f"Base64 conversion failed: {str(e)}")
+            return None
+
+    @staticmethod
+    def cv2_to_base64(frame):
+        """
+        Converts an OpenCV BGR image to a Base64 string.
+        """
+        try:
+            _, buffer = cv2.imencode('.jpg', frame)
+            b64_string = base64.b64encode(buffer).decode('utf-8')
+            return f"data:image/jpeg;base64,{b64_string}"
+        except Exception as e:
+            get_logger("Base64Utils").error(f"CV2 to Base64 conversion failed: {str(e)}")
+            return None

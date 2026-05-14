@@ -44,3 +44,17 @@
 2026-05-13 11:46:28 - RegisterFace - DEBUG - Saved: sample_15.jpg
 2026-05-13 11:46:28 - RegisterFace - INFO - Registration cancelled by user.
 2026-05-13 11:46:29 - CameraHandler - INFO - Webcam resources released.
+2026-05-14 00:05:45 - RealTimeRecognition - INFO - Initializing Face Recognition System...
+2026-05-14 00:05:53 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-14 00:05:53 - RealTimeRecognition - ERROR - System Error: name 'Path' is not defined
+2026-05-14 00:05:53 - CameraHandler - INFO - Webcam resources released.
+2026-05-14 00:11:40 - RealTimeRecognition - INFO - Initializing Face Recognition System...
+2026-05-14 00:11:44 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-14 00:11:44 - RealTimeRecognition - ERROR - System Error: name 'Path' is not defined
+2026-05-14 00:11:45 - CameraHandler - INFO - Webcam resources released.
+2026-05-14 00:20:36 - RealTimeRecognition - INFO - Initializing Face Recognition System...
+2026-05-14 00:20:41 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-14 00:20:41 - EncodingManager - WARNING - Encoding file D:\Projects\AI Attendance Management System\ai_module\encodings\encodings.pickle not found. Recognition will not work.
+2026-05-14 00:20:41 - RealTimeRecognition - INFO - Recognition system active. Press 'ESC' to exit.
+2026-05-14 00:21:02 - RealTimeRecognition - INFO - Exit command received.
+2026-05-14 00:21:03 - CameraHandler - INFO - Webcam resources released.
