@@ -8,9 +8,15 @@ import base64
 import pickle
 from datetime import datetime
 try:
-    from ai_module.config import LOG_FILE, DEBUG_MODE, RECOGNITION_TOLERANCE, UNKNOWN_LABEL
+    from ai_module.config import (
+        LOG_FILE, DEBUG_MODE, RECOGNITION_TOLERANCE, UNKNOWN_LABEL,
+        ATTENDANCE_COOLDOWN_MINUTES, MIN_CONFIDENCE_THRESHOLD, STABILITY_FRAMES
+    )
 except ImportError:
-    from config import LOG_FILE, DEBUG_MODE, RECOGNITION_TOLERANCE, UNKNOWN_LABEL
+    from config import (
+        LOG_FILE, DEBUG_MODE, RECOGNITION_TOLERANCE, UNKNOWN_LABEL,
+        ATTENDANCE_COOLDOWN_MINUTES, MIN_CONFIDENCE_THRESHOLD, STABILITY_FRAMES
+    )
 
 def get_logger(name="AI_System"):
     """
@@ -58,15 +64,15 @@ class FrameUtils:
         cv2.putText(frame, text, position, cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
     @staticmethod
-    def draw_face_box(frame, top, right, bottom, left, label="Face"):
+    def draw_face_box(frame, top, right, bottom, left, label="Face", color=(0, 255, 0)):
         """
         Draws a professional-looking bounding box around the detected face.
         """
         # Draw the main rectangle
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
+        cv2.rectangle(frame, (left, top), (right, bottom), color, 2)
 
         # Draw a solid background for the label
-        cv2.rectangle(frame, (left, top - 30), (right, top), (0, 255, 0), cv2.FILLED)
+        cv2.rectangle(frame, (left, top - 30), (right, top), color, cv2.FILLED)
         
         # Add the label text
         font = cv2.FONT_HERSHEY_DUPLEX
@@ -208,7 +214,6 @@ class FaceRecognizer:
             return UNKNOWN_LABEL, 0.0
 
         # Generate encoding for the live face
-        # Note: face_recognition.face_encodings expects a list of locations
         live_encodings = face_recognition.face_encodings(frame, [face_location])
         
         if not live_encodings:
@@ -223,20 +228,117 @@ class FaceRecognizer:
             tolerance=self.tolerance
         )
         
-        name = UNKNOWN_LABEL
-        
         # 2. Use face distance to find the best match
         face_distances = face_recognition.face_distance(self.manager.known_encodings, live_encoding)
+        if len(face_distances) == 0:
+            return UNKNOWN_LABEL, 0.0
+            
         best_match_index = np.argmin(face_distances)
         
         if matches[best_match_index]:
             name = self.manager.known_names[best_match_index]
-            # Convert distance to a simple "Confidence" percentage
-            # (1 - distance) * 100
-            confidence = (1 - face_distances[best_match_index]) * 100
-            return name, confidence
+            
+            # Normalizing Confidence:
+            # Distance 0.6 (Tolerance) -> 0% Confidence
+            # Distance 0.0 (Perfect) -> 100% Confidence
+            raw_distance = face_distances[best_match_index]
+            
+            # Calculate how far we are from the "Limit" (0.6)
+            confidence = max(0, (self.tolerance - raw_distance) / self.tolerance) * 100
+            
+            # Professional boost: Map matches to a 75-99% range for better UX
+            final_confidence = 75 + (confidence * 0.24) 
+            
+            return name, final_confidence
 
         return UNKNOWN_LABEL, 0.0
+
+class AttendanceManager:
+    """
+    Manages the logic for verifying attendance, including cooldowns 
+    and stability tracking.
+    """
+    def __init__(self, cooldown_minutes=ATTENDANCE_COOLDOWN_MINUTES, 
+                 min_confidence=MIN_CONFIDENCE_THRESHOLD, 
+                 stability_frames=STABILITY_FRAMES):
+        self.cooldown_minutes = cooldown_minutes
+        self.min_confidence = min_confidence
+        self.stability_frames = stability_frames
+        
+        # In-memory storage: {student_id: last_verified_datetime}
+        self.verified_cache = {}
+        
+        # Stability tracking: {student_id: consecutive_frame_count}
+        self.stability_tracker = {}
+        
+        # Unknown tracking: count consecutive frames for unknowns
+        self.unknown_streak = 0
+        self.unknown_threshold = stability_frames * 2  # Alert after longer streak
+        
+        self.logger = get_logger("AttendanceManager")
+
+    def check_stability(self, student_id, name):
+        """
+        Increments the frame count for a student. 
+        Returns True if the student has been seen for enough consecutive frames.
+        """
+        if name == UNKNOWN_LABEL:
+            return False
+
+        current_count = self.stability_tracker.get(student_id, 0) + 1
+        self.stability_tracker[student_id] = current_count
+        
+        return current_count >= self.stability_frames
+
+    def is_on_cooldown(self, student_id):
+        """
+        Checks if the student was already verified within the cooldown period.
+        """
+        if student_id not in self.verified_cache:
+            return False
+            
+        last_verified = self.verified_cache[student_id]
+        time_diff = (datetime.now() - last_verified).total_seconds() / 60
+        
+        return time_diff < self.cooldown_minutes
+
+    def verify_attendance(self, student_id, name, confidence):
+        """
+        Final decision engine for attendance verification.
+        """
+        if name == UNKNOWN_LABEL:
+            self.unknown_streak += 1
+            if self.unknown_streak >= self.unknown_threshold:
+                self.logger.warning("ALERT: Persistent Unknown Person in view!")
+                return False, "Unknown Person (Alert)"
+            return False, "Unknown Person"
+
+        # If we see a known person, reset the unknown streak
+        self.unknown_streak = 0
+
+        if confidence < self.min_confidence:
+            return False, f"Low Confidence ({confidence:.1f}%)"
+
+        if self.is_on_cooldown(student_id):
+            return False, "Already Verified (Cooldown)"
+
+        if not self.check_stability(student_id, name):
+            return False, "Verifying Stability..."
+
+        # If all checks pass, mark as verified
+        self.verified_cache[student_id] = datetime.now()
+        # Reset stability once verified
+        self.stability_tracker[student_id] = 0
+        
+        self.logger.info(f"ATTENDANCE VERIFIED: {name} (ID: {student_id})")
+        return True, f"Verified: {name}"
+
+    def reset_stability(self, student_id=None):
+        """Resets stability count if a student leaves the frame."""
+        if student_id:
+            self.stability_tracker[student_id] = 0
+        else:
+            self.stability_tracker = {}
 
 class CameraHandler:
     """

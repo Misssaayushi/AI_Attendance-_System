@@ -58,3 +58,54 @@
 2026-05-14 00:20:41 - RealTimeRecognition - INFO - Recognition system active. Press 'ESC' to exit.
 2026-05-14 00:21:02 - RealTimeRecognition - INFO - Exit command received.
 2026-05-14 00:21:03 - CameraHandler - INFO - Webcam resources released.
+2026-05-14 19:01:56 - VerificationTest - INFO - Starting Attendance Verification Logic Test...
+2026-05-14 19:01:56 - VerificationTest - INFO - TEST 1: Stability Streak
+2026-05-14 19:01:56 - VerificationTest - INFO - Frame 1: Verified=False, Msg=Verifying Stability...
+2026-05-14 19:01:56 - VerificationTest - INFO - Frame 2: Verified=False, Msg=Verifying Stability...
+2026-05-14 19:01:56 - AttendanceManager - INFO - ATTENDANCE VERIFIED: Test Student (ID: test_001)
+2026-05-14 19:01:56 - VerificationTest - INFO - Frame 3: Verified=True, Msg=Verified: Test Student
+2026-05-14 19:01:56 - VerificationTest - INFO - TEST 2: Cooldown Logic
+2026-05-14 19:01:56 - VerificationTest - INFO - Instant Re-scan: Verified=False, Msg=Already Verified (Cooldown)
+2026-05-14 19:01:56 - VerificationTest - INFO - TEST 3: Low Confidence Rejection
+2026-05-14 19:01:56 - VerificationTest - INFO - Low Confidence (50%): Verified=False, Msg=Low Confidence (50.0%)
+2026-05-14 19:01:56 - VerificationTest - INFO - TEST 4: Unknown Person Handling
+2026-05-14 19:01:56 - VerificationTest - INFO - Unknown Result: Verified=False, Msg=Unknown Person
+2026-05-14 19:01:56 - VerificationTest - INFO - Verification logic test complete.
+2026-05-14 19:02:39 - RealTimeRecognition - INFO - Initializing Face Recognition System...
+2026-05-14 19:02:44 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-14 19:02:44 - EncodingManager - WARNING - Encoding file D:\Projects\AI Attendance Management System\ai_module\encodings\encodings.pickle not found. Recognition will not work.
+2026-05-14 19:02:44 - RealTimeRecognition - INFO - Recognition system active. Press 'ESC' to exit.
+2026-05-14 19:02:50 - RealTimeRecognition - ERROR - System Error: FrameUtils.draw_face_box() got an unexpected keyword argument 'color'
+2026-05-14 19:02:50 - CameraHandler - INFO - Webcam resources released.
+2026-05-14 19:02:59 - RealTimeRecognition - INFO - Initializing Face Recognition System...
+2026-05-14 19:03:04 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-14 19:03:04 - EncodingManager - WARNING - Encoding file D:\Projects\AI Attendance Management System\ai_module\encodings\encodings.pickle not found. Recognition will not work.
+2026-05-14 19:03:04 - RealTimeRecognition - INFO - Recognition system active. Press 'ESC' to exit.
+2026-05-14 19:03:04 - RealTimeRecognition - ERROR - System Error: FrameUtils.draw_face_box() got an unexpected keyword argument 'color'
+2026-05-14 19:03:04 - CameraHandler - INFO - Webcam resources released.
+2026-05-14 19:04:07 - EncodingGenerator - INFO - Starting facial encoding generation...
+2026-05-14 19:04:07 - EncodingGenerator - INFO - Processing student: 1_Aayushi
+2026-05-14 19:04:08 - EncodingGenerator - WARNING - No face found in sample_01.jpg. Skipping.
+2026-05-14 19:04:14 - EncodingGenerator - WARNING - No face found in sample_07.jpg. Skipping.
+2026-05-14 19:04:14 - EncodingGenerator - WARNING - No face found in sample_08.jpg. Skipping.
+2026-05-14 19:04:22 - EncodingGenerator - INFO - Saved 12 encodings to 1_Aayushi.pkl
+2026-05-14 19:04:22 - EncodingGenerator - INFO - Consolidated encoding file saved: D:\Projects\AI Attendance Management System\ai_module\encodings\encodings.pickle
+2026-05-14 19:04:33 - RealTimeRecognition - INFO - Initializing Face Recognition System...
+2026-05-14 19:04:38 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-14 19:04:38 - EncodingManager - INFO - Loaded 12 face encodings into memory.
+2026-05-14 19:04:38 - RealTimeRecognition - INFO - Recognition system active. Press 'ESC' to exit.
+2026-05-14 19:05:17 - RealTimeRecognition - INFO - Exit command received.
+2026-05-14 19:05:17 - CameraHandler - INFO - Webcam resources released.
+2026-05-14 19:06:05 - RealTimeRecognition - INFO - Initializing Face Recognition System...
+2026-05-14 19:06:10 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-14 19:06:10 - EncodingManager - INFO - Loaded 12 face encodings into memory.
+2026-05-14 19:06:10 - RealTimeRecognition - INFO - Recognition system active. Press 'ESC' to exit.
+2026-05-14 19:07:05 - RealTimeRecognition - INFO - Exit command received.
+2026-05-14 19:07:06 - CameraHandler - INFO - Webcam resources released.
+2026-05-14 19:07:47 - RealTimeRecognition - INFO - Initializing Face Recognition System...
+2026-05-14 19:07:51 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-14 19:07:51 - EncodingManager - INFO - Loaded 12 face encodings into memory.
+2026-05-14 19:07:51 - RealTimeRecognition - INFO - Recognition system active. Press 'ESC' to exit.
+2026-05-14 19:07:57 - AttendanceManager - INFO - ATTENDANCE VERIFIED: 1_Aayushi (ID: 1)
+2026-05-14 19:08:11 - RealTimeRecognition - INFO - Exit command received.
+2026-05-14 19:08:11 - CameraHandler - INFO - Webcam resources released.

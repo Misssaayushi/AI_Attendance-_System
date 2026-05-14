@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 # Base directory for the AI module
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -21,13 +22,18 @@ FRAME_HEIGHT = 480
 # Lower tolerance = stricter matching, Higher tolerance = more loose
 RECOGNITION_TOLERANCE = 0.6  
 ENCODING_FILE = ENCODINGS_DIR / "encodings.pickle"
-RECOGNITION_PROCESS_INTERVAL = 2  # Process every Nth frame for speed
+RECOGNITION_PROCESS_INTERVAL = 10  # Process every 10th frame (Smoother video)
 UNKNOWN_LABEL = "Unknown Person"
+
+# Attendance Verification Settings
+ATTENDANCE_COOLDOWN_MINUTES = 30  # Wait time before re-marking a student
+MIN_CONFIDENCE_THRESHOLD = 80     # Minimum % confidence to verify
+STABILITY_FRAMES = 3              # Consecutive frames needed to confirm
 
 # Face Detection Settings
 # Model: "hog" (CPU friendly) or "cnn" (GPU required)
 FACE_DETECTION_MODEL = "hog"
-FRAME_RESIZE_SCALE = 0.25  # Process at 1/4 size for speed
+FRAME_RESIZE_SCALE = 0.20  # Reduced slightly more for speed
 
 # Registration Settings
 CAPTURE_SAMPLE_COUNT = 20    # Number of images per student
