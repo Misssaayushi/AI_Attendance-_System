@@ -22,7 +22,9 @@ class Settings:
     DEBUG_MODE = os.getenv("DEBUG_MODE", "True").lower() == "true"
 
     # Security
-    SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 # Token valid for 1 hour
 
     # API settings
     API_PREFIX = os.getenv("API_PREFIX", "/api/v1")

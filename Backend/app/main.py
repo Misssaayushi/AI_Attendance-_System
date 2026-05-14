@@ -7,6 +7,31 @@ from app.middleware.request_logger import log_requests_middleware
 from app.database.connection import test_db_connection
 from app.utils.logger import logger
 
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # --- Startup Logic ---
+    logger.info("🚀 AI Attendance System Backend starting...")
+    
+    # 1. Test database connection
+    if test_db_connection():
+        logger.info("✅ Database connection: OK")
+        
+        # 2. Initialize tables
+        from app.database.connection import init_db
+        try:
+            init_db()
+        except Exception as e:
+            logger.error(f"❌ Table initialization FAILED: {str(e)}")
+    else:
+        logger.error("❌ Database connection: FAILED - Tables not initialized")
+    
+    yield  # --- Server is running ---
+    
+    # --- Shutdown Logic ---
+    logger.info("🛑 Backend shutting down...")
+
 def create_app() -> FastAPI:
     """FastAPI application factory."""
     
@@ -16,7 +41,8 @@ def create_app() -> FastAPI:
         version="1.0.0",
         docs_url="/docs",
         redoc_url="/redoc",
-        debug=settings.DEBUG_MODE
+        debug=settings.DEBUG_MODE,
+        lifespan=lifespan
     )
 
     # Register middleware
@@ -51,25 +77,3 @@ def create_app() -> FastAPI:
 
 # Main app instance
 app = create_app()
-
-@app.on_event("startup")
-async def startup_event():
-    logger.info("🚀 AI Attendance System Backend starting...")
-    
-    # 1. Test database connection
-    if test_db_connection():
-        logger.info("✅ Database connection: OK")
-        
-        # 2. Initialize tables (Create if they don't exist)
-        from app.database.connection import init_db
-        try:
-            init_db()
-        except Exception as e:
-            logger.error(f"❌ Table initialization FAILED: {str(e)}")
-    else:
-        logger.error("❌ Database connection: FAILED - Tables not initialized")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info("🛑 Backend shutting down...")
-    # Future: logger.info("🛑 Backend shutting down...")
