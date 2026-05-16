@@ -48,3 +48,23 @@ IMAGE_QUALITY = 90           # JPEG quality (0-100)
 # Logging Settings
 LOG_FILE = LOGS_DIR / "ai_system.log"
 DEBUG_MODE = True
+
+# API Integration Settings (Phase 6)
+API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
+ATTENDANCE_VERIFY_ENDPOINT = os.getenv("ATTENDANCE_VERIFY_ENDPOINT", "/api/v1/attendance/verify")
+ATTENDANCE_VERIFY_URL = f"{API_BASE_URL.rstrip('/')}{ATTENDANCE_VERIFY_ENDPOINT}"
+
+# API Reliability Settings
+API_TIMEOUT_SECONDS = float(os.getenv("API_TIMEOUT_SECONDS", "2.0"))
+API_RETRY_COUNT = int(os.getenv("API_RETRY_COUNT", "1"))
+API_RETRY_DELAY_SECONDS = float(os.getenv("API_RETRY_DELAY_SECONDS", "0.25"))
+
+# API Mock Settings
+API_MOCK_MODE = os.getenv("API_MOCK_MODE", "false").lower() == "true"
+API_MOCK_FORCE_FAILURE = os.getenv("API_MOCK_FORCE_FAILURE", "false").lower() == "true"
+API_MOCK_RESPONSE_DELAY_SECONDS = float(os.getenv("API_MOCK_RESPONSE_DELAY_SECONDS", "0.10"))
+
+# API Feedback Overlay Settings
+API_FEEDBACK_DISPLAY_SECONDS = float(os.getenv("API_FEEDBACK_DISPLAY_SECONDS", "3.0"))
+API_SUCCESS_MESSAGE = os.getenv("API_SUCCESS_MESSAGE", "Attendance Logged")
+API_ERROR_MESSAGE = os.getenv("API_ERROR_MESSAGE", "Server Error")

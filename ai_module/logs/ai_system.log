@@ -109,3 +109,34 @@
 2026-05-14 19:07:57 - AttendanceManager - INFO - ATTENDANCE VERIFIED: 1_Aayushi (ID: 1)
 2026-05-14 19:08:11 - RealTimeRecognition - INFO - Exit command received.
 2026-05-14 19:08:11 - CameraHandler - INFO - Webcam resources released.
+2026-05-16 11:51:29 - API_Connector - WARNING - Attendance transmission attempt 1/2 failed: Connection refused
+2026-05-16 11:51:29 - API_Connector - WARNING - Attendance transmission attempt 2/2 failed: Connection refused
+2026-05-16 11:51:29 - API_Connector - WARNING - Attendance transmission rejected. status_code=500 message=Server Error
+2026-05-16 11:51:29 - API_Connector - INFO - Attendance logged successfully. status_code=200
+2026-05-16 11:51:29 - API_Connector - INFO - Attendance logged successfully. status_code=201
+2026-05-16 11:51:29 - API_Connector - WARNING - Attendance transmission attempt 1/2 failed: Request timed out
+2026-05-16 11:51:29 - API_Connector - WARNING - Attendance transmission attempt 2/2 failed: Request timed out
+2026-05-16 11:51:29 - API_Connector - WARNING - Payload validation failed: Missing student_id
+2026-05-16 11:51:29 - API_Connector - WARNING - Mock transmission failed for student_id=1
+2026-05-16 11:51:29 - API_Connector - INFO - Mock transmission succeeded for student_id=1
+2026-05-16 11:51:29 - AttendanceManager - INFO - ATTENDANCE VERIFIED: 1_Aayushi (ID: 1)
+2026-05-16 19:38:18 - API_Connector - WARNING - Attendance transmission attempt 1/2 failed: Connection refused
+2026-05-16 19:38:18 - API_Connector - WARNING - Attendance transmission attempt 2/2 failed: Connection refused
+2026-05-16 19:38:18 - API_Connector - WARNING - Attendance transmission rejected. status_code=500 message=Server Error
+2026-05-16 19:38:18 - API_Connector - INFO - Attendance logged successfully. status_code=200
+2026-05-16 19:38:18 - API_Connector - INFO - Attendance logged successfully. status_code=201
+2026-05-16 19:38:18 - API_Connector - WARNING - Attendance transmission attempt 1/2 failed: Request timed out
+2026-05-16 19:38:18 - API_Connector - WARNING - Attendance transmission attempt 2/2 failed: Request timed out
+2026-05-16 19:38:18 - API_Connector - WARNING - Payload validation failed: Missing student_id
+2026-05-16 19:38:18 - API_Connector - WARNING - Mock transmission failed for student_id=1
+2026-05-16 19:38:18 - API_Connector - INFO - Mock transmission succeeded for student_id=1
+2026-05-16 19:38:18 - AttendanceManager - INFO - ATTENDANCE VERIFIED: 1_Aayushi (ID: 1)
+2026-05-16 19:42:47 - RealTimeRecognition - INFO - Initializing Face Recognition System...
+2026-05-16 19:42:52 - CameraHandler - INFO - Webcam 0 initialized successfully.
+2026-05-16 19:42:52 - EncodingManager - INFO - Loaded 12 face encodings into memory.
+2026-05-16 19:42:52 - RealTimeRecognition - INFO - Recognition system active. Press 'ESC' to exit.
+2026-05-16 19:42:56 - AttendanceManager - INFO - ATTENDANCE VERIFIED: 1_Aayushi (ID: 1)
+2026-05-16 19:42:58 - API_Connector - WARNING - Attendance transmission attempt 1/2 failed: HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /api/v1/attendance/verify (Caused by ConnectTimeoutError(<HTTPConnection(host='127.0.0.1', port=8000) at 0x24fe3100a30>, 'Connection to 127.0.0.1 timed out. (connect timeout=2.0)'))
+2026-05-16 19:43:00 - API_Connector - WARNING - Attendance transmission attempt 2/2 failed: HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /api/v1/attendance/verify (Caused by ConnectTimeoutError(<HTTPConnection(host='127.0.0.1', port=8000) at 0x24fe3102a10>, 'Connection to 127.0.0.1 timed out. (connect timeout=2.0)'))
+2026-05-16 19:43:39 - RealTimeRecognition - INFO - Exit command received.
+2026-05-16 19:43:39 - CameraHandler - INFO - Webcam resources released.
