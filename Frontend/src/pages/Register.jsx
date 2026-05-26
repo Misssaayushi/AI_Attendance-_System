@@ -4,6 +4,7 @@ import Container from '../components/Container';
 import WebcamFeed from '../components/register/WebcamFeed';
 import RegisterForm from '../components/register/RegisterForm';
 import Alert from '../components/ui/Alert';
+import { registerStudent } from '../services/api';
 
 const Register = () => {
   const [capturedImage, setCapturedImage] = useState(null);
@@ -58,7 +59,7 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateForm()) {
       setAlert({ variant: 'error', message: 'Please correct the highlighted errors.' });
       return;
@@ -69,13 +70,27 @@ const Register = () => {
       return;
     }
 
-    // Mock Submission
-    setAlert({ variant: 'info', message: 'Registering student... please wait.' });
-    
-    setTimeout(() => {
-      setAlert({ variant: 'success', message: 'Registration Successful! Student enrolled.' });
-      handleReset();
-    }, 2000);
+    try {
+      setAlert({ variant: 'info', message: 'Registering student... please wait.' });
+      
+      const payload = {
+        ...formData,
+        image_data: capturedImage
+      };
+
+      const response = await registerStudent(payload);
+      
+      if (response.data.status === 'success') {
+        setAlert({ variant: 'success', message: 'Registration Successful! Student dataset created.' });
+        handleReset();
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setAlert({ 
+        variant: 'error', 
+        message: error.response?.data?.detail || 'Registration failed. Please ensure the backend is running.' 
+      });
+    }
   };
 
   const handleReset = () => {

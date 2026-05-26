@@ -34,7 +34,7 @@ To build an automated attendance system that:
 * Axios
 
 ## Backend
-* Flask
+* FastAPI
 * MySQL
 * OpenPyXL
 * Pandas
@@ -64,7 +64,7 @@ Responsible for:
 
 ## Member 2 — Backend Developer
 Responsible for:
-* Flask APIs
+* FastAPI backend
 * Database management
 * Authentication
 * Attendance storage

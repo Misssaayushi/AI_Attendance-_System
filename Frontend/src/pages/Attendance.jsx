@@ -11,6 +11,7 @@ import { Clock, Activity, Users, Zap } from 'lucide-react';
 const Attendance = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [recognitionState, setRecognitionState] = useState('idle');
+  const [scanProgress, setScanProgress] = useState(0);
   const [lastMatch, setLastMatch] = useState(null);
   const [logs, setLogs] = useState([
     { id: 1, name: 'Aman Verma', message: 'Already Marked', type: 'duplicate', time: '14:02:10' },
@@ -25,7 +26,19 @@ const Attendance = () => {
 
   const triggerSimulation = (type) => {
     setRecognitionState('scanning');
+    setScanProgress(0);
     
+    // Simulate progress bar increment
+    const progressInterval = setInterval(() => {
+      setScanProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(progressInterval);
+          return 100;
+        }
+        return prev + 5;
+      });
+    }, 50);
+
     setTimeout(() => {
       let logEntry = null;
       
@@ -42,7 +55,10 @@ const Attendance = () => {
       setRecognitionState(type);
       if (logEntry) setLogs(prev => [logEntry, ...prev]);
 
-      setTimeout(() => setRecognitionState('idle'), 4000);
+      setTimeout(() => {
+        setRecognitionState('idle');
+        setScanProgress(0);
+      }, 4000);
     }, 1500);
   };
 
@@ -55,7 +71,7 @@ const Attendance = () => {
             <Zap className="text-blue-500 fill-blue-500/20" size={32} />
             Attendance Terminal
           </h1>
-          <p className="text-gray-400 mt-1 font-medium italic">Scanning active... awaiting biometric input</p>
+          <p className="text-gray-400 mt-1 font-medium italic">Biometric Verification System v2.0</p>
         </div>
         
         <div className="flex items-center space-x-6 bg-gray-900/80 backdrop-blur-xl px-6 py-3 rounded-2xl border border-gray-700/50 shadow-2xl">
@@ -65,10 +81,12 @@ const Attendance = () => {
           </div>
           <div className="h-8 w-px bg-gray-700"></div>
           <div className="flex flex-col items-start">
-            <span className="text-[10px] text-gray-500 uppercase font-black tracking-widest leading-none mb-1">Network Status</span>
+            <span className="text-[10px] text-gray-500 uppercase font-black tracking-widest leading-none mb-1">Status</span>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]"></span>
-              <span className="text-sm font-bold text-green-400 uppercase leading-none">Encrypted</span>
+              <span className={`w-2.5 h-2.5 rounded-full ${isCameraActive ? 'bg-green-500 animate-pulse' : 'bg-red-500'} shadow-[0_0_10px_rgba(34,197,94,0.5)]`}></span>
+              <span className={`text-sm font-bold uppercase leading-none ${isCameraActive ? 'text-green-400' : 'text-red-400'}`}>
+                {isCameraActive ? 'Online' : 'Offline'}
+              </span>
             </div>
           </div>
         </div>
@@ -77,7 +95,7 @@ const Attendance = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 flex-1">
         {/* Left: Camera & Simulation (70%) */}
         <div className="lg:col-span-8 flex flex-col space-y-6">
-          <div className="relative group rounded-3xl overflow-hidden border-2 border-gray-700/50 shadow-[0_0_40px_rgba(0,0,0,0.6)] bg-black">
+          <div className="relative group rounded-3xl overflow-hidden border-2 border-gray-700/50 shadow-[0_0_60px_rgba(0,0,0,0.8)] bg-black aspect-video">
             <WebcamFeed 
               onStreamStart={() => setIsCameraActive(true)}
               onStreamStop={() => {
@@ -88,55 +106,73 @@ const Attendance = () => {
             {isCameraActive && (
               <DetectionOverlay isScanning={recognitionState === 'scanning'} />
             )}
+            
+            {/* Progress Overlay */}
+            {recognitionState === 'scanning' && (
+              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-64 z-30">
+                <div className="flex justify-between text-[10px] text-blue-400 font-bold uppercase mb-1">
+                  <span>Analyzing Face</span>
+                  <span>{scanProgress}%</span>
+                </div>
+                <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden border border-white/5">
+                  <div 
+                    className="h-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)] transition-all duration-300 ease-out"
+                    style={{ width: `${scanProgress}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
           </div>
 
-          <Card className="p-4 bg-gray-800/20 border-gray-700/30 flex flex-wrap items-center gap-4">
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-widest mr-2">Demo Simulation:</span>
-            <Button 
-              variant="secondary" size="sm" 
-              onClick={() => triggerSimulation('success')}
-              className="bg-green-500/10 border-green-500/20 text-green-400 hover:bg-green-500/20"
-              disabled={recognitionState !== 'idle' || !isCameraActive}
-            >
-              Simulate Match
-            </Button>
-            <Button 
-              variant="secondary" size="sm" 
-              onClick={() => triggerSimulation('duplicate')}
-              className="bg-orange-500/10 border-orange-500/20 text-orange-400 hover:bg-orange-500/20"
-              disabled={recognitionState !== 'idle' || !isCameraActive}
-            >
-              Simulate Duplicate
-            </Button>
-            <Button 
-              variant="secondary" size="sm" 
-              onClick={() => triggerSimulation('unknown')}
-              className="bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20"
-              disabled={recognitionState !== 'idle' || !isCameraActive}
-            >
-              Simulate Unknown
-            </Button>
+          <Card className="p-4 bg-gray-900/40 border-gray-700/30 flex flex-wrap items-center gap-4">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mr-2">Terminal Simulations:</span>
+            <div className="flex gap-2">
+              <Button 
+                variant="secondary" size="sm" 
+                onClick={() => triggerSimulation('success')}
+                className="bg-green-500/10 border-green-500/20 text-green-400 hover:bg-green-500/20 py-1.5"
+                disabled={recognitionState !== 'idle' || !isCameraActive}
+              >
+                Match
+              </Button>
+              <Button 
+                variant="secondary" size="sm" 
+                onClick={() => triggerSimulation('duplicate')}
+                className="bg-orange-500/10 border-orange-500/20 text-orange-400 hover:bg-orange-500/20 py-1.5"
+                disabled={recognitionState !== 'idle' || !isCameraActive}
+              >
+                Duplicate
+              </Button>
+              <Button 
+                variant="secondary" size="sm" 
+                onClick={() => triggerSimulation('unknown')}
+                className="bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500/20 py-1.5"
+                disabled={recognitionState !== 'idle' || !isCameraActive}
+              >
+                Unknown
+              </Button>
+            </div>
           </Card>
         </div>
 
-        {/* Right: Sidebar (30%) */}
+        {/* Right: Sidebar (40%) */}
         <div className="lg:col-span-4 flex flex-col h-full space-y-6">
           <StatusPanel state={recognitionState} student={lastMatch} />
 
-          {/* Stats */}
+          {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
-            <Card className="p-4 bg-blue-600/5 border-blue-600/20 flex flex-col items-center">
+            <Card className="p-4 bg-blue-600/5 border-blue-600/20 flex flex-col items-center group hover:bg-blue-600/10 transition-colors">
               <span className="text-[9px] text-blue-400 font-black tracking-tighter uppercase mb-1">Present Today</span>
               <div className="flex items-center gap-2">
                 <Users size={14} className="text-blue-500" />
                 <span className="text-2xl font-bold text-white tracking-tighter">{42 + logs.filter(l => l.type === 'success').length}</span>
               </div>
             </Card>
-            <Card className="p-4 bg-violet-600/5 border-violet-600/20 flex flex-col items-center">
-              <span className="text-[9px] text-violet-400 font-black tracking-tighter uppercase mb-1">Percentage</span>
+            <Card className="p-4 bg-violet-600/5 border-violet-600/20 flex flex-col items-center group hover:bg-violet-600/10 transition-colors">
+              <span className="text-[9px] text-violet-400 font-black tracking-tighter uppercase mb-1">Total Scan Success</span>
               <div className="flex items-center gap-2">
                 <Activity size={14} className="text-violet-500" />
-                <span className="text-2xl font-bold text-white tracking-tighter">31%</span>
+                <span className="text-2xl font-bold text-white tracking-tighter">94%</span>
               </div>
             </Card>
           </div>
