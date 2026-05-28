@@ -1,4 +1,5 @@
 import time
+import uuid
 from fastapi import Request
 from app.utils.logger import logger
 
@@ -8,6 +9,8 @@ async def log_requests_middleware(request: Request, call_next):
     Format: [METHOD] [PATH] | [STATUS] | [TIME]ms
     """
     start_time = time.time()
+    request_id = str(uuid.uuid4())
+    request.state.request_id = request_id
     
     # Process the request
     response = await call_next(request)
@@ -18,9 +21,9 @@ async def log_requests_middleware(request: Request, call_next):
     
     # Log request details
     logger.info(
-        f"{request.method} {request.url.path} | "
-        f"Status: {response.status_code} | "
-        f"Time: {formatted_process_time}ms"
+        f"event=request_completed request_id={request_id} method={request.method} "
+        f"path={request.url.path} status={response.status_code} duration_ms={formatted_process_time}"
     )
+    response.headers["X-Request-ID"] = request_id
     
     return response

@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from datetime import datetime
+from app.utils.logger import logger
 
 # --- Custom Exception Classes ---
 
@@ -36,6 +37,11 @@ def register_error_handlers(app: FastAPI):
     
     @app.exception_handler(AppException)
     async def app_exception_handler(request: Request, exc: AppException):
+        request_id = getattr(request.state, "request_id", "unknown")
+        logger.warning(
+            f"event=app_exception request_id={request_id} path={request.url.path} "
+            f"status={exc.status_code} error_type={exc.error_type} message={exc.message}"
+        )
         return JSONResponse(
             status_code=exc.status_code,
             content={
@@ -49,6 +55,11 @@ def register_error_handlers(app: FastAPI):
 
     @app.exception_handler(RequestValidationError)
     async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        request_id = getattr(request.state, "request_id", "unknown")
+        logger.warning(
+            f"event=validation_error request_id={request_id} path={request.url.path} "
+            f"status=422 errors={len(exc.errors())}"
+        )
         return JSONResponse(
             status_code=422,
             content={
@@ -63,6 +74,11 @@ def register_error_handlers(app: FastAPI):
 
     @app.exception_handler(StarletteHTTPException)
     async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+        request_id = getattr(request.state, "request_id", "unknown")
+        logger.warning(
+            f"event=http_exception request_id={request_id} path={request.url.path} "
+            f"status={exc.status_code} message={exc.detail}"
+        )
         return JSONResponse(
             status_code=exc.status_code,
             content={
@@ -76,6 +92,11 @@ def register_error_handlers(app: FastAPI):
 
     @app.exception_handler(Exception)
     async def general_exception_handler(request: Request, exc: Exception):
+        request_id = getattr(request.state, "request_id", "unknown")
+        logger.exception(
+            f"event=unhandled_exception request_id={request_id} path={request.url.path} "
+            f"status=500 error_type={type(exc).__name__}"
+        )
         # In production, we don't want to expose internal error details
         return JSONResponse(
             status_code=500,

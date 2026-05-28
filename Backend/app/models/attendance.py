@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, Time, ForeignKey, Index
+from sqlalchemy import Column, Integer, String, Date, Time, ForeignKey, Index, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from app.models.student import Base
@@ -18,7 +18,10 @@ class Attendance(Base):
 
     # Composite index for faster searching by student and date
     __table_args__ = (
-        Index('idx_student_date', 'student_id', 'date'),
+        Index("idx_student_date", "student_id", "date"),
+        Index("idx_attendance_date_status", "date", "status"),
+        # DB-level duplicate prevention safety net (Step 4).
+        UniqueConstraint("student_id", "date", name="uq_attendance_student_date"),
     )
 
     def __repr__(self):
