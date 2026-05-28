@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from app.main import app
 from app.config import settings
-from app.database.connection import test_db_connection
+from app.database.connection import test_db_connection as check_db_connection
 
 client = TestClient(app)
 
@@ -31,7 +31,7 @@ def test_health_endpoint():
 def test_database_connection_utility():
     """Validates the database connection utility (requires MySQL running)."""
     # Note: This depends on the actual DB status in the environment
-    is_connected = test_db_connection()
+    is_connected = check_db_connection()
     # We check if it returns a boolean to avoid failing the suite if DB is not yet set up
     assert isinstance(is_connected, bool)
 

@@ -8,7 +8,12 @@ class Student(Base):
     __tablename__ = "students"
 
     id = Column(Integer, primary_key=True, index=True)
-    full_name = Column(String(100), nullable=False)
+    first_name = Column(String(50), nullable=False)
+    last_name = Column(String(50), nullable=False)
+    # Hybrid property for compatibility
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
     roll_number = Column(String(50), unique=True, index=True, nullable=False)
     email_address = Column(String(100), unique=True, index=True, nullable=False)
     contact_number = Column(String(20), nullable=True)

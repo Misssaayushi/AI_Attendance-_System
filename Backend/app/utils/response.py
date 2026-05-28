@@ -35,3 +35,12 @@ def error_response(
             "timestamp": datetime.now().isoformat()
         }
     )
+
+def success(data: Any, message: str = "OK") -> JSONResponse:
+    """Returns a success response standardizing format to {status, message, data}."""
+    return success_response(data=data, message=message, status_code=200)
+
+def error(detail: str, status_code: int = 400) -> JSONResponse:
+    """Returns an error response standardizing format to {status, detail}."""
+    return error_response(message=detail, status_code=status_code)
+

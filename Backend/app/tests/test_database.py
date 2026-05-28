@@ -8,6 +8,7 @@ from datetime import datetime
 def setup_database():
     """Creates all tables once per test session."""
     from app.models import Base
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
 @pytest.fixture
@@ -27,7 +28,8 @@ def test_student_creation(db_session: Session):
 
     # 2. Create new student
     new_student = Student(
-        full_name="Test Student",
+        first_name="Test",
+        last_name="Student",
         roll_number="TEST101",
         email_address="test@example.com",
         department="Computer Science",
@@ -69,7 +71,8 @@ def test_attendance_relationship(db_session: Session):
 def test_duplicate_roll_number_fails(db_session: Session):
     """Verifies that the unique constraint on roll_number is working."""
     duplicate_student = Student(
-        full_name="Duplicate Student",
+        first_name="Duplicate",
+        last_name="Student",
         roll_number="TEST101", # Already exists from previous test
         email_address="other@example.com",
         department="IT",
