@@ -30,3 +30,18 @@ class DuplicateAttendanceException(BadRequestException):
 class AttendanceVerificationException(BadRequestException):
     def __init__(self, message: str = "Attendance verification failed"):
         super().__init__(message)
+
+
+class ExcelExportException(BadRequestException):
+    def __init__(self, message: str = "Excel export operation failed"):
+        super().__init__(message)
+
+
+class ExcelTemplateValidationException(BadRequestException):
+    def __init__(self, message: str = "Invalid Excel template or parameters"):
+        super().__init__(message)
+
+
+class ExcelWriteException(BadRequestException):
+    def __init__(self, message: str = "Unable to write attendance into workbook"):
+        super().__init__(message)

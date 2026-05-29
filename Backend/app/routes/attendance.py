@@ -9,6 +9,7 @@ from app.database.connection import get_db
 from app.middleware.auth_deps import get_current_admin
 from app.schemas import attendance as attendance_schema
 from app.services import attendance_service
+from app.services import excel_service
 from app.utils.logger import logger
 from app.utils.response import success, success_response
 
@@ -155,6 +156,75 @@ def export_preview(
         student_id=student_id,
     )
     return success(data={"rows": rows, "count": len(rows)}, message="Attendance export preview generated")
+
+
+@router.post("/export/monthly")
+def export_monthly_workbook(
+    year: int = Query(..., ge=2000, le=2100),
+    month: int = Query(..., ge=1, le=12),
+    department: str | None = None,
+    student_id: int | None = Query(default=None, gt=0),
+    db: Session = Depends(get_db),
+):
+    logger.info(
+        "event=attendance_export_monthly_request year=%s month=%s department=%s student_id=%s",
+        year,
+        month,
+        department,
+        student_id,
+    )
+    if department:
+        data = excel_service.generate_department_monthly_report(
+            db,
+            year=year,
+            month=month,
+            department=department,
+        )
+        return success(data=data, message="Department monthly workbook generated")
+
+    if student_id:
+        data = excel_service.generate_student_monthly_report(
+            db,
+            year=year,
+            month=month,
+            student_id=student_id,
+        )
+        return success(data=data, message="Student monthly workbook generated")
+
+    data = excel_service.generate_monthly_workbook_from_db(db, year=year, month=month)
+    return success(data=data, message="Monthly workbook generated")
+
+
+@router.post("/export/template")
+def export_monthly_template(
+    year: int = Query(..., ge=2000, le=2100),
+    month: int = Query(..., ge=1, le=12),
+):
+    logger.info("event=attendance_export_template_request year=%s month=%s", year, month)
+    path = excel_service.generate_monthly_workbook_template(year=year, month=month)
+    return success(data={"file_path": path, "year": year, "month": month}, message="Monthly template generated")
+
+
+@router.post("/export/sync/{attendance_id}")
+def sync_attendance_to_workbook(
+    attendance_id: int,
+    year: int = Query(..., ge=2000, le=2100),
+    month: int = Query(..., ge=1, le=12),
+    db: Session = Depends(get_db),
+):
+    logger.info(
+        "event=attendance_export_sync_request attendance_id=%s year=%s month=%s",
+        attendance_id,
+        year,
+        month,
+    )
+    data = excel_service.sync_attendance_record_to_monthly_workbook(
+        db,
+        attendance_id=attendance_id,
+        year=year,
+        month=month,
+    )
+    return success(data=data, message="Attendance record synced to workbook")
 
 
 @router.get("/{attendance_id}")
