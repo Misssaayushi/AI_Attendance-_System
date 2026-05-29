@@ -9,6 +9,7 @@ from app.database.connection import get_db
 from app.middleware.auth_deps import get_current_admin
 from app.schemas import attendance as attendance_schema
 from app.services import attendance_service
+from app.services import auto_absent_service
 from app.services import excel_service
 from app.utils.logger import logger
 from app.utils.response import success, success_response
@@ -225,6 +226,45 @@ def sync_attendance_to_workbook(
         month=month,
     )
     return success(data=data, message="Attendance record synced to workbook")
+
+
+@router.get("/automation/executions")
+def scheduler_executions(
+    limit: int = Query(30, ge=1, le=200),
+    db: Session = Depends(get_db),
+):
+    logger.info("event=scheduler_executions_list_request limit=%s", limit)
+    rows = auto_absent_service.list_scheduler_executions(db, limit=limit)
+    data = [
+        {
+            "id": row.id,
+            "job_name": row.job_name,
+            "run_date": row.run_date.isoformat(),
+            "status": row.status,
+            "started_at": row.started_at.isoformat() if row.started_at else None,
+            "finished_at": row.finished_at.isoformat() if row.finished_at else None,
+            "total_students": row.total_students,
+            "already_marked": row.already_marked,
+            "auto_absent_marked": row.auto_absent_marked,
+            "duplicate_skipped": row.duplicate_skipped,
+            "excel_synced": row.excel_synced,
+            "attempt_count": row.attempt_count,
+            "duration_ms": row.duration_ms,
+            "error_message": row.error_message,
+        }
+        for row in rows
+    ]
+    return success(data={"items": data, "count": len(data)}, message="Scheduler executions retrieved successfully")
+
+
+@router.get("/automation/summary")
+def scheduler_summary(
+    last_n: int = Query(30, ge=1, le=365),
+    db: Session = Depends(get_db),
+):
+    logger.info("event=scheduler_summary_request last_n=%s", last_n)
+    summary = auto_absent_service.get_scheduler_summary(db, last_n=last_n)
+    return success(data=summary, message="Scheduler summary retrieved successfully")
 
 
 @router.get("/{attendance_id}")

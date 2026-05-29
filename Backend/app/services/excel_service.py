@@ -306,3 +306,63 @@ def generate_student_monthly_report(
         month=month,
         student_id=student_id,
     )
+
+
+def sync_absent_students_for_date(
+    db: Session,
+    *,
+    target_date: date,
+    student_ids: list[int],
+) -> int:
+    """
+    Step 7 prep hook:
+    Syncs absent status for given students on target_date into monthly workbook.
+    Returns count of attempted row updates.
+    """
+    if not student_ids:
+        return 0
+
+    year = target_date.year
+    month = target_date.month
+    _validate_year_month(year, month)
+
+    students = db.query(models.Student).filter(models.Student.id.in_(student_ids)).all()
+    if not students:
+        return 0
+
+    config = ExcelAutomationConfig(export_dir=settings.EXPORT_DIR)
+    try:
+        wb = WorkbookManager.load_or_create_monthly_workbook(year=year, month=month, config=config)
+        sheet = wb[PRIMARY_SHEET_NAME]
+        day_map = DateColumnManager.ensure_day_columns(sheet, year=year, month=month)
+        row_map: dict[str, int] = {}
+
+        for student in students:
+            AttendanceWriter.upsert_attendance_cell(
+                sheet=sheet,
+                year=year,
+                month=month,
+                student={
+                    "student_id": student.id,
+                    "roll_number": student.roll_number,
+                    "student_name": student.full_name,
+                    "department": student.department,
+                    "course": student.course,
+                    "year_batch": student.year_batch,
+                    "semester": student.semester,
+                    "section": student.section,
+                },
+                attendance_date=target_date,
+                status="Absent",
+                row_map=row_map,
+                day_column_map=day_map,
+            )
+        WorkbookManager.save_monthly_workbook(wb, year=year, month=month, config=config)
+        return len(students)
+    except Exception as exc:
+        logger.exception(
+            "event=excel_absent_sync_failed date=%s student_count=%s",
+            target_date.isoformat(),
+            len(student_ids),
+        )
+        raise ExcelWriteException("Failed to sync absent students to workbook") from exc

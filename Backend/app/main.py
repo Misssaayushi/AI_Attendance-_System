@@ -1,40 +1,53 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.config import settings
-from app.routes import api_router
+from app.database.connection import test_db_connection
 from app.middleware.error_handler import register_error_handlers
 from app.middleware.request_logger import log_requests_middleware
-from app.database.connection import test_db_connection
+from app.routes import api_router
+from app.scheduler import initialize_scheduler, shutdown_scheduler, start_scheduler
 from app.utils.logger import logger
 
-from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # --- Startup Logic ---
-    logger.info("🚀 AI Attendance System Backend starting...")
-    
-    # 1. Test database connection
+    # Startup
+    logger.info("AI Attendance System Backend starting")
+
     if test_db_connection():
-        logger.info("✅ Database connection: OK")
-        
-        # 2. Initialize tables
+        logger.info("Database connection: OK")
         from app.database.connection import init_db
+
         try:
             init_db()
-        except Exception as e:
-            logger.error(f"❌ Table initialization FAILED: {str(e)}")
+        except Exception as exc:
+            logger.error("Table initialization failed: %s", str(exc))
     else:
-        logger.error("❌ Database connection: FAILED - Tables not initialized")
-    
-    yield  # --- Server is running ---
-    
-    # --- Shutdown Logic ---
-    logger.info("🛑 Backend shutting down...")
+        logger.error("Database connection failed - tables not initialized")
+
+    # Phase 7 Step 1-2: scheduler lifecycle integration
+    try:
+        initialize_scheduler()
+        start_scheduler()
+    except Exception as exc:
+        # Scheduler failures should not crash API startup.
+        logger.exception("event=scheduler_startup_failed message=%s", str(exc))
+
+    yield
+
+    # Shutdown
+    try:
+        shutdown_scheduler()
+    except Exception as exc:
+        logger.exception("event=scheduler_shutdown_failed message=%s", str(exc))
+    logger.info("Backend shutting down")
+
 
 def create_app() -> FastAPI:
     """FastAPI application factory."""
-    
     app = FastAPI(
         title="AI Attendance System API",
         description="Backend API for AI-Based Smart Attendance Management System",
@@ -42,38 +55,31 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc",
         debug=settings.DEBUG_MODE,
-        lifespan=lifespan
+        lifespan=lifespan,
     )
 
-    # Register middleware
     app.middleware("http")(log_requests_middleware)
-
-    # Configure CORS
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.CORS_ALLOWED_ORIGINS, # Configurable origins
+        allow_origins=settings.CORS_ALLOWED_ORIGINS,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-    # Register modular routers
     app.include_router(api_router, prefix=settings.API_PREFIX)
-
-    # Register global error handlers
     register_error_handlers(app)
 
     @app.get("/")
     async def root():
-        """Root endpoint to verify server status."""
         return {
             "system": "AI Attendance System",
             "status": "running",
             "version": "1.0.0",
-            "docs": "/docs"
+            "docs": "/docs",
         }
 
     return app
 
-# Main app instance
+
 app = create_app()
+

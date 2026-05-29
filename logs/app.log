@@ -106,3 +106,20 @@
 [2026-05-29 01:17:06] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
 [2026-05-29 01:17:06] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
 [2026-05-29 01:17:06] INFO [ai_attendance] - event=request_completed request_id=27a31ea6-6ad1-4780-958a-78a1639e1ca8 method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=7.74
+[2026-05-29 12:41:15] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 12:41:15] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 12:46:58] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 12:46:58] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 12:49:30] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 12:49:30] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 12:53:44] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 12:53:44] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 12:55:42] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 12:55:42] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 12:55:43] INFO [ai_attendance] - 🔑 Login attempt for user: test_scheduler_route_admin
+[2026-05-29 12:55:43] INFO [ai_attendance] - ✅ Login successful for user: test_scheduler_route_admin
+[2026-05-29 12:55:43] INFO [ai_attendance] - event=request_completed request_id=39d9f936-bc90-4a62-8aba-dda05202a941 method=POST path=/api/v1/auth/login status=200 duration_ms=371.07
+[2026-05-29 12:55:43] INFO [ai_attendance] - event=scheduler_executions_list_request limit=10
+[2026-05-29 12:55:43] INFO [ai_attendance] - event=request_completed request_id=e2ea3e14-d7bd-4b69-85f4-e9c2bc6eba09 method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=6.61
+[2026-05-29 12:55:43] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
+[2026-05-29 12:55:43] INFO [ai_attendance] - event=request_completed request_id=1b296cb0-946a-4520-a51a-160fc59fd361 method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=4.41
