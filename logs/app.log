@@ -123,3 +123,75 @@
 [2026-05-29 12:55:43] INFO [ai_attendance] - event=request_completed request_id=e2ea3e14-d7bd-4b69-85f4-e9c2bc6eba09 method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=6.61
 [2026-05-29 12:55:43] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
 [2026-05-29 12:55:43] INFO [ai_attendance] - event=request_completed request_id=1b296cb0-946a-4520-a51a-160fc59fd361 method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=4.41
+[2026-05-29 14:32:01] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 14:32:01] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 14:36:25] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 14:36:26] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 14:36:26] INFO [ai_attendance] - event=request_completed request_id=11942408-3756-4580-9a1a-1306fd47188c method=POST path=/api/v1/auth/login status=200 duration_ms=472.64
+[2026-05-29 14:36:26] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin
+[2026-05-29 14:36:26] INFO [ai_attendance] - event=request_completed request_id=cea8ebf8-dfbc-4e3c-af10-49ace5bb285c method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=7.88
+[2026-05-29 14:36:26] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None
+[2026-05-29 14:36:26] INFO [ai_attendance] - event=request_completed request_id=282e409a-6f44-49ae-a7a9-366dda29d355 method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=7.69
+[2026-05-29 14:36:26] INFO [ai_attendance] - 🔑 Login attempt for user: test_scheduler_route_admin
+[2026-05-29 14:36:27] INFO [ai_attendance] - ✅ Login successful for user: test_scheduler_route_admin
+[2026-05-29 14:36:27] INFO [ai_attendance] - event=request_completed request_id=01251f02-72fb-4257-a97e-e7fed6a69aa3 method=POST path=/api/v1/auth/login status=200 duration_ms=455.81
+[2026-05-29 14:36:27] INFO [ai_attendance] - event=scheduler_executions_list_request limit=10
+[2026-05-29 14:36:27] INFO [ai_attendance] - event=request_completed request_id=d77f9ebf-6392-41cc-a129-50d3d83f2ff9 method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=6.80
+[2026-05-29 14:36:27] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
+[2026-05-29 14:36:27] INFO [ai_attendance] - event=request_completed request_id=21e76e14-5abc-4802-adc6-bac02ab429de method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=7.01
+[2026-05-29 14:41:28] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 14:41:28] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 14:41:28] INFO [ai_attendance] - event=request_completed request_id=21d4d9e4-aac7-466d-852a-3434f455445e method=POST path=/api/v1/auth/login status=200 duration_ms=463.12
+[2026-05-29 14:41:28] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin
+[2026-05-29 14:41:28] INFO [ai_attendance] - event=request_completed request_id=6fece49c-4ce7-486b-b5d0-b351bb773796 method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=7.80
+[2026-05-29 14:41:28] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None
+[2026-05-29 14:41:28] INFO [ai_attendance] - event=request_completed request_id=63a829b7-8d6f-462f-81d9-707a9d77e417 method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=6.92
+[2026-05-29 14:47:36] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 14:47:36] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 14:47:36] INFO [ai_attendance] - event=request_completed request_id=3ed655bf-f674-4c09-8932-4493e59f9a98 method=POST path=/api/v1/auth/login status=200 duration_ms=460.45
+[2026-05-29 14:47:36] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin force_send=False
+[2026-05-29 14:47:36] INFO [ai_attendance] - event=request_completed request_id=b6ef9738-5bf8-4d74-bdf7-ae177f6e6779 method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=9.56
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=email_deliveries_list_request limit=10
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=request_completed request_id=3a6c0789-77e4-42d9-9482-ca736215d601 method=GET path=/api/v1/attendance/reports/email/deliveries status=200 duration_ms=7.66
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=email_delivery_summary_request last_n=30
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=request_completed request_id=3441079d-5852-4b37-9f1a-5f428a28145d method=GET path=/api/v1/attendance/reports/email/summary status=200 duration_ms=6.26
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 14:47:38] INFO [ai_attendance] - 🔑 Login attempt for user: test_scheduler_route_admin
+[2026-05-29 14:47:38] INFO [ai_attendance] - ✅ Login successful for user: test_scheduler_route_admin
+[2026-05-29 14:47:38] INFO [ai_attendance] - event=request_completed request_id=280b468f-e01a-4b40-a4a4-92799a1eaa9c method=POST path=/api/v1/auth/login status=200 duration_ms=438.28
+[2026-05-29 14:47:38] INFO [ai_attendance] - event=scheduler_executions_list_request limit=10
+[2026-05-29 14:47:38] INFO [ai_attendance] - event=request_completed request_id=23b3d2e7-7ca4-432d-9c79-a2c8819e0801 method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=8.11
+[2026-05-29 14:47:38] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
+[2026-05-29 14:47:38] INFO [ai_attendance] - event=request_completed request_id=81d9b83b-0199-4418-9916-2e0f0efeba3c method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=7.69
+[2026-05-29 14:48:10] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 14:48:10] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=request_completed request_id=0af0de82-7e48-49f5-a242-757eee810c89 method=POST path=/api/v1/auth/login status=200 duration_ms=460.47
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin force_send=False
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=request_completed request_id=8d8d3c0c-70f4-4290-9714-88461c360432 method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=9.50
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None force_send=False
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=request_completed request_id=854e7f24-1f30-47cb-ab35-a89bf4cf858b method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=6.51
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=email_deliveries_list_request limit=10
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=request_completed request_id=2b2083b9-fe0a-4f1e-8db8-066f06a51f35 method=GET path=/api/v1/attendance/reports/email/deliveries status=200 duration_ms=6.79
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=email_delivery_summary_request last_n=30
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=request_completed request_id=6e139d49-d6c7-4f08-8948-f986846afdb4 method=GET path=/api/v1/attendance/reports/email/summary status=200 duration_ms=6.74
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 14:48:11] INFO [ai_attendance] - 🔑 Login attempt for user: test_scheduler_route_admin
+[2026-05-29 14:48:11] INFO [ai_attendance] - ✅ Login successful for user: test_scheduler_route_admin
+[2026-05-29 14:48:11] INFO [ai_attendance] - event=request_completed request_id=52f41dfb-b52d-4d92-b932-d24ae67b374c method=POST path=/api/v1/auth/login status=200 duration_ms=459.31
+[2026-05-29 14:48:11] INFO [ai_attendance] - event=scheduler_executions_list_request limit=10
+[2026-05-29 14:48:11] INFO [ai_attendance] - event=request_completed request_id=10b3684b-c8a8-4351-a312-287a32496f6c method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=7.40
+[2026-05-29 14:48:11] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
+[2026-05-29 14:48:11] INFO [ai_attendance] - event=request_completed request_id=0ff0cb5e-8b6a-4693-bdb3-708b9d099db1 method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=6.56
+[2026-05-29 14:50:26] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 14:50:26] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=request_completed request_id=b023bf09-1c17-4b23-86cc-80dce3fbbc52 method=POST path=/api/v1/auth/login status=200 duration_ms=480.05
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin force_send=False
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=request_completed request_id=f14156a7-0f3d-4186-b88f-f1621bd7c30d method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=8.76
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None force_send=False
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=request_completed request_id=3645e94e-1d15-46b7-b781-4da407cc3edf method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=9.40
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=email_deliveries_list_request limit=10
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=request_completed request_id=64aeb23d-3436-4351-93dd-6dbaa11fa6fc method=GET path=/api/v1/attendance/reports/email/deliveries status=200 duration_ms=8.10
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=email_delivery_summary_request last_n=30
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=request_completed request_id=7af3581e-378d-4537-8ba5-23eac538bfde method=GET path=/api/v1/attendance/reports/email/summary status=200 duration_ms=7.09

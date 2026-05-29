@@ -45,3 +45,18 @@ class ExcelTemplateValidationException(BadRequestException):
 class ExcelWriteException(BadRequestException):
     def __init__(self, message: str = "Unable to write attendance into workbook"):
         super().__init__(message)
+
+
+class EmailConfigurationException(BadRequestException):
+    def __init__(self, message: str = "Invalid email configuration"):
+        super().__init__(message)
+
+
+class EmailAttachmentException(BadRequestException):
+    def __init__(self, message: str = "Invalid or missing email attachment"):
+        super().__init__(message)
+
+
+class EmailDeliveryException(BadRequestException):
+    def __init__(self, message: str = "Email delivery failed"):
+        super().__init__(message)

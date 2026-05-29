@@ -10,6 +10,7 @@ from app.middleware.auth_deps import get_current_admin
 from app.schemas import attendance as attendance_schema
 from app.services import attendance_service
 from app.services import auto_absent_service
+from app.services import email_service
 from app.services import excel_service
 from app.utils.logger import logger
 from app.utils.response import success, success_response
@@ -265,6 +266,97 @@ def scheduler_summary(
     logger.info("event=scheduler_summary_request last_n=%s", last_n)
     summary = auto_absent_service.get_scheduler_summary(db, last_n=last_n)
     return success(data=summary, message="Scheduler summary retrieved successfully")
+
+
+@router.post("/reports/email/monthly")
+def send_monthly_report_email(
+    year: int = Query(..., ge=2000, le=2100),
+    month: int = Query(..., ge=1, le=12),
+    recipient_group: str = Query("admin"),
+    department: str | None = None,
+    student_id: int | None = Query(default=None, gt=0),
+    force_send: bool = Query(False),
+    db: Session = Depends(get_db),
+):
+    logger.info(
+        "event=report_email_monthly_request year=%s month=%s recipient_group=%s department=%s student_id=%s force_send=%s",
+        year,
+        month,
+        recipient_group,
+        department,
+        student_id,
+        force_send,
+    )
+    data = email_service.send_monthly_report_email(
+        db,
+        year=year,
+        month=month,
+        recipient_group=recipient_group,
+        department=department,
+        student_id=student_id,
+        force_send=force_send,
+    )
+    return success(data=data, message="Monthly report email sent successfully")
+
+
+@router.post("/reports/email/daily")
+def send_daily_report_email(
+    target_date: date = Query(...),
+    recipient_group: str = Query("admin"),
+    force_send: bool = Query(False),
+    db: Session = Depends(get_db),
+):
+    logger.info(
+        "event=report_email_daily_request date=%s recipient_group=%s force_send=%s",
+        target_date,
+        recipient_group,
+        force_send,
+    )
+    data = email_service.send_daily_report_email(
+        db,
+        target_date=target_date,
+        recipient_group=recipient_group,
+        force_send=force_send,
+    )
+    return success(data=data, message="Daily report email sent successfully")
+
+
+@router.get("/reports/email/deliveries")
+def list_email_deliveries(
+    limit: int = Query(50, ge=1, le=200),
+    db: Session = Depends(get_db),
+):
+    logger.info("event=email_deliveries_list_request limit=%s", limit)
+    rows = email_service.list_email_deliveries(db, limit=limit)
+    data = [
+        {
+            "id": row.id,
+            "report_type": row.report_type,
+            "report_date": row.report_date.isoformat(),
+            "recipient_group": row.recipient_group,
+            "report_label": row.report_label,
+            "status": row.status,
+            "attempts": row.attempts,
+            "recipients_count": row.recipients_count,
+            "attachment_name": row.attachment_name,
+            "duration_ms": row.duration_ms,
+            "error_message": row.error_message,
+            "started_at": row.started_at.isoformat() if row.started_at else None,
+            "finished_at": row.finished_at.isoformat() if row.finished_at else None,
+        }
+        for row in rows
+    ]
+    return success(data={"items": data, "count": len(data)}, message="Email delivery history retrieved successfully")
+
+
+@router.get("/reports/email/summary")
+def email_delivery_summary(
+    last_n: int = Query(50, ge=1, le=365),
+    db: Session = Depends(get_db),
+):
+    logger.info("event=email_delivery_summary_request last_n=%s", last_n)
+    summary = email_service.get_email_delivery_summary(db, last_n=last_n)
+    return success(data=summary, message="Email delivery summary retrieved successfully")
 
 
 @router.get("/{attendance_id}")
