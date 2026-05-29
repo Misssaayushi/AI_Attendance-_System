@@ -13,6 +13,7 @@ from app.services import auto_absent_service
 from app.services import email_service
 from app.services import excel_service
 from app.utils.logger import logger
+from app.utils.request_validation import normalize_page_size, normalize_search
 from app.utils.response import success, success_response
 
 router = APIRouter(dependencies=[Depends(get_current_admin)])
@@ -71,6 +72,8 @@ def list_attendance(
     to_date: date | None = None,
     db: Session = Depends(get_db),
 ):
+    page_size = normalize_page_size(page_size)
+    search = normalize_search(search)
     logger.info(
         "event=attendance_list_request page=%s page_size=%s student_id=%s department=%s status=%s from_date=%s to_date=%s search=%s",
         page,
@@ -117,6 +120,7 @@ def get_student_attendance(
     to_date: date | None = None,
     db: Session = Depends(get_db),
 ):
+    page_size = normalize_page_size(page_size)
     logger.info(
         "event=student_attendance_request student_id=%s page=%s page_size=%s from_date=%s to_date=%s",
         student_id,

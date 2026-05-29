@@ -6,7 +6,8 @@ from app.database.connection import get_db
 from app.schemas import student as student_schema
 from app.services import student_service
 from app.middleware.auth_deps import get_current_admin
-from app.utils.response import success
+from app.utils.request_validation import normalize_page_size, normalize_search
+from app.utils.response import success, success_response
 
 # Protect all student routes with admin authentication
 router = APIRouter(dependencies=[Depends(get_current_admin)])
@@ -23,6 +24,8 @@ def list_students(
     year: int | None = None,
     db: Session = Depends(get_db),
 ):
+    page_size = normalize_page_size(page_size)
+    search = normalize_search(search)
     students, total = student_service.list_students(
         db, page=page, page_size=page_size, search=search, department=department, year=year
     )
@@ -54,7 +57,11 @@ def get_student(student_id: int, db: Session = Depends(get_db)):
 def create_student(payload: student_schema.StudentCreate, db: Session = Depends(get_db)):
     student = student_service.create_student(db, payload)
     student_serialized = student_schema.StudentResponse.from_orm(student).dict()
-    return success(data=student_serialized, message="Student created successfully")
+    return success_response(
+        data=student_serialized,
+        message="Student created successfully",
+        status_code=status.HTTP_201_CREATED,
+    )
 
 # ---------------------------------------------------------------------
 # Update an existing student
@@ -76,4 +83,3 @@ def update_student(
 def delete_student(student_id: int, db: Session = Depends(get_db)):
     student_service.delete_student(db, student_id)
     return success(data=None, message="Student deleted successfully")
-

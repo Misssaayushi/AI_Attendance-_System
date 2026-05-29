@@ -1,4 +1,4 @@
-from app.middleware.error_handler import NotFoundException, BadRequestException
+from app.middleware.error_handler import BadRequestException, DatabaseException, NotFoundException
 
 class StudentNotFoundException(NotFoundException):
     def __init__(self, message: str = "Student not found"):
@@ -59,4 +59,19 @@ class EmailAttachmentException(BadRequestException):
 
 class EmailDeliveryException(BadRequestException):
     def __init__(self, message: str = "Email delivery failed"):
+        super().__init__(message)
+
+
+class AnalyticsValidationException(BadRequestException):
+    def __init__(self, message: str = "Invalid analytics request"):
+        super().__init__(message)
+
+
+class AnalyticsQueryException(DatabaseException):
+    def __init__(self, message: str = "Analytics query execution failed"):
+        super().__init__(message)
+
+
+class AnalyticsDataException(NotFoundException):
+    def __init__(self, message: str = "No analytics data found"):
         super().__init__(message)

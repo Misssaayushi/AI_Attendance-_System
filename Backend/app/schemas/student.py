@@ -56,7 +56,7 @@ class StudentBase(BaseModel):
     def validate_roll_number(cls, v):
         import re
 
-        pattern = r"^[A-Za-z0-9/-]{3,30}$"
+        pattern = r"^[A-Za-z0-9_/-]{3,30}$"
         if not re.match(pattern, v):
             raise ValueError(
                 "roll_number must be alphanumeric and between 3 to 30 characters (can contain dashes or slashes)"
@@ -137,7 +137,7 @@ class StudentUpdate(BaseModel):
             return v
         import re
 
-        pattern = r"^[A-Za-z0-9/-]{3,30}$"
+        pattern = r"^[A-Za-z0-9_/-]{3,30}$"
         if not re.match(pattern, v):
             raise ValueError(
                 "roll_number must be alphanumeric and between 3 to 30 characters (can contain dashes or slashes)"

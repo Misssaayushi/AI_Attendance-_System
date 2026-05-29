@@ -53,9 +53,40 @@ def test_404_json_handling():
     data = response.json()
     assert data["success"] is False
     assert data["error_type"] == "HTTPException"
+    assert "request_id" in data
     # Note: If we wanted specific 404 handling, we'd add a specific handler for 404 status codes.
 
 def test_docs_accessible():
     """Validates that the Swagger documentation is accessible."""
     response = client.get("/docs")
     assert response.status_code == 200
+
+
+def test_request_timing_headers_present():
+    response = client.get("/")
+    assert "X-Request-ID" in response.headers
+    assert "X-Response-Time-ms" in response.headers
+    assert response.headers.get("X-Content-Type-Options") == "nosniff"
+    assert response.headers.get("X-Frame-Options") == "DENY"
+
+
+def test_validation_error_payload_format():
+    response = client.post(f"{settings.API_PREFIX}/auth/login", json={"username": "only_username"})
+    assert response.status_code == 422
+    payload = response.json()
+    assert payload["error_type"] == "ValidationError"
+    assert "request_id" in payload
+    assert "details" in payload
+    assert "errors" in payload["details"]
+
+
+def test_payload_too_large_rejected():
+    huge = "x" * (settings.REQUEST_MAX_BODY_BYTES + 1)
+    response = client.post(
+        f"{settings.API_PREFIX}/auth/login",
+        data=huge,
+        headers={"Content-Type": "text/plain", "Content-Length": str(len(huge))},
+    )
+    assert response.status_code == 413
+    payload = response.json()
+    assert payload["error_type"] == "PayloadTooLarge"

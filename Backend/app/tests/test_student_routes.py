@@ -171,3 +171,14 @@ def test_delete_student_route(auth_header):
         headers=auth_header
     )
     assert response.status_code == 404
+
+
+def test_list_students_search_too_long(auth_header):
+    long_search = "x" * (settings.API_MAX_SEARCH_LENGTH + 1)
+    response = client.get(
+        f"{settings.API_PREFIX}/students/",
+        params={"search": long_search},
+        headers=auth_header,
+    )
+    assert response.status_code == 400
+    assert response.json()["success"] is False

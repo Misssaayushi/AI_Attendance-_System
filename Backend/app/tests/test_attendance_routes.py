@@ -118,3 +118,14 @@ def test_export_preview_route(auth_header):
     assert response.status_code == 200
     assert "rows" in response.json()["data"]
 
+
+def test_list_attendance_search_too_long(auth_header):
+    long_search = "x" * (settings.API_MAX_SEARCH_LENGTH + 1)
+    response = client.get(
+        f"{settings.API_PREFIX}/attendance/",
+        params={"search": long_search},
+        headers=auth_header,
+    )
+    assert response.status_code == 400
+    payload = response.json()
+    assert payload["success"] is False

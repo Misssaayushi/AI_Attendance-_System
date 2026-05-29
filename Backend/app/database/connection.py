@@ -8,9 +8,11 @@ logger = logging.getLogger("ai_attendance")
 # Create SQLAlchemy engine
 engine = create_engine(
     settings.DATABASE_URL,
-    pool_size=10,
-    max_overflow=20,
-    pool_recycle=3600,
+    pool_size=settings.DB_POOL_SIZE,
+    max_overflow=settings.DB_MAX_OVERFLOW,
+    pool_recycle=settings.DB_POOL_RECYCLE_SECONDS,
+    pool_timeout=settings.DB_POOL_TIMEOUT_SECONDS,
+    pool_pre_ping=settings.DB_POOL_PRE_PING,
     echo=settings.DEBUG_MODE
 )
 

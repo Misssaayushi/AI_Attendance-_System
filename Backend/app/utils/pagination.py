@@ -53,18 +53,17 @@ def apply_student_filters(
     last_name or roll_number.
     ``department`` and ``year`` are exact matches.
     """
-    if search:
+    model = query.column_descriptions[0].get("entity")
+
+    if search and model is not None:
         pattern = f"%{search.lower()}%"
-        model = query._entity_zero().entity_zero.class_
         query = query.filter(
             model.first_name.ilike(pattern)
             | model.last_name.ilike(pattern)
             | model.roll_number.ilike(pattern)
         )
-    if department:
-        model = query._entity_zero().entity_zero.class_
+    if department and model is not None:
         query = query.filter(model.department == department)
-    if year:
-        model = query._entity_zero().entity_zero.class_
+    if year and model is not None:
         query = query.filter(model.year_batch == str(year))
     return query

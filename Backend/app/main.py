@@ -7,6 +7,7 @@ from app.config import settings
 from app.database.connection import test_db_connection
 from app.middleware.error_handler import register_error_handlers
 from app.middleware.request_logger import log_requests_middleware
+from app.middleware.security_hardening import security_hardening_middleware
 from app.routes import api_router
 from app.scheduler import initialize_scheduler, shutdown_scheduler, start_scheduler
 from app.utils.logger import logger
@@ -58,6 +59,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    app.middleware("http")(security_hardening_middleware)
     app.middleware("http")(log_requests_middleware)
     app.add_middleware(
         CORSMiddleware,
@@ -82,4 +84,3 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
-

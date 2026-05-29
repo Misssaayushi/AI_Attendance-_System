@@ -11,6 +11,8 @@ def setup_logger():
     """Configures a logger that outputs to both console and a rotating file."""
     
     logger = logging.getLogger("ai_attendance")
+    if logger.handlers:
+        return logger
     logger.setLevel(settings.LOG_LEVEL)
 
     # Formatter for log messages

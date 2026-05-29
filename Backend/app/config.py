@@ -22,6 +22,8 @@ class Settings:
     SERVER_HOST = os.getenv("SERVER_HOST", "0.0.0.0")
     SERVER_PORT = int(os.getenv("SERVER_PORT", 8000))
     DEBUG_MODE = os.getenv("DEBUG_MODE", "True").lower() == "true"
+    REQUEST_MAX_BODY_BYTES = int(os.getenv("REQUEST_MAX_BODY_BYTES", 1048576))  # 1MB default
+    SECURITY_HEADERS_ENABLED = os.getenv("SECURITY_HEADERS_ENABLED", "True").lower() == "true"
 
     # Security
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
@@ -48,6 +50,13 @@ class Settings:
     SCHEDULER_COALESCE = os.getenv("SCHEDULER_COALESCE", "True").lower() == "true"
     SCHEDULER_MAX_INSTANCES = int(os.getenv("SCHEDULER_MAX_INSTANCES", 1))
 
+    # Database optimization (Phase 10 Step 7)
+    DB_POOL_SIZE = int(os.getenv("DB_POOL_SIZE", 10))
+    DB_MAX_OVERFLOW = int(os.getenv("DB_MAX_OVERFLOW", 20))
+    DB_POOL_RECYCLE_SECONDS = int(os.getenv("DB_POOL_RECYCLE_SECONDS", 3600))
+    DB_POOL_TIMEOUT_SECONDS = int(os.getenv("DB_POOL_TIMEOUT_SECONDS", 30))
+    DB_POOL_PRE_PING = os.getenv("DB_POOL_PRE_PING", "True").lower() == "true"
+
     # Email reporting (Phase 8 Step 1-2)
     EMAIL_ENABLED = os.getenv("EMAIL_ENABLED", "False").lower() == "true"
     SMTP_HOST = os.getenv("SMTP_HOST", "")
@@ -69,6 +78,15 @@ class Settings:
     EMAIL_MONTHLY_MINUTE = int(os.getenv("EMAIL_MONTHLY_MINUTE", 0))
     EMAIL_MONTHLY_RECIPIENT_GROUP = os.getenv("EMAIL_MONTHLY_RECIPIENT_GROUP", "admin")
 
+    # Dashboard analytics (Phase 9 Step 7-9)
+    ANALYTICS_DEFAULT_TREND_DAYS = int(os.getenv("ANALYTICS_DEFAULT_TREND_DAYS", 7))
+    ANALYTICS_MAX_TREND_DAYS = int(os.getenv("ANALYTICS_MAX_TREND_DAYS", 31))
+    ANALYTICS_ENABLE_PERF_METRICS = os.getenv("ANALYTICS_ENABLE_PERF_METRICS", "True").lower() == "true"
+
+    # API scalability guards (Phase 10 Step 9)
+    API_MAX_PAGE_SIZE = int(os.getenv("API_MAX_PAGE_SIZE", 100))
+    API_MAX_SEARCH_LENGTH = int(os.getenv("API_MAX_SEARCH_LENGTH", 100))
+
     @property
     def DATABASE_URL(self) -> str:
         """Computes the SQLAlchemy Database URL."""
@@ -85,6 +103,20 @@ class Settings:
             raise ValueError("AUTO_ABSENT_BATCH_SIZE must be > 0")
         if self.SCHEDULER_MAX_INSTANCES <= 0:
             raise ValueError("SCHEDULER_MAX_INSTANCES must be > 0")
+        if self.REQUEST_MAX_BODY_BYTES <= 0:
+            raise ValueError("REQUEST_MAX_BODY_BYTES must be > 0")
+        if self.DB_POOL_SIZE <= 0:
+            raise ValueError("DB_POOL_SIZE must be > 0")
+        if self.DB_MAX_OVERFLOW < 0:
+            raise ValueError("DB_MAX_OVERFLOW must be >= 0")
+        if self.DB_POOL_RECYCLE_SECONDS <= 0:
+            raise ValueError("DB_POOL_RECYCLE_SECONDS must be > 0")
+        if self.DB_POOL_TIMEOUT_SECONDS <= 0:
+            raise ValueError("DB_POOL_TIMEOUT_SECONDS must be > 0")
+        if self.API_MAX_PAGE_SIZE <= 0:
+            raise ValueError("API_MAX_PAGE_SIZE must be > 0")
+        if self.API_MAX_SEARCH_LENGTH <= 0:
+            raise ValueError("API_MAX_SEARCH_LENGTH must be > 0")
 
     @staticmethod
     def _is_valid_email(value: str) -> bool:
@@ -126,6 +158,10 @@ class Settings:
             raise ValueError("EMAIL_MONTHLY_HOUR must be between 0 and 23")
         if not (0 <= self.EMAIL_MONTHLY_MINUTE <= 59):
             raise ValueError("EMAIL_MONTHLY_MINUTE must be between 0 and 59")
+        if self.ANALYTICS_DEFAULT_TREND_DAYS < 2:
+            raise ValueError("ANALYTICS_DEFAULT_TREND_DAYS must be >= 2")
+        if self.ANALYTICS_MAX_TREND_DAYS < self.ANALYTICS_DEFAULT_TREND_DAYS:
+            raise ValueError("ANALYTICS_MAX_TREND_DAYS must be >= ANALYTICS_DEFAULT_TREND_DAYS")
 
 # Singleton instance
 settings = Settings()
