@@ -82,3 +82,32 @@ API_DISPATCH_ASYNC = True             # Toggle non-blocking API calls
 ENABLE_FPS_OVERLAY = True             # Show FPS on video feed in debug mode
 PERF_TRACKER_WINDOW = 30              # Rolling average window (frames)
 API_FEEDBACK_CLEANUP_INTERVAL = 100   # Frames between memory cleanup
+
+# Phase 8: Error Handling, Recovery, & Testing Settings
+# 1. Webcam recovery settings
+WEBCAM_MAX_RECONNECT_ATTEMPTS = 5      # max reconnection tries before giving up
+WEBCAM_RECONNECT_BASE_DELAY = 1.0      # initial delay in seconds, doubles each attempt
+WEBCAM_RECONNECT_MAX_DELAY = 16.0      # cap on exponential backoff delay
+WEBCAM_FRAME_RETRY_LIMIT = 10          # consecutive frame-read failures before triggering reconnect
+
+# 2. Frame quality gating settings
+ENABLE_FRAME_QUALITY_GATE = True       # toggle pre-recognition quality check
+QUALITY_GATE_BLUR_THRESHOLD = 50.0     # Laplacian variance below this = too blurry
+QUALITY_GATE_BRIGHTNESS_MIN = 30       # average pixel intensity below this = too dark
+QUALITY_GATE_BRIGHTNESS_MAX = 245      # average pixel intensity above this = overexposed
+
+# 3. Error monitoring settings
+ERROR_RATE_WINDOW_SECONDS = 60         # sliding window for error rate calculation
+ERROR_RATE_THRESHOLD = 10              # errors per window that triggers a health warning
+HEALTH_CHECK_INTERVAL_FRAMES = 100     # frames between system health evaluations
+
+# 4. Logging settings
+LOG_ROTATION_MAX_BYTES = 5 * 1024 * 1024  # 5 MB max per log file
+LOG_ROTATION_BACKUP_COUNT = 3             # keep 3 rotated backup files
+ENABLE_STRUCTURED_LOGGING = True          # use structured log format with event type prefixes
+
+# 5. Debug overlay settings
+ENABLE_DEBUG_OVERLAY = True            # show health panel on video feed when DEBUG_MODE is active
+
+# 6. Memory monitoring settings
+MEMORY_WARNING_THRESHOLD_MB = 500      # warn if Python heap exceeds this value

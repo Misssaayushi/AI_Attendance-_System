@@ -3,6 +3,7 @@ import face_recognition
 from pathlib import Path
 import numpy as np
 import logging
+from logging.handlers import RotatingFileHandler
 import sys
 import base64
 import pickle
@@ -10,12 +11,14 @@ from datetime import datetime
 try:
     from ai_module.config import (
         LOG_FILE, DEBUG_MODE, RECOGNITION_TOLERANCE, UNKNOWN_LABEL,
-        ATTENDANCE_COOLDOWN_MINUTES, MIN_CONFIDENCE_THRESHOLD, STABILITY_FRAMES
+        ATTENDANCE_COOLDOWN_MINUTES, MIN_CONFIDENCE_THRESHOLD, STABILITY_FRAMES,
+        LOG_ROTATION_MAX_BYTES, LOG_ROTATION_BACKUP_COUNT, WEBCAM_FRAME_RETRY_LIMIT
     )
 except ImportError:
     from config import (
         LOG_FILE, DEBUG_MODE, RECOGNITION_TOLERANCE, UNKNOWN_LABEL,
-        ATTENDANCE_COOLDOWN_MINUTES, MIN_CONFIDENCE_THRESHOLD, STABILITY_FRAMES
+        ATTENDANCE_COOLDOWN_MINUTES, MIN_CONFIDENCE_THRESHOLD, STABILITY_FRAMES,
+        LOG_ROTATION_MAX_BYTES, LOG_ROTATION_BACKUP_COUNT, WEBCAM_FRAME_RETRY_LIMIT
     )
 
 def get_logger(name="AI_System"):
@@ -28,12 +31,16 @@ def get_logger(name="AI_System"):
     # Prevent duplicate handlers if logger is called multiple times
     if not logger.handlers:
         formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            '%(asctime)s | %(name)s | %(levelname)s | %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S'
         )
 
-        # File Handler
-        file_handler = logging.FileHandler(LOG_FILE)
+        # File Handler (with rotation)
+        file_handler = RotatingFileHandler(
+            LOG_FILE,
+            maxBytes=LOG_ROTATION_MAX_BYTES,
+            backupCount=LOG_ROTATION_BACKUP_COUNT
+        )
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
@@ -416,21 +423,48 @@ class CameraHandler:
         self.camera_id = camera_id
         self.cap = cv2.VideoCapture(self.camera_id)
         self.logger = get_logger("CameraHandler")
+        self._consecutive_failures = 0
 
         if not self.cap.isOpened():
             self.logger.error(f"Could not open webcam with ID: {self.camera_id}")
-            raise Exception(f"Webcam ID {self.camera_id} not available.")
-        
-        self.logger.info(f"Webcam {self.camera_id} initialized successfully.")
+            self.cap = None
+        else:
+            self.logger.info(f"Webcam {self.camera_id} initialized successfully.")
+
+    @property
+    def is_connected(self):
+        return self.cap is not None and self.cap.isOpened()
+
+    def reconnect(self):
+        if self.cap is not None:
+            self.cap.release()
+        self.cap = cv2.VideoCapture(self.camera_id)
+        success = self.is_connected
+        if success:
+            self.logger.info(f"Webcam {self.camera_id} reconnected successfully.")
+        else:
+            self.logger.error(f"Failed to reconnect webcam {self.camera_id}.")
+        return success
 
     def get_frame(self):
         """
         Reads a frame from the webcam.
         Returns: ret (bool), frame (numpy.ndarray)
         """
+        if not self.is_connected:
+            return False, None
+
         ret, frame = self.cap.read()
         if not ret:
-            self.logger.warning("Failed to read frame from webcam.")
+            self._consecutive_failures += 1
+            self.logger.warning(f"Failed to read frame from webcam. Consecutive failures: {self._consecutive_failures}")
+            if self._consecutive_failures >= WEBCAM_FRAME_RETRY_LIMIT:
+                self.logger.warning(f"Frame retry limit ({WEBCAM_FRAME_RETRY_LIMIT}) reached. Triggering internal reconnect...")
+                self.reconnect()
+                self._consecutive_failures = 0
+        else:
+            self._consecutive_failures = 0
+
         return ret, frame
 
     def show_frame(self, window_name, frame):
@@ -443,7 +477,8 @@ class CameraHandler:
         """
         Releases the webcam and closes windows.
         """
-        self.cap.release()
+        if self.cap is not None:
+            self.cap.release()
         cv2.destroyAllWindows()
         self.logger.info("Webcam resources released.")
 
