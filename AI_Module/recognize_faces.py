@@ -1,12 +1,35 @@
 import cv2
 import time
-from ai_module.api_service import AttendanceAPIService
-from ai_module.utils import CameraHandler, FaceDetector, EncodingManager, FaceRecognizer, AttendanceManager, FrameUtils, get_logger
-from ai_module.config import (
-    CAMERA_ID, FACE_DETECTION_MODEL, FRAME_RESIZE_SCALE,
-    ENCODING_FILE, RECOGNITION_TOLERANCE, RECOGNITION_PROCESS_INTERVAL,
-    UNKNOWN_LABEL, API_FEEDBACK_DISPLAY_SECONDS
-)
+import sys
+from pathlib import Path
+
+try:
+    from ai_module.api_service import AttendanceAPIService
+    from ai_module.utils import CameraHandler, FaceDetector, EncodingManager, FaceRecognizer, AttendanceManager, FrameUtils, get_logger
+    from ai_module.config import (
+        CAMERA_ID, FACE_DETECTION_MODEL, FRAME_RESIZE_SCALE,
+        ENCODING_FILE, RECOGNITION_TOLERANCE, RECOGNITION_PROCESS_INTERVAL,
+        UNKNOWN_LABEL, API_FEEDBACK_DISPLAY_SECONDS, ENABLE_FPS_OVERLAY,
+        DEBUG_MODE, API_FEEDBACK_CLEANUP_INTERVAL, FACE_CROP_PADDING
+    )
+except ImportError:
+    from api_service import AttendanceAPIService
+    from utils import CameraHandler, FaceDetector, EncodingManager, FaceRecognizer, AttendanceManager, FrameUtils, get_logger
+    from config import (
+        CAMERA_ID, FACE_DETECTION_MODEL, FRAME_RESIZE_SCALE,
+        ENCODING_FILE, RECOGNITION_TOLERANCE, RECOGNITION_PROCESS_INTERVAL,
+        UNKNOWN_LABEL, API_FEEDBACK_DISPLAY_SECONDS, ENABLE_FPS_OVERLAY,
+        DEBUG_MODE, API_FEEDBACK_CLEANUP_INTERVAL, FACE_CROP_PADDING
+    )
+
+try:
+    from ai_module.optimization import EncodingCache, PerformanceTracker, FrameOptimizer, APIDispatcher
+except ImportError:
+    try:
+        from optimization import EncodingCache, PerformanceTracker, FrameOptimizer, APIDispatcher
+    except ImportError:
+        sys.path.append(str(Path(__file__).resolve().parent))
+        from optimization import EncodingCache, PerformanceTracker, FrameOptimizer, APIDispatcher
 
 
 def _resolve_api_feedback(api_response):
@@ -85,21 +108,30 @@ def _draw_status_legend(frame):
 
 def start_recognition():
     logger = get_logger("RealTimeRecognition")
-    logger.info("Initializing Face Recognition System...")
+    logger.info("Initializing Optimized Face Recognition System (Phase 7)...")
 
     try:
         # 1. Initialize Components
         cam = CameraHandler(camera_id=CAMERA_ID)
         detector = FaceDetector(model=FACE_DETECTION_MODEL, scale=FRAME_RESIZE_SCALE)
         
-        # Load encodings and managers
+        # Load optimized EncodingCache singleton eager load
+        cache = EncodingCache.get_instance()
+        cache.load(ENCODING_FILE)
+        
+        # Retain backward compatibility manager, which queries the cache dynamically
         manager = EncodingManager(encoding_file=ENCODING_FILE)
         recognizer = FaceRecognizer(encoding_manager=manager, tolerance=RECOGNITION_TOLERANCE)
+        
+        frame_optimizer = FrameOptimizer()
+        perf_tracker = PerformanceTracker()
+        api_dispatcher = APIDispatcher()
+        
         attendance_manager = AttendanceManager()
         api_service = AttendanceAPIService()
 
-        process_this_frame = True
         frame_count = 0
+        retry_count = 0
         recent_api_feedback = {}
         
         # Recognition results storage
@@ -111,76 +143,127 @@ def start_recognition():
         logger.info("Recognition system active. Press 'ESC' to exit.")
 
         while True:
+            perf_tracker.tick()
+            
             ret, frame = cam.get_frame()
             if not ret:
-                break
+                retry_count += 1
+                if retry_count >= 3:
+                    logger.error("Webcam failed after 3 retries. Exiting.")
+                    break
+                time.sleep(0.05)
+                continue
+            retry_count = 0
 
-            # 2. Process every Nth frame for performance
-            if frame_count % RECOGNITION_PROCESS_INTERVAL == 0:
-                # Detect Faces
-                new_face_locations = detector.detect_faces(frame)
+            # 2. Get current adaptive processing interval recommendations
+            interval = perf_tracker.get_recommended_interval()
+            
+            if frame_count % interval == 0:
+                # Prepare/reuse RGB frame and get locations
+                rgb_frame = frame_optimizer.prepare_frame(frame)
                 
-                # If a face leaves the frame, reset its stability (optional but professional)
-                # For simplicity, we refresh the results every interval
+                # Step 6.2: We call detect_faces and fetch scaled face locations
+                face_locations = detector.detect_faces(frame)
                 
-                face_locations = new_face_locations
                 face_names = []
                 face_confidences = []
                 face_statuses = []
 
+                # Record time spend on active AI processing
+                ai_start_time = time.perf_counter()
+
                 for face_loc in face_locations:
-                    # Stage 1: Identify Face
-                    name, confidence = recognizer.identify(frame, face_loc)
+                    # Stage 1: Optimized identify using pre-cropped face encoding
+                    # Reduce compute from ~307K pixels to ~36K pixels
+                    encoding, success = frame_optimizer.generate_encoding(rgb_frame, face_loc)
+                    
+                    if encoding is not None:
+                        name, confidence = recognizer.identify_optimized(encoding)
+                    else:
+                        name, confidence = UNKNOWN_LABEL, 0.0
+                        
                     face_names.append(name)
                     face_confidences.append(confidence)
 
                     # Stage 2: Verify Attendance (Cooldown, Stability, Thresholds)
-                    # We extract the ID from the name (e.g., "1_Aayushi" -> "1")
                     student_id = name.split("_")[0] if "_" in name else name
                     
                     verified, verification_status = attendance_manager.verify_attendance(student_id, name, confidence)
                     verification_color = _resolve_verification_color(name, verified)
+                    
+                    # API Status resolution
                     api_status = "NotSent"
                     api_color = (160, 160, 160)
 
-                    now = time.time()
-                    cached_feedback = recent_api_feedback.get(student_id)
-                    if cached_feedback and cached_feedback["expires_at"] > now:
-                        api_status = cached_feedback["message"]
-                        api_color = cached_feedback["color"]
-
+                    # Non-blocking async API dispatch
                     if verified and name != UNKNOWN_LABEL:
-                        api_response = api_service.send_verified_attendance(
-                            student_id=student_id,
-                            name=name,
-                            confidence=confidence,
-                        )
-                        api_status, api_color = _resolve_api_feedback(api_response)
-                        recent_api_feedback[student_id] = {
-                            "message": api_status,
-                            "color": api_color,
-                            "expires_at": now + API_FEEDBACK_DISPLAY_SECONDS,
-                        }
+                        api_dispatcher.dispatch(api_service, student_id, name, confidence)
+
+                    # Check for completed async dispatcher results or pending states
+                    if api_dispatcher.is_pending(student_id):
+                        api_status = "Pending..."
+                        api_color = (0, 255, 255) # Yellow
+                    else:
+                        # Check if completed result exists
+                        completed, api_response = api_dispatcher.get_result(student_id)
+                        if completed:
+                            api_status, api_color = _resolve_api_feedback(api_response)
+                            # Cache in local feedback dictionary for display duration tracking
+                            recent_api_feedback[student_id] = {
+                                "message": api_status,
+                                "color": api_color,
+                                "expires_at": time.time() + API_FEEDBACK_DISPLAY_SECONDS,
+                            }
+                        else:
+                            # Fallback check on previously cached local feedback
+                            now = time.time()
+                            cached_feedback = recent_api_feedback.get(student_id)
+                            if cached_feedback and cached_feedback["expires_at"] > now:
+                                api_status = cached_feedback["message"]
+                                api_color = cached_feedback["color"]
 
                     final_color = api_color if api_status != "NotSent" else verification_color
                     face_statuses.append((verification_status, api_status, final_color))
 
-            frame_count += 1
+                # Track AI duration
+                ai_duration_ms = (time.perf_counter() - ai_start_time) * 1000.0
+                perf_tracker.record_processing_time(ai_duration_ms)
 
-            # 3. Visualization
+            # 3. Visualization and Overlay Draw
             for (top, right, bottom, left), name, conf, (verification_status, api_status, color) in zip(face_locations, face_names, face_confidences, face_statuses):
                 verification_badge = _short_verification_status(verification_status)
                 api_badge = _short_api_status(api_status) if api_status != "NotSent" else "Skip"
                 label = f"{name} | V:{verification_badge} | API:{api_badge}"
                 FrameUtils.draw_face_box(frame, top, right, bottom, left, label=label, color=color)
 
-            # UI Overlays
-            FrameUtils.add_text_overlay(frame, "System: ATTENDANCE VERIFICATION", position=(10, 30))
+            # Dynamic performance tracking info overlay
+            if ENABLE_FPS_OVERLAY and DEBUG_MODE:
+                FrameUtils.add_text_overlay(frame, f"System: {perf_tracker.get_status_string()}", position=(10, 30))
+            else:
+                FrameUtils.add_text_overlay(frame, "System: ATTENDANCE VERIFICATION", position=(10, 30))
+                
             FrameUtils.add_text_overlay(frame, f"Faces in View: {len(face_locations)}", position=(10, 60))
             _draw_status_legend(frame)
             FrameUtils.add_text_overlay(frame, "Press ESC to Quit", position=(10, 450), color=(255, 255, 255))
 
             cam.show_frame("AI Attendance Recognition", frame)
+
+            # Periodic Memory and Cache Cleanup
+            if frame_count % API_FEEDBACK_CLEANUP_INTERVAL == 0:
+                # Clean expired local API feedback dictionary
+                now = time.time()
+                expired_keys = [k for k, v in recent_api_feedback.items() if v["expires_at"] < now]
+                for k in expired_keys:
+                    del recent_api_feedback[k]
+                
+                # Clean expired dispatcher results history
+                api_dispatcher.collect_expired()
+                
+                # Transparent reload check on known encodings disk changes
+                cache.reload_if_changed()
+
+            # Prevent integer overflow in frame_count
+            frame_count = (frame_count + 1) % 1_000_000
 
             if cv2.waitKey(1) & 0xFF == 27:
                 logger.info("Exit command received.")
@@ -190,6 +273,9 @@ def start_recognition():
         logger.error(f"System Error: {str(e)}")
     
     finally:
+        # Step 7.9: Dispatcher and Camera resource cleanups in finally block
+        if 'api_dispatcher' in locals():
+            api_dispatcher.cleanup(timeout=2.0)
         if 'cam' in locals():
             cam.cleanup()
 

@@ -1,0 +1,20 @@
+=== AI Attendance System - Performance Benchmark Report ===
+Date: 2026-05-30 09:22:22
+Python: 3.14.5 | Platform: macOS-26.5-arm64-arm-64bit-Mach-O | CPUs: 10
+Processor: arm
+
+--- Frame Processing ---
+Frames Processed: 0
+Avg Frame Time: 0.00ms (0.0 FPS)
+Min Frame Time: 0.00ms
+Max Frame Time: 0.00ms
+
+--- Latency Breakdown ---
+Detection: 0.00ms (Average)
+Encoding: 0.00ms (Average, Crop-then-Encode)
+Comparison: 0.00ms (Average)
+
+--- Memory Footprint ---
+Encoding Matrix: 529.19 KB
+Current Heap: 18.01 MB
+Peak Heap: 20.52 MB

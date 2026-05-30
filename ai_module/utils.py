@@ -87,14 +87,15 @@ class FaceDetector:
         self.scale = scale
         self.logger = get_logger("FaceDetector")
 
-    def detect_faces(self, frame):
+    def detect_faces(self, frame, return_rgb=False):
         """
         Detects faces in a frame after resizing and RGB conversion.
-        Returns: face_locations (list of tuples)
+        Optionally returns the pre-computed RGB small frame for reuse.
+        Returns: face_locations (list of tuples) or (face_locations, rgb_small_frame)
         """
         if frame is None or frame.size == 0:
             self.logger.warning("Empty frame passed to detect_faces.")
-            return []
+            return ([], None) if return_rgb else []
 
         # 1. Resize for speed
         small_frame = cv2.resize(frame, (0, 0), fx=self.scale, fy=self.scale)
@@ -107,16 +108,18 @@ class FaceDetector:
 
         # 4. Scale coordinates back up
         scaled_locations = []
+        inv_scale = 1.0 / self.scale
         for (top, right, bottom, left) in face_locations:
-            # Multiply by inverse of scale (e.g., 1/0.25 = 4)
-            inv_scale = int(1 / self.scale)
+            # Round float coordinates to prevent bounding box scale misalignment
             scaled_locations.append((
-                top * inv_scale,
-                right * inv_scale,
-                bottom * inv_scale,
-                left * inv_scale
+                int(top * inv_scale),
+                int(right * inv_scale),
+                int(bottom * inv_scale),
+                int(left * inv_scale)
             ))
         
+        if return_rgb:
+            return scaled_locations, rgb_small_frame
         return scaled_locations
 
 class FaceValidator:
@@ -170,31 +173,51 @@ class FaceValidator:
 class EncodingManager:
     """
     Handles loading and managing face encodings from disk to memory.
+    Delegates internally to the optimized EncodingCache singleton for unified caching.
     """
     def __init__(self, encoding_file):
         self.encoding_file = Path(encoding_file)
-        self.known_encodings = []
-        self.known_names = []
         self.logger = get_logger("EncodingManager")
         self.load_known_faces()
 
+    @property
+    def known_encodings(self):
+        try:
+            from ai_module.optimization import EncodingCache
+        except ImportError:
+            from optimization import EncodingCache
+        
+        cache = EncodingCache.get_instance()
+        cache.reload_if_changed()
+        encodings_matrix, _ = cache.get_encodings()
+        return list(encodings_matrix) if len(encodings_matrix) > 0 else []
+
+    @property
+    def known_names(self):
+        try:
+            from ai_module.optimization import EncodingCache
+        except ImportError:
+            from optimization import EncodingCache
+            
+        cache = EncodingCache.get_instance()
+        cache.reload_if_changed()
+        _, names = cache.get_encodings()
+        return names
+
     def load_known_faces(self):
         """
-        Loads the consolidated encoding file into memory.
+        Ensures the EncodingCache has eagerly loaded the encoding file.
         """
-        if not self.encoding_file.exists():
-            self.logger.warning(f"Encoding file {self.encoding_file} not found. Recognition will not work.")
-            return
-
         try:
-            with open(self.encoding_file, "rb") as f:
-                data = pickle.load(f)
+            from ai_module.optimization import EncodingCache
+        except ImportError:
+            from optimization import EncodingCache
             
-            self.known_encodings = data.get("encodings", [])
-            self.known_names = data.get("names", [])
-            self.logger.info(f"Loaded {len(self.known_names)} face encodings into memory.")
-        except Exception as e:
-            self.logger.error(f"Failed to load encodings: {str(e)}")
+        cache = EncodingCache.get_instance()
+        cache.load(self.encoding_file)
+        encodings_matrix, names = cache.get_encodings()
+        self.logger.info(f"Delegated known face loading to EncodingCache. Cached {len(names)} faces.")
+
 
 class FaceRecognizer:
     """
@@ -210,7 +233,10 @@ class FaceRecognizer:
         Generates encoding for a detected face and finds the best match.
         Returns: name (str), confidence (float)
         """
-        if not self.manager.known_encodings:
+        known_encodings = self.manager.known_encodings
+        known_names = self.manager.known_names
+
+        if not known_encodings:
             return UNKNOWN_LABEL, 0.0
 
         # Generate encoding for the live face
@@ -223,20 +249,20 @@ class FaceRecognizer:
 
         # 1. Check for matches
         matches = face_recognition.compare_faces(
-            self.manager.known_encodings, 
+            known_encodings, 
             live_encoding, 
             tolerance=self.tolerance
         )
         
         # 2. Use face distance to find the best match
-        face_distances = face_recognition.face_distance(self.manager.known_encodings, live_encoding)
+        face_distances = face_recognition.face_distance(known_encodings, live_encoding)
         if len(face_distances) == 0:
             return UNKNOWN_LABEL, 0.0
             
         best_match_index = np.argmin(face_distances)
         
         if matches[best_match_index]:
-            name = self.manager.known_names[best_match_index]
+            name = known_names[best_match_index]
             
             # Normalizing Confidence:
             # Distance 0.6 (Tolerance) -> 0% Confidence
@@ -247,6 +273,48 @@ class FaceRecognizer:
             confidence = max(0, (self.tolerance - raw_distance) / self.tolerance) * 100
             
             # Professional boost: Map matches to a 75-99% range for better UX
+            final_confidence = 75 + (confidence * 0.24) 
+            
+            return name, final_confidence
+
+        return UNKNOWN_LABEL, 0.0
+
+    def identify_optimized(self, live_encoding):
+        """
+        Compares a pre-computed encoding against known faces.
+        Avoids repeated encoding generation by accepting a pre-computed live face encoding.
+        Returns: name (str), confidence (float)
+        """
+        if live_encoding is None:
+            return UNKNOWN_LABEL, 0.0
+
+        known_encodings = self.manager.known_encodings
+        known_names = self.manager.known_names
+
+        if not known_encodings:
+            return UNKNOWN_LABEL, 0.0
+
+        # 1. Check for matches
+        matches = face_recognition.compare_faces(
+            known_encodings, 
+            live_encoding, 
+            tolerance=self.tolerance
+        )
+        
+        # 2. Use face distance to find the best match
+        face_distances = face_recognition.face_distance(known_encodings, live_encoding)
+        if len(face_distances) == 0:
+            return UNKNOWN_LABEL, 0.0
+            
+        best_match_index = np.argmin(face_distances)
+        
+        if matches[best_match_index]:
+            name = known_names[best_match_index]
+            raw_distance = face_distances[best_match_index]
+            
+            # Normalize confidence calculation
+            confidence = max(0, (self.tolerance - raw_distance) / self.tolerance) * 100
+            # Map matches to a 75-99% range for better UX
             final_confidence = 75 + (confidence * 0.24) 
             
             return name, final_confidence

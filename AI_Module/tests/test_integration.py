@@ -3,8 +3,19 @@ from unittest.mock import MagicMock, patch
 
 import requests
 
-from ai_module.api_service import AttendanceAPIService
-from ai_module.utils import AttendanceManager
+try:
+    from ai_module.api_service import AttendanceAPIService
+    from ai_module.utils import AttendanceManager
+except ImportError:
+    try:
+        from api_service import AttendanceAPIService
+        from utils import AttendanceManager
+    except ImportError:
+        import sys
+        from pathlib import Path
+        sys.path.append(str(Path(__file__).resolve().parent.parent))
+        from api_service import AttendanceAPIService
+        from utils import AttendanceManager
 
 
 class MockHTTPResponse:

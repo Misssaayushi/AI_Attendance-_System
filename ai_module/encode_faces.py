@@ -58,6 +58,25 @@ def generate_encodings():
         with open(ENCODING_FILE, "wb") as f:
             pickle.dump(data, f)
         logger.info(f"Consolidated encoding file saved: {ENCODING_FILE}")
+        
+        # Trigger eager cache reload for newly written encodings
+        try:
+            from ai_module.optimization import EncodingCache
+        except ImportError:
+            try:
+                from optimization import EncodingCache
+            except ImportError:
+                import sys
+                sys.path.append(str(Path(__file__).resolve().parent))
+                from optimization import EncodingCache
+        
+        try:
+            cache = EncodingCache.get_instance()
+            cache.load(ENCODING_FILE)
+            logger.info("Successfully reloaded new encodings into the cache.")
+        except Exception as e:
+            logger.warning(f"Could not trigger cache reload: {str(e)}")
+
         print(f"\n✅ SUCCESS: Processed {len(student_folders)} students. Data ready for recognition.")
 
 if __name__ == "__main__":

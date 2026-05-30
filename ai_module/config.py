@@ -8,9 +8,10 @@ BASE_DIR = Path(__file__).resolve().parent
 DATASET_DIR = BASE_DIR / "dataset"
 ENCODINGS_DIR = BASE_DIR / "encodings"
 LOGS_DIR = BASE_DIR / "logs"
+BENCHMARK_REPORT_DIR = BASE_DIR / "reports"
 
 # Ensure directories exist
-for folder in [DATASET_DIR, ENCODINGS_DIR, LOGS_DIR]:
+for folder in [DATASET_DIR, ENCODINGS_DIR, LOGS_DIR, BENCHMARK_REPORT_DIR]:
     folder.mkdir(parents=True, exist_ok=True)
 
 # Webcam Settings
@@ -33,7 +34,7 @@ STABILITY_FRAMES = 3              # Consecutive frames needed to confirm
 # Face Detection Settings
 # Model: "hog" (CPU friendly) or "cnn" (GPU required)
 FACE_DETECTION_MODEL = "hog"
-FRAME_RESIZE_SCALE = 0.20  # Reduced slightly more for speed
+FRAME_RESIZE_SCALE = 0.25  # Increased slightly for better small-face detection
 
 # Registration Settings
 CAPTURE_SAMPLE_COUNT = 20    # Number of images per student
@@ -68,3 +69,16 @@ API_MOCK_RESPONSE_DELAY_SECONDS = float(os.getenv("API_MOCK_RESPONSE_DELAY_SECON
 API_FEEDBACK_DISPLAY_SECONDS = float(os.getenv("API_FEEDBACK_DISPLAY_SECONDS", "3.0"))
 API_SUCCESS_MESSAGE = os.getenv("API_SUCCESS_MESSAGE", "Attendance Logged")
 API_ERROR_MESSAGE = os.getenv("API_ERROR_MESSAGE", "Server Error")
+
+# Phase 7: Recognition Optimization Settings
+TARGET_FPS = 20                       # Target frames per second for adaptive tuning
+MIN_PROCESS_INTERVAL = 3              # Minimum frames between processing
+MAX_PROCESS_INTERVAL = 15             # Maximum frames between processing
+ENABLE_ADAPTIVE_INTERVAL = True       # Toggle adaptive vs. fixed interval
+FACE_CROP_PADDING = 30                # Pixels of context around face for crop-then-encode
+ENCODING_RELOAD_CHECK_SECONDS = 30     # How often to check for file changes
+ENCODING_CACHE_ENABLED = True         # Toggle singleton cache
+API_DISPATCH_ASYNC = True             # Toggle non-blocking API calls
+ENABLE_FPS_OVERLAY = True             # Show FPS on video feed in debug mode
+PERF_TRACKER_WINDOW = 30              # Rolling average window (frames)
+API_FEEDBACK_CLEANUP_INTERVAL = 100   # Frames between memory cleanup
