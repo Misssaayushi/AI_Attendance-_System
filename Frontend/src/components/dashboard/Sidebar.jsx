@@ -1,5 +1,6 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { 
   LayoutDashboard, 
   Users, 
@@ -13,11 +14,11 @@ import {
 } from 'lucide-react';
 
 const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobile }) => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'Live Attendance', path: '/attendance', icon: <Users size={20} /> },
     { name: 'Records', path: '/records', icon: <ClipboardList size={20} /> },
-    { name: 'Register User', path: '/register', icon: <UserPlus size={20} /> },
     { name: 'Reports', path: '/reports', icon: <FileText size={20} />, optional: true }
   ];
 
@@ -113,9 +114,12 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobile }) => 
             )}
           </button>
           
-          <NavLink 
-            to="/" 
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent transition-colors group relative"
+          <button 
+            onClick={async () => {
+              await logout();
+              navigate('/');
+            }}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent transition-colors group relative cursor-pointer text-left"
           >
             <LogOut size={20} className="flex-shrink-0" />
             {!isCollapsed && <span className="text-sm font-medium">Exit Terminal</span>}
@@ -124,7 +128,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobile }) => 
                 Exit Terminal
               </div>
             )}
-          </NavLink>
+          </button>
         </div>
       </aside>
     </>

@@ -7,6 +7,8 @@ const WebcamFeed = ({ onCapture, onStreamStart, onStreamStop, onError }) => {
   const canvasRef = useRef(null);
   const [isActive, setIsActive] = useState(false);
   const [isCaptured, setIsCaptured] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const [captureProgress, setCaptureProgress] = useState(0);
 
   const startCamera = async () => {
     try {
@@ -34,23 +36,47 @@ const WebcamFeed = ({ onCapture, onStreamStart, onStreamStop, onError }) => {
     }
   };
 
-  const captureFrame = () => {
-    if (videoRef.current && canvasRef.current) {
+  const captureFrame = async () => {
+    if (videoRef.current) {
+      setIsCapturing(true);
+      const frames = [];
       const video = videoRef.current;
-      const canvas = canvasRef.current;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 1280;
+      canvas.height = video.videoHeight || 720;
       const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < 5; i++) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        frames.push(canvas.toDataURL('image/jpeg'));
+        setCaptureProgress(i + 1);
+        if (i < 4) await new Promise(r => setTimeout(r, 500));
+      }
       
-      const dataUrl = canvas.toDataURL('image/jpeg');
+      setIsCapturing(false);
       setIsCaptured(true);
-      if (onCapture) onCapture(dataUrl);
+      if (onCapture) onCapture(frames);
+
+      // Draw the first frame to the DOM canvas once it's mounted
+      setTimeout(() => {
+        if (canvasRef.current) {
+          const domCanvas = canvasRef.current;
+          domCanvas.width = canvas.width;
+          domCanvas.height = canvas.height;
+          const domCtx = domCanvas.getContext('2d');
+          const img = new Image();
+          img.onload = () => {
+            domCtx.drawImage(img, 0, 0, domCanvas.width, domCanvas.height);
+          };
+          img.src = frames[0];
+        }
+      }, 100);
     }
   };
 
   const retake = () => {
     setIsCaptured(false);
+    setCaptureProgress(0);
     if (onCapture) onCapture(null);
   };
 
@@ -91,23 +117,30 @@ const WebcamFeed = ({ onCapture, onStreamStart, onStreamStop, onError }) => {
         )}
 
         {/* Status Badge */}
-        {isActive && (
+        {isActive && !isCapturing && (
           <div className="absolute top-4 right-4 bg-gray-900/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-2 border border-gray-700">
             <span className={`w-2 h-2 rounded-full ${isCaptured ? 'bg-green-500' : 'bg-blue-500 animate-pulse'}`}></span>
             <span className="text-gray-200">{isCaptured ? 'Face Captured' : 'Live Feed'}</span>
           </div>
         )}
+
+        {isCapturing && (
+          <div className="absolute top-4 right-4 bg-yellow-900/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-2 border border-yellow-700">
+            <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+            <span className="text-yellow-200">Capturing {captureProgress}/5...</span>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-3 justify-center">
-        {!isActive && !isCaptured && (
+        {!isActive && !isCaptured && !isCapturing && (
           <Button onClick={startCamera} className="flex items-center space-x-2">
             <Camera size={20} />
             <span>Start Camera</span>
           </Button>
         )}
 
-        {isActive && !isCaptured && (
+        {isActive && !isCaptured && !isCapturing && (
           <>
             <Button variant="secondary" onClick={stopCamera} className="flex items-center space-x-2">
               <CameraOff size={20} />
@@ -115,7 +148,7 @@ const WebcamFeed = ({ onCapture, onStreamStart, onStreamStop, onError }) => {
             </Button>
             <Button onClick={captureFrame} className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white">
               <Scissors size={20} />
-              <span>Capture Face</span>
+              <span>Capture Faces</span>
             </Button>
           </>
         )}

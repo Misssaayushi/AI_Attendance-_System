@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import RecordDetailModal from '../components/records/RecordDetailModal';
@@ -17,32 +17,29 @@ import {
   XCircle,
   AlertTriangle
 } from 'lucide-react';
+import { listAttendance, getExportPreview } from '../services/api';
+import { extractData, extractErrorMessage } from '../services/apiHelpers';
 
-const mockAttendanceRecords = [
-  { id: 'STU-2026-042', name: 'Rahul Sharma', date: '2026-05-20', time: '09:01 AM', department: 'CS', status: 'Present' },
-  { id: 'STU-2026-015', name: 'Aman Verma', date: '2026-05-20', time: '09:12 AM', department: 'IT', status: 'Late' },
-  { id: 'STU-2026-103', name: 'Priya Patel', date: '2026-05-20', time: '---', department: 'ME', status: 'Absent' },
-  { id: 'STU-2026-089', name: 'Rohit Gupta', date: '2026-05-20', time: '08:55 AM', department: 'EE', status: 'Present' },
-  { id: 'STU-2026-056', name: 'Neha Sharma', date: '2026-05-20', time: '09:02 AM', department: 'CS', status: 'Present' },
-  { id: 'STU-2026-121', name: 'Shreya Sen', date: '2026-05-20', time: '09:05 AM', department: 'IT', status: 'Present' },
-  { id: 'STU-2026-004', name: 'Karan Malhotra', date: '2026-05-20', time: '---', department: 'ME', status: 'Absent' },
-  { id: 'STU-2026-077', name: 'Rohan Das', date: '2026-05-20', time: '09:00 AM', department: 'CS', status: 'Present' },
-  { id: 'STU-2026-031', name: 'Aditya Roy', date: '2026-05-20', time: '09:15 AM', department: 'EE', status: 'Late' },
-  { id: 'STU-2026-092', name: 'Sneha Patil', date: '2026-05-20', time: '08:58 AM', department: 'IT', status: 'Present' },
-  { id: 'STU-2026-114', name: 'Vijay Singh', date: '2026-05-19', time: '09:03 AM', department: 'EE', status: 'Present' },
-  { id: 'STU-2026-118', name: 'Poonam Yadav', date: '2026-05-19', time: '09:22 AM', department: 'CS', status: 'Late' },
-  { id: 'STU-2026-125', name: 'Amit Shah', date: '2026-05-19', time: '---', department: 'ME', status: 'Absent' },
-  { id: 'STU-2026-130', name: 'Suresh Kumar', date: '2026-05-19', time: '08:52 AM', department: 'IT', status: 'Present' },
-  { id: 'STU-2026-144', name: 'Anita Desai', date: '2026-05-19', time: '09:01 AM', department: 'CS', status: 'Present' },
-  { id: 'STU-2026-150', name: 'Vikram Seth', date: '2026-05-19', time: '09:10 AM', department: 'EE', status: 'Late' },
-  { id: 'STU-2026-155', name: 'Kunal Kapoor', date: '2026-05-18', time: '08:59 AM', department: 'CS', status: 'Present' },
-  { id: 'STU-2026-160', name: 'Meera Rajput', date: '2026-05-18', time: '---', department: 'IT', status: 'Absent' },
-  { id: 'STU-2026-165', name: 'Rajesh Khanna', date: '2026-05-18', time: '09:05 AM', department: 'ME', status: 'Present' },
-  { id: 'STU-2026-170', name: 'Deepika Padukone', date: '2026-05-18', time: '09:02 AM', department: 'EE', status: 'Present' }
-];
+// Debounce custom hook to optimize search inputs
+const useDebounce = (value, delay = 400) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+  return debouncedValue;
+};
 
 const Records = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [records, setRecords] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Filter States
+  const [rawSearch, setRawSearch] = useState('');
+  const debouncedSearch = useDebounce(rawSearch, 400);
   const [selectedDept, setSelectedDept] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [selectedDate, setSelectedDate] = useState('');
@@ -50,9 +47,51 @@ const Records = () => {
   const [selectedRecord, setSelectedRecord] = useState(null);
   
   // Sorting State
-  const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
 
-  const itemsPerPage = 8;
+  const pageSize = 10;
+
+  // Fetch Attendance Records from API whenever filters or pages change
+  const fetchRecords = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const params = {
+        page: currentPage,
+        page_size: pageSize,
+      };
+
+      if (debouncedSearch) params.search = debouncedSearch;
+      if (selectedDept !== 'All') params.department = selectedDept;
+      if (selectedStatus !== 'All') params.status = selectedStatus;
+      if (selectedDate) {
+        params.from_date = selectedDate;
+        params.to_date = selectedDate;
+      }
+
+      const response = await listAttendance(params);
+      const responseData = extractData(response);
+
+      setRecords(responseData.items || []);
+      setTotalRecords(responseData.total || 0);
+      setTotalPages(responseData.pages || 1);
+    } catch (err) {
+      console.error('Failed to fetch records:', err);
+      setError(extractErrorMessage(err) || 'Failed to load attendance database records.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecords();
+  }, [currentPage, debouncedSearch, selectedDept, selectedStatus, selectedDate]);
+
+  // Adjust pagination if inputs change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearch, selectedDept, selectedStatus, selectedDate]);
 
   // Sorting Handler
   const handleSort = (key) => {
@@ -65,98 +104,103 @@ const Records = () => {
 
   // Reset Filters utility
   const handleResetFilters = () => {
-    setSearchQuery('');
+    setRawSearch('');
     setSelectedDept('All');
     setSelectedStatus('All');
     setSelectedDate('');
     setCurrentPage(1);
   };
 
-  // Filter and Sort Logic combined
-  const filteredAndSortedRecords = useMemo(() => {
-    let result = mockAttendanceRecords.filter(record => {
-      const matchesSearch = 
-        record.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        record.id.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesDept = selectedDept === 'All' || record.department === selectedDept;
-      const matchesStatus = selectedStatus === 'All' || record.status === selectedStatus;
-      const matchesDate = !selectedDate || record.date === selectedDate;
+  // Format Time representation from backend HH:MM:SS to 12h formats
+  const formatTime = (timeStr) => {
+    if (!timeStr || timeStr === '---') return '---';
+    try {
+      const parts = timeStr.split(':');
+      if (parts.length < 2) return timeStr;
+      const hour = parseInt(parts[0], 10);
+      const min = parts[1];
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const displayHour = hour % 12 || 12;
+      return `${displayHour}:${min} ${ampm}`;
+    } catch (e) {
+      return timeStr;
+    }
+  };
 
-      return matchesSearch && matchesDept && matchesStatus && matchesDate;
+  // Sorting Logic on returned Records
+  const sortedRecords = useMemo(() => {
+    if (!sortConfig.key) return records;
+
+    const sorted = [...records];
+    sorted.sort((a, b) => {
+      let valA = '';
+      let valB = '';
+
+      if (sortConfig.key === 'name') {
+        valA = a.student_name || '';
+        valB = b.student_name || '';
+      } else if (sortConfig.key === 'department') {
+        valA = a.department || '';
+        valB = b.department || '';
+      } else if (sortConfig.key === 'date') {
+        valA = `${a.attendance_date}T${a.attendance_time || '00:00:00'}`;
+        valB = `${b.attendance_date}T${b.attendance_time || '00:00:00'}`;
+      } else if (sortConfig.key === 'status') {
+        valA = a.status || '';
+        valB = b.status || '';
+      }
+
+      if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
     });
 
-    // Apply Sorting
-    if (sortConfig.key) {
-      result.sort((a, b) => {
-        let valA = a[sortConfig.key];
-        let valB = b[sortConfig.key];
+    return sorted;
+  }, [records, sortConfig]);
 
-        if (sortConfig.key === 'time') {
-          // Normalize absent time for logical sorting
-          if (valA === '---') valA = 'ZZZZ';
-          if (valB === '---') valB = 'ZZZZ';
-        }
+  // Server-Side Export CSV generator
+  const handleExportCSV = async () => {
+    try {
+      const params = {};
+      if (selectedDate) {
+        params.from_date = selectedDate;
+        params.to_date = selectedDate;
+      }
 
-        if (valA < valB) {
-          return sortConfig.direction === 'asc' ? -1 : 1;
-        }
-        if (valA > valB) {
-          return sortConfig.direction === 'asc' ? 1 : -1;
-        }
-        return 0;
-      });
-    }
+      const response = await getExportPreview(params);
+      const responseData = extractData(response);
+      const rows = responseData.rows || [];
 
-    return result;
-  }, [searchQuery, selectedDept, selectedStatus, selectedDate, sortConfig]);
+      if (rows.length === 0) {
+        alert("No attendance data available to export for selected query.");
+        return;
+      }
 
-  // Pagination bounds calculation
-  const totalPages = Math.ceil(filteredAndSortedRecords.length / itemsPerPage) || 1;
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedRecords = useMemo(() => {
-    return filteredAndSortedRecords.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredAndSortedRecords, currentPage]);
+      const headers = ['Student ID', 'Student Name', 'Department', 'Date', 'Time', 'Status'];
+      const csvRows = rows.map(r => [
+        r.roll_number || r.student_id || '',
+        r.student_name || '',
+        r.department || '',
+        r.attendance_date || r.date || '',
+        formatTime(r.attendance_time || r.time),
+        r.status || ''
+      ]);
 
-  // Adjust page number if result sizes change
-  React.useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
-
-  // Client-Side CSV Exporter
-  const handleExportCSV = () => {
-    if (filteredAndSortedRecords.length === 0) {
-      alert("No data available to export.");
-      return;
-    }
-    
-    // Headers
-    const headers = ['Student ID', 'Student Name', 'Department', 'Date', 'Time', 'Status'];
-    
-    // Convert rows
-    const rows = filteredAndSortedRecords.map(record => [
-      record.id,
-      record.name,
-      record.department,
-      record.date,
-      record.time,
-      record.status
-    ]);
-    
-    // Build CSV Content
-    const csvContent = "data:text/csv;charset=utf-8," 
-      + [headers.join(','), ...rows.map(e => e.map(val => `"${val}"`).join(","))].join("\n");
+      const csvContent = "data:text/csv;charset=utf-8," 
+        + [headers.join(','), ...csvRows.map(e => e.map(val => `"${val}"`).join(","))].join("\n");
+        
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `attendance_records_${selectedDate || 'all'}.csv`);
+      document.body.appendChild(link);
       
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `attendance_records_${selectedDate || 'all'}.csv`);
-    document.body.appendChild(link);
-    
-    link.click();
-    document.body.removeChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('Export CSV failed:', err);
+      alert("Failed to export attendance data: " + extractErrorMessage(err));
+    }
   };
 
   const getStatusBadge = (status) => {
@@ -183,8 +227,24 @@ const Records = () => {
           </span>
         );
       default:
-        return null;
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-500/10 text-gray-400 border border-gray-500/20">
+            <span>{status || 'Unknown'}</span>
+          </span>
+        );
     }
+  };
+
+  // Maps flat attendance schema object to the format expected by the RecordDetailModal
+  const handleOpenDetailModal = (record) => {
+    setSelectedRecord({
+      id: record.roll_number || `STU-${record.student_id}`,
+      name: record.student_name || 'Registered Student',
+      department: record.department || 'General',
+      date: record.attendance_date,
+      time: formatTime(record.attendance_time),
+      status: record.status
+    });
   };
 
   return (
@@ -209,8 +269,8 @@ const Records = () => {
             <input 
               type="date"
               value={selectedDate}
-              onChange={(e) => { setSelectedDate(e.target.value); setCurrentPage(1); }}
-              className="w-full md:w-auto pl-9 pr-4 py-2 bg-gray-900/50 border border-gray-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none"
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="w-full md:w-auto pl-9 pr-4 py-2 bg-gray-900/50 border border-gray-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none cursor-pointer"
             />
           </div>
         </div>
@@ -225,8 +285,8 @@ const Records = () => {
             <input 
               type="text" 
               placeholder="Search ID or Name..." 
-              value={searchQuery}
-              onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+              value={rawSearch}
+              onChange={(e) => setRawSearch(e.target.value)}
               className="w-full pl-9 pr-4 py-2 bg-gray-850/50 border border-gray-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
             />
           </div>
@@ -236,8 +296,8 @@ const Records = () => {
             <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={14} />
             <select 
               value={selectedDept}
-              onChange={(e) => { setSelectedDept(e.target.value); setCurrentPage(1); }}
-              className="w-full pl-9 pr-4 py-2 bg-gray-850/50 border border-gray-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none"
+              onChange={(e) => setSelectedDept(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 bg-gray-850/50 border border-gray-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none cursor-pointer"
             >
               <option value="All">All Departments</option>
               <option value="CS">Computer Science</option>
@@ -252,8 +312,8 @@ const Records = () => {
             <Tag className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={14} />
             <select 
               value={selectedStatus}
-              onChange={(e) => { setSelectedStatus(e.target.value); setCurrentPage(1); }}
-              className="w-full pl-9 pr-4 py-2 bg-gray-850/50 border border-gray-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none"
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 bg-gray-850/50 border border-gray-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none cursor-pointer"
             >
               <option value="All">All Statuses</option>
               <option value="Present">Present</option>
@@ -274,7 +334,13 @@ const Records = () => {
 
       {/* Main Records Data Table Card */}
       <Card className="overflow-hidden border border-gray-800/80 bg-gray-900/40">
-        <div className="overflow-x-auto">
+        {error && (
+          <div className="p-4 bg-red-950/20 border-b border-red-900/30 text-center text-xs text-red-400">
+            {error}
+          </div>
+        )}
+        
+        <div className="overflow-x-auto relative min-h-[250px]">
           <table className="min-w-full divide-y divide-gray-800">
             <thead className="bg-gray-900/30">
               <tr>
@@ -319,42 +385,53 @@ const Records = () => {
                 </th>
               </tr>
             </thead>
+            
             <tbody className="divide-y divide-gray-800/60 bg-transparent">
-              {paginatedRecords.length === 0 ? (
+              {isLoading ? (
+                [...Array(pageSize)].map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    <td colSpan="5" className="px-6 py-5">
+                      <div className="h-4 bg-gray-800/50 rounded w-full"></div>
+                    </td>
+                  </tr>
+                ))
+              ) : sortedRecords.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="px-6 py-12 text-center text-xs text-gray-500 italic">
-                    No biometric attendance logs matched the filters.
+                    No biometric attendance logs found.
                   </td>
                 </tr>
               ) : (
-                paginatedRecords.map((record, index) => (
-                  <tr key={index} className="hover:bg-gray-850/15 transition-colors group">
+                sortedRecords.map((record) => (
+                  <tr key={record.id} className="hover:bg-gray-850/15 transition-colors group">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/20 group-hover:scale-105 transition-transform duration-200">
                           <User size={16} />
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors leading-none mb-1">{record.name}</p>
-                          <p className="text-[10px] text-gray-500 font-mono uppercase">{record.id}</p>
+                          <p className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors leading-none mb-1">
+                            {record.student_name || 'Unknown Student'}
+                          </p>
+                          <p className="text-[10px] text-gray-500 font-mono uppercase">{record.roll_number || `ID: ${record.student_id}`}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="px-2 py-0.5 bg-gray-850 border border-gray-800 rounded-lg text-[9px] font-bold text-gray-400 uppercase tracking-wider">
-                        {record.department}
+                        {record.department || 'General'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <p className="text-xs text-gray-300 font-semibold leading-none mb-1">{record.date}</p>
-                      <p className="text-[10px] text-gray-500 font-mono">{record.time}</p>
+                      <p className="text-xs text-gray-300 font-semibold leading-none mb-1">{record.attendance_date}</p>
+                      <p className="text-[10px] text-gray-500 font-mono">{formatTime(record.attendance_time)}</p>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getStatusBadge(record.status)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-xs font-bold space-x-2">
                       <button 
-                        onClick={() => setSelectedRecord(record)}
+                        onClick={() => handleOpenDetailModal(record)}
                         className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 px-2.5 py-1.5 rounded-lg border border-transparent hover:border-blue-500/20 transition-all"
                       >
                         View
@@ -368,10 +445,10 @@ const Records = () => {
         </div>
 
         {/* Footer controls with pagination */}
-        {totalPages > 1 && (
+        {!isLoading && totalPages > 1 && (
           <div className="p-4 border-t border-gray-800/80 bg-gray-900/20 flex items-center justify-between">
             <p className="text-[10px] text-gray-500 font-semibold uppercase">
-              Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredAndSortedRecords.length)} of {filteredAndSortedRecords.length} Logs
+              Page {currentPage} of {totalPages} ({totalRecords} Logs)
             </p>
             <div className="flex items-center space-x-2">
               <button 

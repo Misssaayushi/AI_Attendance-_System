@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -14,6 +14,8 @@ import {
   Filler
 } from 'chart.js';
 import Card from '../Card';
+import { getWeeklyTrend, getMonthlyTrend, getDepartmentComparison } from '../../services/api';
+import { extractData } from '../../services/apiHelpers';
 
 ChartJS.register(
   CategoryScale,
@@ -29,6 +31,13 @@ ChartJS.register(
 );
 
 const AttendanceCharts = () => {
+  const [loading, setLoading] = useState(true);
+  const [chartData, setChartData] = useState({
+    lineData: null,
+    barData: null,
+    doughnutData: null
+  });
+
   // Common Dark Theme Options
   const chartOptions = {
     responsive: true,
@@ -68,8 +77,29 @@ const AttendanceCharts = () => {
     }
   };
 
-  // 1. Line Chart Data (Weekly Trend)
-  const lineData = {
+  const doughnutOptions = {
+    ...chartOptions,
+    scales: {
+      x: { display: false },
+      y: { display: false }
+    },
+    plugins: {
+      ...chartOptions.plugins,
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: '#9ca3af',
+          font: { family: 'Inter, sans-serif', size: 10, weight: '500' },
+          boxWidth: 8,
+          boxHeight: 8,
+          usePointStyle: true
+        }
+      }
+    }
+  };
+
+  // Fallbacks
+  const defaultLineData = {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [
       {
@@ -86,8 +116,7 @@ const AttendanceCharts = () => {
     ]
   };
 
-  // 2. Bar Chart Data (Monthly present vs absent overview)
-  const barData = {
+  const defaultBarData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
       {
@@ -109,8 +138,7 @@ const AttendanceCharts = () => {
     ]
   };
 
-  // 3. Doughnut Chart Data (Department wise distribution)
-  const doughnutData = {
+  const defaultDoughnutData = {
     labels: ['CS', 'IT', 'ME', 'EE'],
     datasets: [
       {
@@ -128,26 +156,119 @@ const AttendanceCharts = () => {
     ]
   };
 
-  const doughnutOptions = {
-    ...chartOptions,
-    scales: {
-      x: { display: false },
-      y: { display: false }
-    },
-    plugins: {
-      ...chartOptions.plugins,
-      legend: {
-        position: 'bottom',
-        labels: {
-          color: '#9ca3af',
-          font: { family: 'Inter, sans-serif', size: 10, weight: '500' },
-          boxWidth: 8,
-          boxHeight: 8,
-          usePointStyle: true
-        }
+  useEffect(() => {
+    const fetchCharts = async () => {
+      try {
+        const [weeklyRes, monthlyRes, deptRes] = await Promise.all([
+          getWeeklyTrend().catch(() => null),
+          getMonthlyTrend({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 }).catch(() => null),
+          getDepartmentComparison().catch(() => null)
+        ]);
+
+        const weekly = weeklyRes ? extractData(weeklyRes) : null;
+        const monthly = monthlyRes ? extractData(monthlyRes) : null;
+        const dept = deptRes ? extractData(deptRes) : null;
+
+        setChartData({
+          lineData: weekly && weekly.labels ? {
+            labels: weekly.labels,
+            datasets: [
+              {
+                label: 'Present',
+                data: weekly.present || [],
+                borderColor: '#22c55e',
+                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 3,
+                pointBackgroundColor: '#22c55e',
+                pointHoverRadius: 7
+              },
+              {
+                label: 'Absent',
+                data: weekly.absent || [],
+                borderColor: '#ef4444',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 3,
+                pointBackgroundColor: '#ef4444',
+                pointHoverRadius: 7
+              },
+              {
+                label: 'Late',
+                data: weekly.late || [],
+                borderColor: '#f59e0b',
+                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 3,
+                pointBackgroundColor: '#f59e0b',
+                pointHoverRadius: 7
+              }
+            ]
+          } : null,
+          barData: monthly && monthly.labels ? {
+            labels: monthly.labels,
+            datasets: [
+              {
+                label: 'Present Rate (%)',
+                data: monthly.present_rates || monthly.present || [],
+                backgroundColor: '#10b981',
+                borderRadius: 6,
+                borderWidth: 0,
+                barPercentage: 0.6
+              },
+              {
+                label: 'Absent Rate (%)',
+                data: monthly.absent_rates || monthly.absent || [],
+                backgroundColor: '#ef4444',
+                borderRadius: 6,
+                borderWidth: 0,
+                barPercentage: 0.6
+              }
+            ]
+          } : null,
+          doughnutData: dept && dept.labels ? {
+            labels: dept.labels,
+            datasets: [
+              {
+                data: dept.data || dept.rates || [],
+                backgroundColor: [
+                  'rgba(59, 130, 246, 0.8)',
+                  'rgba(139, 92, 246, 0.8)',
+                  'rgba(245, 158, 11, 0.8)',
+                  'rgba(16, 185, 129, 0.8)'
+                ],
+                borderColor: '#111827',
+                borderWidth: 2,
+                hoverOffset: 6
+              }
+            ]
+          } : null
+        });
+      } catch (error) {
+        console.error("Failed to load chart data:", error);
+      } finally {
+        setLoading(false);
       }
-    }
-  };
+    };
+    fetchCharts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-pulse">
+        <Card className="lg:col-span-2 p-5 bg-gray-900/50 border border-gray-800/80 h-80" />
+        <Card className="p-5 bg-gray-900/50 border border-gray-800/80 h-80" />
+        <Card className="lg:col-span-3 p-5 bg-gray-900/50 border border-gray-800/80 h-80" />
+      </div>
+    );
+  }
+
+  const lineData = chartData.lineData || defaultLineData;
+  const barData = chartData.barData || defaultBarData;
+  const doughnutData = chartData.doughnutData || defaultDoughnutData;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -175,7 +296,7 @@ const AttendanceCharts = () => {
             <p className="text-[10px] text-gray-500 mt-0.5">Daily enrollment percentages</p>
           </div>
           <span className="text-xs px-2.5 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-lg font-bold font-mono">
-            4 Sectors
+            {doughnutData.labels?.length || 4} Sectors
           </span>
         </div>
         <div className="h-64 flex items-center justify-center">

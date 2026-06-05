@@ -4,12 +4,16 @@ import Container from '../components/Container';
 import WebcamFeed from '../components/register/WebcamFeed';
 import RegisterForm from '../components/register/RegisterForm';
 import Alert from '../components/ui/Alert';
-import { registerStudent } from '../services/api';
+import { createStudent, registerFace, triggerEncoding } from '../services/api';
+import { extractData, extractErrorMessage } from '../services/apiHelpers';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 const Register = () => {
   const [capturedImage, setCapturedImage] = useState(null);
   const [isFaceCaptured, setIsFaceCaptured] = useState(false);
   const [alert, setAlert] = useState(null);
+  const [webcamKey, setWebcamKey] = useState(0);
   const [formData, setFormData] = useState({
     fullName: '',
     studentId: '',
@@ -24,11 +28,12 @@ const Register = () => {
   });
   const [errors, setErrors] = useState({});
 
+
   const handleCapture = (imageData) => {
     setCapturedImage(imageData);
     setIsFaceCaptured(!!imageData);
     if (imageData) {
-      setAlert({ variant: 'success', message: 'Face captured successfully! Please fill in the details below.' });
+      setAlert({ variant: 'success', message: 'Faces captured successfully! Please fill in the details below.' });
     } else {
       setAlert(null);
     }
@@ -72,23 +77,55 @@ const Register = () => {
 
     try {
       setAlert({ variant: 'info', message: 'Registering student... please wait.' });
-      
+
+      // Split fullName into first_name + last_name
+      const nameParts = formData.fullName.trim().split(' ');
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(' ') || nameParts[0];
+
       const payload = {
-        ...formData,
-        image_data: capturedImage
+        first_name: firstName,
+        last_name: lastName,
+        email: formData.email,
+        roll_number: formData.studentId,
+        contact_number: formData.contactNumber || null,
+        department: formData.department,
+        course: formData.course,
+        year_batch: formData.batch,
+        semester: formData.semester ? parseInt(formData.semester) : null,
+        section: formData.section || null,
+        gender: formData.gender,
       };
 
-      const response = await registerStudent(payload);
-      
-      if (response.data.status === 'success') {
-        setAlert({ variant: 'success', message: 'Registration Successful! Student dataset created.' });
-        handleReset();
+      const response = await createStudent(payload);
+      const studentData = response.data.data || extractData(response);
+      const studentId = studentData.id || studentData.student_id;
+
+      if (studentId) {
+        setAlert({ variant: 'info', message: 'Student created. Saving face images...' });
+        await registerFace(studentId, capturedImage);
+
+        setAlert({ variant: 'info', message: 'Triggering AI model encoding...' });
+        try {
+          await triggerEncoding(studentId);
+        } catch (encodeErr) {
+          console.warn('Encoding trigger failed or timed out:', encodeErr);
+          // Don't fail the whole registration if just encoding failed/timed out
+        }
+
+        setAlert({ variant: 'success', message: 'Registration Successful! Student dataset created. Ready for next student.' });
+        setTimeout(() => {
+          handleReset();
+          setAlert(null);
+        }, 3000);
+      } else {
+        throw new Error("Failed to retrieve student ID after creation.");
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setAlert({ 
-        variant: 'error', 
-        message: error.response?.data?.detail || 'Registration failed. Please ensure the backend is running.' 
+      setAlert({
+        variant: 'error',
+        message: extractErrorMessage(error)
       });
     }
   };
@@ -109,6 +146,7 @@ const Register = () => {
     setErrors({});
     setCapturedImage(null);
     setIsFaceCaptured(false);
+    setWebcamKey(prev => prev + 1);
   };
 
   const handleError = (msg) => {
@@ -116,14 +154,20 @@ const Register = () => {
   };
 
   return (
-    <Container className="py-12">
-      <div className="max-w-4xl mx-auto space-y-8">
-        {/* Page Heading */}
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">Student Enrollment</h1>
-          <p className="text-gray-400">Capture face and enter details to register in the AI system.</p>
-        </div>
+    <div className="min-h-screen bg-[#0a0a0c] text-gray-100 font-sans">
+      <Container className="py-12">
+        {/* Back Button */}
+        <Link to="/" className="text-cyan-500 hover:text-cyan-400 flex items-center gap-2 text-xs font-mono uppercase tracking-widest transition-colors mb-6 w-max">
+          <ArrowLeft size={14} /> Back to Hub
+        </Link>
 
+        <div className="max-w-4xl mx-auto space-y-8">
+          {/* Page Heading */}
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">Student Enrollment</h1>
+            <p className="text-gray-400">Capture face and enter details to register in the AI system.</p>
+          </div>
+        </div>
         {alert && <Alert variant={alert.variant} message={alert.message} onClose={() => setAlert(null)} />}
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
@@ -133,11 +177,12 @@ const Register = () => {
               <span className="w-8 h-8 bg-blue-600/20 text-blue-500 rounded-full flex items-center justify-center text-sm">1</span>
               Face Capture
             </h2>
-            <WebcamFeed 
-              onCapture={handleCapture} 
+            <WebcamFeed
+              key={webcamKey}
+              onCapture={handleCapture}
               onError={handleError}
             />
-            
+
             <Card className="bg-blue-500/5 border-blue-500/20 p-4">
               <h4 className="text-sm font-semibold text-blue-400 mb-2">Instructions:</h4>
               <ul className="text-xs text-gray-400 space-y-2 list-disc pl-4">
@@ -156,7 +201,7 @@ const Register = () => {
               Student Details
             </h2>
             <Card className="p-6 sm:p-8">
-              <RegisterForm 
+              <RegisterForm
                 formData={formData}
                 errors={errors}
                 onChange={handleInputChange}
@@ -172,8 +217,8 @@ const Register = () => {
             </Card>
           </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 };
 

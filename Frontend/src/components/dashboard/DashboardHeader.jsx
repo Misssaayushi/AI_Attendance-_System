@@ -2,11 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Menu, Bell, User, Clock, ChevronDown, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 const DashboardHeader = ({ toggleMobileSidebar }) => {
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
   const location = useLocation();
   const [time, setTime] = useState(new Date());
+
+  const getInitials = () => {
+    if (!user?.username) return 'AD';
+    const parts = user.username.split(/[._\s-]/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return user.username.slice(0, 2).toUpperCase();
+  };
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -88,10 +99,10 @@ const DashboardHeader = ({ toggleMobileSidebar }) => {
         {/* Profile Dropdown */}
         <div className="flex items-center space-x-2.5 cursor-pointer group">
           <div className="w-8 h-8 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-sm shadow-inner group-hover:bg-blue-600/20 transition-all">
-            AD
+            {getInitials()}
           </div>
           <div className="hidden md:block text-left">
-            <p className="text-xs font-bold text-gray-300 group-hover:text-white transition-colors leading-none">Admin Profile</p>
+            <p className="text-xs font-bold text-gray-300 group-hover:text-white transition-colors leading-none">{user?.username || 'Admin Profile'}</p>
             <p className="text-[9px] text-gray-500 mt-0.5 uppercase tracking-wider font-extrabold">Super Administrator</p>
           </div>
           <ChevronDown size={14} className="text-gray-500 group-hover:text-gray-300 transition-colors" />

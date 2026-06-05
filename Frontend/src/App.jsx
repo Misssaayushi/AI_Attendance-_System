@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import AppRoutes from './routes/AppRoutes';
-import SYNEXIntro from './components/intro/SYNEXIntro';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
+import { AuthProvider } from './context/AuthContext';
+import ErrorBoundary from './components/ErrorBoundary';
+import ConnectionStatus from './components/ConnectionStatus';
 
 /**
  * App.jsx
@@ -10,23 +12,17 @@ import { ToastProvider } from './context/ToastContext';
  * Root entry point of the React Application.
  */
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
-
-  // Triggered when the user successfully authenticates and enters the system
-  const handleEnterDashboard = () => {
-    setShowSplash(false);
-  };
-
   return (
-    <ThemeProvider>
-      <ToastProvider>
-        {showSplash ? (
-          <SYNEXIntro onEnter={handleEnterDashboard} />
-        ) : (
-          <AppRoutes />
-        )}
-      </ToastProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <ConnectionStatus />
+            <AppRoutes />
+          </AuthProvider>
+        </ToastProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

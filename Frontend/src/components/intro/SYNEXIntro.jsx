@@ -18,6 +18,9 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import InteractiveFaceScanLogo from '../home/InteractiveFaceScanLogo';
+import { useAuth } from '../../context/AuthContext';
+import { User, Lock, ArrowRight, ShieldAlert, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // =========================================================================
 // WEBAUDIO SYNTHESIZER UTILITIES (Fail-safe code-only sound generators)
@@ -80,11 +83,56 @@ const playSuccessChime = () => {
   }
 };
 
-export default function SYNEXIntro({ onEnter }) {
+export default function SYNEXIntro() {
+  const navigate = useNavigate();
   // Verification states
   const [scanState, setScanState] = useState('scanning'); // 'scanning' | 'verified'
   const [loaded, setLoaded] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [targetRoute, setTargetRoute] = useState('/dashboard');
+
+  // Auth states
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const { login, isAuthenticated, isLoading } = useAuth();
+
+  const handleAction = (route) => {
+    if (isAuthenticated) {
+      navigate(route);
+    } else {
+      setTargetRoute(route);
+      setShowLoginModal(true);
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!username.trim() || !password.trim()) {
+      setLoginError('Please enter both username and password.');
+      playSynthBeep(330, 0.25, 'sawtooth');
+      return;
+    }
+    setLoginError('');
+    setIsAuthenticating(true);
+    try {
+      await login(username.toLowerCase(), password);
+      playSuccessChime();
+      setIsExiting(true);
+      setTimeout(() => {
+        navigate(targetRoute);
+      }, 800);
+    } catch (error) {
+      console.error('Authentication failed:', error);
+      const detail = error.response?.data?.detail || 'Authentication failed. Please verify credentials.';
+      setLoginError(typeof detail === 'string' ? detail : JSON.stringify(detail));
+      playSynthBeep(330, 0.25, 'sawtooth');
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
   
   // Webcam states
   const [stream, setStream] = useState(null);
@@ -162,7 +210,7 @@ export default function SYNEXIntro({ onEnter }) {
     playSynthBeep(880, 0.08); // Trigger confirmation chirp
     setIsExiting(true);
     setTimeout(() => {
-      if (onEnter) onEnter();
+      navigate('/dashboard');
     }, 800);
   };
 
@@ -206,6 +254,17 @@ export default function SYNEXIntro({ onEnter }) {
             }}
           ></span>
         ))}
+      </div>
+
+      {/* TOP RIGHT ADMIN LOGIN BUTTON */}
+      <div className="absolute top-6 right-6 md:top-8 md:right-10 z-50">
+        <button 
+          onClick={() => handleAction('/dashboard')}
+          className="px-5 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 font-mono text-[9px] uppercase tracking-[2px] hover:bg-cyan-500/20 hover:scale-105 active:scale-95 transition-all shadow-[0_0_15px_rgba(34,211,238,0.15)] flex items-center gap-2"
+        >
+          <Lock size={12} />
+          Admin Login
+        </button>
       </div>
 
       {/* 3. HERO CONTENT WRAPPER */}
@@ -297,18 +356,26 @@ export default function SYNEXIntro({ onEnter }) {
             </div>
           </div>
 
-          {/* TRANSITIONING ENTER ACTION */}
-          <div className={`transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          {/* TRANSITIONING ENTER ACTION (BUTTONS) */}
+          <div className={`transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] w-full max-w-[420px] mt-2 ${
             scanState === 'verified' ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'
           }`}>
-            <button 
-              onClick={handlePortalEnter}
-              onMouseEnter={playHoverTick}
-              className="px-12 py-3.5 rounded-full bg-gradient-to-r from-cyan-500 to-violet-600 text-white text-xs font-black tracking-[3px] uppercase shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_45px_rgba(139,92,246,0.6)] hover:scale-[1.05] active:scale-95 transition-all duration-300 cursor-pointer border border-cyan-400/35 relative overflow-hidden group"
-            >
-              <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
-              ENTER DASHBOARD
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => navigate('/attendance')}
+                onMouseEnter={playHoverTick}
+                className="flex-1 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white text-[10px] font-black tracking-[3px] uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_35px_rgba(139,92,246,0.5)] hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 cursor-pointer border border-cyan-400/30"
+              >
+                Start Attendance
+              </button>
+              <button
+                onClick={() => navigate('/register')}
+                onMouseEnter={playHoverTick}
+                className="flex-1 py-4 rounded-xl bg-[#050814]/70 backdrop-blur-xl text-cyan-400 text-[10px] font-black tracking-[3px] uppercase shadow-[0_0_20px_rgba(6,182,212,0.1)] hover:bg-cyan-500/10 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 cursor-pointer border border-cyan-500/30"
+              >
+                Register New User
+              </button>
+            </div>
           </div>
         </div>
 
@@ -398,6 +465,89 @@ export default function SYNEXIntro({ onEnter }) {
         </div>
 
       </div>
+
+      {/* ADMIN LOGIN MODAL */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#020408]/80 backdrop-blur-md animate-fade">
+          <div className="absolute inset-0 cursor-pointer" onClick={() => setShowLoginModal(false)}></div>
+          <div className="relative w-full max-w-[360px] animate-[fade_0.3s_ease-out_forwards]">
+            {/* Close button */}
+            <button 
+              onClick={() => setShowLoginModal(false)}
+              className="absolute -top-12 right-0 text-slate-400 hover:text-white transition-colors bg-[#050814]/50 border border-cyan-500/20 p-2 rounded-full hover:bg-cyan-500/20"
+            >
+              <X size={20} />
+            </button>
+            
+            <form onSubmit={handleLogin} className="space-y-4 bg-[#050814]/90 backdrop-blur-xl border border-cyan-500/30 rounded-2xl p-6 shadow-[0_0_50px_rgba(6,182,212,0.15)] relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-violet-500"></div>
+              
+              <div className="text-center mb-6 pt-2">
+                <h3 className="text-sm font-black text-white tracking-[3px] uppercase">Administrator</h3>
+                <p className="text-[10px] text-cyan-400/80 tracking-[1.5px] mt-1 font-mono">System Access Gateway</p>
+              </div>
+
+              {loginError && (
+                <div className="flex items-center gap-2 p-2.5 rounded-lg bg-red-950/40 border border-red-500/20 text-red-400 text-[10px] font-mono leading-tight">
+                  <ShieldAlert size={14} className="flex-shrink-0 animate-pulse text-red-500" />
+                  <span>{loginError}</span>
+                </div>
+              )}
+
+              {/* Username Input */}
+              <div className="relative group">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-cyan-400/50 group-focus-within:text-cyan-400 transition-colors">
+                  <User size={15} />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#020409]/90 border border-cyan-500/20 focus:border-cyan-400/80 focus:ring-1 focus:ring-cyan-400/40 text-white font-mono text-[11px] placeholder-slate-600 tracking-[1.5px] transition-all outline-none"
+                  disabled={isAuthenticating}
+                  autoFocus
+                />
+              </div>
+
+              {/* Password Input */}
+              <div className="relative group">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-cyan-400/50 group-focus-within:text-cyan-400 transition-colors">
+                  <Lock size={15} />
+                </span>
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-[#020409]/90 border border-cyan-500/20 focus:border-cyan-400/80 focus:ring-1 focus:ring-cyan-400/40 text-white font-mono text-[11px] placeholder-slate-600 tracking-[1.5px] transition-all outline-none"
+                  disabled={isAuthenticating}
+                />
+              </div>
+
+              {/* Login Button */}
+              <button
+                type="submit"
+                onMouseEnter={playHoverTick}
+                disabled={isAuthenticating}
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white text-[10px] font-black tracking-[3px] uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_35px_rgba(139,92,246,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 cursor-pointer border border-cyan-400/30 relative overflow-hidden group flex items-center justify-center gap-2 mt-4"
+              >
+                {isAuthenticating ? (
+                  <>
+                    <span className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+                    <span>AUTHENTICATING...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>ESTABLISH SESSION</span>
+                    <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* STYLESHEET ANIMATIONS */}
       <style>

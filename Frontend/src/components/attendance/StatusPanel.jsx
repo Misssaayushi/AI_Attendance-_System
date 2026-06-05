@@ -46,7 +46,9 @@ const StatusPanel = ({ state, student }) => {
         <h3 className="text-lg font-bold text-white tracking-tight">{current.title}</h3>
         <p className="text-sm text-gray-400">{current.desc}</p>
         {state === 'success' && student && (
-          <p className="text-[10px] text-green-400/70 font-mono mt-1 uppercase">ID: {student.id} | Time: {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+          <p className="text-[10px] text-green-400/70 font-mono mt-1 uppercase">
+            ID: {student.id} | Confidence: {student.confidence ? `${student.confidence.toFixed(1)}%` : '100%'} | Time: {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+          </p>
         )}
       </div>
     </div>
