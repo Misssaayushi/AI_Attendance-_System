@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import json
+import os
 import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Optional, TypedDict
 
 import requests
@@ -43,6 +46,10 @@ class AttendancePayload(TypedDict):
     status: str
 
 
+FAILED_EVENTS_FILE = Path(__file__).parent / "logs" / "failed_events.jsonl"
+FAILED_EVENTS_FILE.parent.mkdir(parents=True, exist_ok=True)
+
+
 @dataclass
 class AttendanceAPIResponse:
     success: bool
@@ -75,6 +82,7 @@ class AttendanceAPIService:
         self.mock_force_failure = mock_force_failure
         self.mock_response_delay_seconds = max(0.0, mock_response_delay_seconds)
         self.logger = get_logger("API_Connector")
+        self.api_key = os.getenv("AI_MODULE_API_KEY", "ai-module-secret-key")
 
     def build_attendance_payload(
         self,
@@ -124,6 +132,9 @@ class AttendanceAPIService:
         if validation_error is not None:
             return validation_error
 
+        # Try to replay any previously failed events before sending new one
+        self.replay_failed_events()
+
         if self.mock_mode:
             return self._send_mock(payload)
         return self._send_http(payload)
@@ -163,6 +174,7 @@ class AttendanceAPIService:
                     self.verify_url,
                     json=payload,
                     timeout=self.timeout_seconds,
+                    headers={"X-API-Key": self.api_key},
                 )
                 return self._build_response_from_http(response)
             except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as exc:
@@ -178,6 +190,7 @@ class AttendanceAPIService:
             except requests.exceptions.RequestException as exc:
                 last_error = str(exc)
                 self.logger.error("Attendance request error: %s", last_error)
+                self._queue_failed_event(payload)
                 return AttendanceAPIResponse(
                     success=False,
                     message=API_ERROR_MESSAGE,
@@ -186,6 +199,7 @@ class AttendanceAPIService:
                     error=last_error,
                 )
 
+        self._queue_failed_event(payload)
         return AttendanceAPIResponse(
             success=False,
             message=API_ERROR_MESSAGE,
@@ -283,3 +297,91 @@ class AttendanceAPIService:
             if isinstance(value, str) and value.strip():
                 return value.strip()
         return None
+
+    def _queue_failed_event(self, payload: AttendancePayload) -> None:
+        """Store failed event for later replay."""
+        try:
+            with open(FAILED_EVENTS_FILE, "a") as f:
+                f.write(json.dumps(payload) + "\n")
+            self.logger.info("Queued failed event for student_id=%s", payload["student_id"])
+        except Exception as exc:
+            self.logger.error("Failed to queue event: %s", str(exc))
+
+    def replay_failed_events(self) -> int:
+        """Attempt to resend previously failed events."""
+        if not FAILED_EVENTS_FILE.exists():
+            return 0
+        
+        replayed = 0
+        remaining = []
+        
+        try:
+            with open(FAILED_EVENTS_FILE, "r") as f:
+                lines = f.readlines()
+                
+            for line in lines:
+                try:
+                    payload = json.loads(line.strip())
+                    # Skip replay if it fails validation
+                    if self._validate_payload(payload) is not None:
+                        continue
+                        
+                    # Send payload directly to avoid infinite recursion
+                    if self.mock_mode:
+                        result = self._send_mock(payload)
+                    else:
+                        result = self._send_http_no_queue(payload)
+                        
+                    if result.success:
+                        replayed += 1
+                        self.logger.info("Successfully replayed queued event for student_id=%s", payload["student_id"])
+                    else:
+                        remaining.append(line)
+                except Exception:
+                    remaining.append(line)
+            
+            if replayed > 0 or len(remaining) != len(lines):
+                with open(FAILED_EVENTS_FILE, "w") as f:
+                    f.writelines(remaining)
+                    
+        except Exception as exc:
+            self.logger.error("Failed to replay queued events: %s", str(exc))
+            
+        return replayed
+
+    def _send_http_no_queue(self, payload: AttendancePayload) -> AttendanceAPIResponse:
+        """Helper to send HTTP request without queuing on failure (used during replay)."""
+        attempts = self.retry_count + 1
+        last_error = None
+
+        for attempt in range(1, attempts + 1):
+            try:
+                response = requests.post(
+                    self.verify_url,
+                    json=payload,
+                    timeout=self.timeout_seconds,
+                    headers={"X-API-Key": self.api_key},
+                )
+                return self._build_response_from_http(response)
+            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as exc:
+                last_error = str(exc)
+                if attempt < attempts and self.retry_delay_seconds > 0:
+                    time.sleep(self.retry_delay_seconds)
+            except requests.exceptions.RequestException as exc:
+                last_error = str(exc)
+                return AttendanceAPIResponse(
+                    success=False,
+                    message=API_ERROR_MESSAGE,
+                    status_code=None,
+                    mocked=False,
+                    error=last_error,
+                )
+
+        return AttendanceAPIResponse(
+            success=False,
+            message=API_ERROR_MESSAGE,
+            status_code=None,
+            mocked=False,
+            error=last_error or "Unknown network error",
+        )
+

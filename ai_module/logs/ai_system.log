@@ -12917,3 +12917,15 @@ Invoked with: <_dlib_pybind11.face_recognition_model_v1 object at 0x111dd6070>, 
 2026-05-30 11:14:01 | EncodingCache | INFO | Successfully cached 3 face encodings in 0.08 ms.
 2026-05-30 11:14:03 | EncodingCache | INFO | Successfully cached 12 face encodings in 0.20 ms.
 2026-05-30 11:14:03 | EncodingCache | INFO | Performance report generated successfully: benchmark_report_20260530_111403.txt
+2026-06-02 21:09:06 | API_Connector | WARNING | Mock transmission failed for student_id=999
+2026-06-02 21:09:06 | API_Connector | INFO | Mock transmission succeeded for student_id=1000
+2026-06-02 21:09:14 | API_Connector | WARNING | Attendance transmission attempt 1/1 failed: HTTPConnectionPool(host='localhost', port=9999): Max retries exceeded with url: /api/v1/attendance/verify (Caused by NewConnectionError("HTTPConnection(host='localhost', port=9999): Failed to establish a new connection: [Errno 61] Connection refused"))
+2026-06-02 21:09:14 | API_Connector | INFO | Queued failed event for student_id=999
+2026-06-02 21:09:14 | API_Connector | INFO | Mock transmission succeeded for student_id=999
+2026-06-02 21:09:14 | API_Connector | INFO | Successfully replayed queued event for student_id=999
+2026-06-02 21:09:14 | API_Connector | INFO | Mock transmission succeeded for student_id=1000
+2026-06-02 21:12:16 | API_Connector | WARNING | Attendance transmission attempt 1/1 failed: HTTPConnectionPool(host='localhost', port=9999): Max retries exceeded with url: /api/v1/attendance/verify (Caused by NewConnectionError("HTTPConnection(host='localhost', port=9999): Failed to establish a new connection: [Errno 61] Connection refused"))
+2026-06-02 21:12:16 | API_Connector | INFO | Queued failed event for student_id=999
+2026-06-02 21:12:16 | API_Connector | INFO | Mock transmission succeeded for student_id=999
+2026-06-02 21:12:16 | API_Connector | INFO | Successfully replayed queued event for student_id=999
+2026-06-02 21:12:16 | API_Connector | INFO | Mock transmission succeeded for student_id=1000

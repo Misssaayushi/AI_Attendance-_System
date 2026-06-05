@@ -55,6 +55,9 @@ API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 ATTENDANCE_VERIFY_ENDPOINT = os.getenv("ATTENDANCE_VERIFY_ENDPOINT", "/api/v1/attendance/verify")
 ATTENDANCE_VERIFY_URL = f"{API_BASE_URL.rstrip('/')}{ATTENDANCE_VERIFY_ENDPOINT}"
 
+# API Authentication
+AI_MODULE_API_KEY = os.getenv("AI_MODULE_API_KEY", "ai-module-secret-key")
+
 # API Reliability Settings
 API_TIMEOUT_SECONDS = float(os.getenv("API_TIMEOUT_SECONDS", "2.0"))
 API_RETRY_COUNT = int(os.getenv("API_RETRY_COUNT", "1"))
