@@ -9,6 +9,26 @@ from typing import List, Optional
 from pydantic import BaseModel, Field, ValidationInfo, confloat, field_validator
 
 
+class AIAttendancePayload(BaseModel):
+    """Schema for incoming AI Module attendance events."""
+    student_id: str  # AI sends string, we convert to int
+    name: str
+    confidence: float  # 0-100 scale
+    timestamp: str  # ISO-8601
+    status: str = "Present"
+
+    @field_validator("student_id")
+    @classmethod
+    def validate_student_id(cls, v):
+        try:
+            int_id = int(v)
+            if int_id <= 0:
+                raise ValueError
+            return v
+        except (ValueError, TypeError):
+            raise ValueError("student_id must be a positive integer string")
+
+
 class AttendanceStatus(str, Enum):
     PRESENT = "Present"
     ABSENT = "Absent"

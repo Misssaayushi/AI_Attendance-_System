@@ -22,7 +22,7 @@ class Settings:
     SERVER_HOST = os.getenv("SERVER_HOST", "0.0.0.0")
     SERVER_PORT = int(os.getenv("SERVER_PORT", 8000))
     DEBUG_MODE = os.getenv("DEBUG_MODE", "True").lower() == "true"
-    REQUEST_MAX_BODY_BYTES = int(os.getenv("REQUEST_MAX_BODY_BYTES", 1048576))  # 1MB default
+    REQUEST_MAX_BODY_BYTES = int(os.getenv("REQUEST_MAX_BODY_BYTES", 20971520))  # 20MB default
     SECURITY_HEADERS_ENABLED = os.getenv("SECURITY_HEADERS_ENABLED", "True").lower() == "true"
 
     # Security
@@ -35,6 +35,10 @@ class Settings:
 
     # Export paths
     EXPORT_DIR = os.getenv("EXPORT_DIR", os.path.join(BASE_DIR, "exports"))
+
+    # AI Module Integration
+    AI_MODULE_DIR = os.getenv("AI_MODULE_DIR", os.path.join(BASE_DIR, "..", "..", "ai-module", "AI_Module"))
+    AI_DATASET_DIR = os.getenv("AI_DATASET_DIR", os.path.join(AI_MODULE_DIR, "dataset"))
 
     # Logging
     LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG")
@@ -90,7 +94,9 @@ class Settings:
     @property
     def DATABASE_URL(self) -> str:
         """Computes the SQLAlchemy Database URL."""
-        return f"mysql+mysqlconnector://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        import urllib.parse
+        safe_password = urllib.parse.quote_plus(self.DB_PASSWORD)
+        return f"mysql+mysqlconnector://{self.DB_USER}:{safe_password}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     def validate_scheduler_settings(self) -> None:
         if not (0 <= self.AUTO_ABSENT_HOUR <= 23):

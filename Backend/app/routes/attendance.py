@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from datetime import date
 
-from fastapi import APIRouter, Depends, Query, status
+import os
+import asyncio
+from fastapi import APIRouter, Depends, Query, status, Header, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
@@ -15,12 +17,58 @@ from app.services import excel_service
 from app.utils.logger import logger
 from app.utils.request_validation import normalize_page_size, normalize_search
 from app.utils.response import success, success_response
+from app.routes.websocket import broadcast_attendance_event
 
 router = APIRouter(dependencies=[Depends(get_current_admin)])
+ai_router = APIRouter()
+
+INTERNAL_API_KEY = os.getenv("AI_MODULE_API_KEY", "ai-module-secret-key")
+
+@ai_router.post("/verify", status_code=status.HTTP_201_CREATED)
+def verify_attendance_from_ai(
+    payload: attendance_schema.AIAttendancePayload,
+    background_tasks: BackgroundTasks,
+    x_api_key: str = Header(..., alias="X-API-Key"),
+    db: Session = Depends(get_db),
+):
+    """
+    Endpoint for AI Module to send verified attendance events.
+    Uses API key authentication instead of JWT.
+    """
+    if x_api_key != INTERNAL_API_KEY:
+        raise HTTPException(status_code=403, detail="Invalid API key")
+
+    # Convert AI payload to standard attendance mark request
+    mark_request = attendance_schema.AttendanceMarkRequest(
+        student_id=payload.student_id,
+        status=attendance_schema.AttendanceStatus(payload.status),
+        confidence_score=payload.confidence / 100.0,  # Convert 0-100 -> 0.0-1.0
+        source="ai_recognition",
+    )
+    
+    record = attendance_service.mark_attendance(db, mark_request)
+    
+    # Broadcast real-time event to all connected Frontend clients
+    event = {
+        "type": "attendance_marked",
+        "student_id": record.student_id,
+        "student_name": record.student.full_name if record.student else payload.student_id,
+        "status": record.status,
+        "time": record.time.isoformat() if record.time else None,
+        "confidence": payload.confidence,
+    }
+    background_tasks.add_task(broadcast_attendance_event, event)
+
+    return success_response(
+        data={"id": record.id, "student_id": record.student_id, "status": record.status},
+        message="Attendance verified and logged",
+        status_code=201,
+    )
+
 
 
 def _serialize_record(record) -> dict:
-    return attendance_schema.AttendanceRecordResponse(
+    data = attendance_schema.AttendanceRecordResponse(
         id=record.id,
         student_id=record.student_id,
         student_name=record.student.full_name if record.student else None,
@@ -32,6 +80,8 @@ def _serialize_record(record) -> dict:
         source=None,
         created_at=None,
     ).model_dump(mode="json")
+    data["department"] = record.student.department if record.student else None
+    return data
 
 
 @router.post("/mark", status_code=status.HTTP_201_CREATED)
