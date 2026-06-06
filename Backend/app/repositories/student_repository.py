@@ -4,6 +4,7 @@ from typing import List, Optional, Tuple
 
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+import json
 
 from app import models
 from app.schemas import student as student_schema
@@ -49,7 +50,7 @@ def create(db: Session, payload: student_schema.StudentCreate) -> models.Student
         semester=payload.semester,
         section=payload.section,
         gender=payload.gender,
-        face_encoding=None if payload.face_encoding is None else str(payload.face_encoding),
+        face_encoding=None if payload.face_encoding is None else json.dumps(payload.face_encoding),
     )
     db.add(student)
     db.commit()
@@ -73,6 +74,9 @@ def update(db: Session, *, student: models.Student, payload: student_schema.Stud
     ]:
         value = getattr(payload, attr, None)
         if value is not None:
+            if attr == "face_encoding" and isinstance(value, list):
+                import json
+                value = json.dumps(value)
             model_attr = "email_address" if attr == "email" else attr
             setattr(student, model_attr, value)
     db.commit()

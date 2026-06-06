@@ -28,6 +28,10 @@ class AIAttendancePayload(BaseModel):
         except (ValueError, TypeError):
             raise ValueError("student_id must be a positive integer string")
 
+class RecognizeFrameRequest(BaseModel):
+    """Schema for recognizing a single frame via the Web UI."""
+    image_base64: str
+
 
 class AttendanceStatus(str, Enum):
     PRESENT = "Present"

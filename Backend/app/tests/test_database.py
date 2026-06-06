@@ -6,10 +6,21 @@ from datetime import datetime
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_database():
-    """Creates all tables once per test session."""
+    """Creates all tables once per test session and seeds default admin."""
     from app.models import Base
+    from app.utils.security import get_password_hash
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
+    
+    # Seed default admin so dev database is always ready for login
+    session = SessionLocal()
+    try:
+        session.add(Admin(username="admin", password=get_password_hash("admin123")))
+        session.commit()
+    except Exception:
+        session.rollback()
+    finally:
+        session.close()
 
 @pytest.fixture
 def db_session():

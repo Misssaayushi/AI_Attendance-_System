@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import math
-from datetime import date, datetime, timezone
+from datetime import date, datetime, time, timezone
 from typing import Optional, Tuple
+from zoneinfo import ZoneInfo
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -20,6 +21,22 @@ from app.exports import normalize_export_row
 from app.repositories import attendance_repository
 from app.schemas.attendance import AttendanceMarkRequest, AttendanceSummaryResponse
 from app.utils.logger import logger
+from app.config import settings
+
+
+def _compute_status_from_time(check_in_time: time) -> str:
+    """
+    Computes attendance status strictly based on time of day.
+    <= 9:00 AM -> Present
+    9:00 AM to 11:30 AM -> Late
+    > 11:30 AM -> Absent
+    """
+    if check_in_time <= time(9, 0, 0):
+        return "Present"
+    elif check_in_time <= time(11, 30, 0):
+        return "Late"
+    else:
+        return "Absent"
 
 
 def list_attendance(
@@ -85,9 +102,12 @@ def mark_attendance(
             f"Recognition confidence below threshold ({payload.confidence_score:.2f} < {min_confidence:.2f})"
         )
 
-    now_utc = datetime.now(timezone.utc)
-    attendance_date = payload.attendance_date or now_utc.date()
-    attendance_time = payload.attendance_time or now_utc.time().replace(microsecond=0)
+    now_local = datetime.now(ZoneInfo(settings.ATTENDANCE_TIMEZONE))
+    attendance_date = payload.attendance_date or now_local.date()
+    attendance_time = payload.attendance_time or now_local.time().replace(microsecond=0)
+    
+    # STRICT TIME LOGIC: Ignore payload status, compute based on arrival time
+    computed_status = _compute_status_from_time(attendance_time)
 
     existing = attendance_repository.get_by_student_and_date(
         db,
@@ -108,7 +128,7 @@ def mark_attendance(
             student_id=payload.student_id,
             attendance_date=attendance_date,
             attendance_time=attendance_time,
-            status=payload.status.value,
+            status=computed_status,
         )
         logger.info(
             "event=attendance_marked attendance_id=%s student_id=%s attendance_date=%s status=%s",
@@ -134,6 +154,20 @@ def get_attendance_by_id(db: Session, attendance_id: int) -> models.Attendance:
         logger.warning("event=attendance_not_found attendance_id=%s", attendance_id)
         raise AttendanceNotFoundException("Attendance record not found")
     return record
+
+
+def get_student_attendance_for_date(
+    db: Session,
+    *,
+    student_id: int,
+    attendance_date: Optional[date] = None,
+) -> Optional[models.Attendance]:
+    target_date = attendance_date or datetime.now(ZoneInfo(settings.ATTENDANCE_TIMEZONE)).date()
+    return attendance_repository.get_by_student_and_date(
+        db,
+        student_id=student_id,
+        attendance_date=target_date,
+    )
 
 
 def get_daily_summary(db: Session, *, target_date: Optional[date] = None) -> AttendanceSummaryResponse:

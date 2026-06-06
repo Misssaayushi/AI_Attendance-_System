@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, time
 
 import pytest
 
@@ -52,6 +52,7 @@ def test_mark_attendance_success(db_session):
     payload = AttendanceMarkRequest(
         student_id=student.id,
         attendance_date=datetime.now(timezone.utc).date(),
+        attendance_time=time(8, 0, 0),
         status="Present",
         confidence_score=0.92,
     )
@@ -66,6 +67,7 @@ def test_mark_attendance_duplicate_rejected(db_session):
     payload = AttendanceMarkRequest(
         student_id=student.id,
         attendance_date=datetime.now(timezone.utc).date(),
+        attendance_time=time(8, 0, 0),
         status="Present",
         confidence_score=0.95,
     )

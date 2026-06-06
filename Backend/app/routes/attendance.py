@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 
 import os
 import asyncio
@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, Query, status, Header, HTTPException, Ba
 from sqlalchemy.orm import Session
 
 from app.database.connection import get_db
+from app.exceptions import DuplicateAttendanceException
 from app.middleware.auth_deps import get_current_admin
 from app.schemas import attendance as attendance_schema
 from app.services import attendance_service
@@ -41,7 +42,6 @@ def verify_attendance_from_ai(
     # Convert AI payload to standard attendance mark request
     mark_request = attendance_schema.AttendanceMarkRequest(
         student_id=payload.student_id,
-        status=attendance_schema.AttendanceStatus(payload.status),
         confidence_score=payload.confidence / 100.0,  # Convert 0-100 -> 0.0-1.0
         source="ai_recognition",
     )
@@ -65,8 +65,289 @@ def verify_attendance_from_ai(
         status_code=201,
     )
 
+from pydantic import BaseModel
+
+class UnrecognizedPayload(BaseModel):
+    timestamp: str
+    confidence: float
+
+@ai_router.post("/unrecognized", status_code=status.HTTP_201_CREATED)
+def handle_unrecognized_face(
+    payload: UnrecognizedPayload,
+    background_tasks: BackgroundTasks,
+    x_api_key: str = Header(..., alias="X-API-Key"),
+):
+    """
+    Endpoint for AI Module to send unrecognized face events.
+    """
+    if x_api_key != INTERNAL_API_KEY:
+        raise HTTPException(status_code=403, detail="Invalid API key")
+        
+    event = {
+        "type": "unrecognized_face",
+        "timestamp": payload.timestamp,
+        "confidence": payload.confidence,
+    }
+    background_tasks.add_task(broadcast_attendance_event, event)
+    
+    return success_response(
+        data=event,
+        message="Unrecognized face event broadcasted",
+        status_code=201,
+    )
+
+import tempfile
+import base64
+import json
+
+_ai_detector = None
+_ai_manager = None
+_ai_recognizer = None
+
+def get_ai_models():
+    global _ai_detector, _ai_manager, _ai_recognizer
+    if _ai_detector is None:
+        from app.config import settings
+        import sys
+        if settings.AI_MODULE_DIR not in sys.path:
+            sys.path.append(settings.AI_MODULE_DIR)
+        
+        try:
+            from utils import FaceDetector, EncodingManager, FaceRecognizer
+            from config import ENCODING_FILE, FACE_DETECTION_MODEL, FRAME_RESIZE_SCALE, RECOGNITION_TOLERANCE
+            _ai_detector = FaceDetector(model=FACE_DETECTION_MODEL, scale=FRAME_RESIZE_SCALE)
+            _ai_manager = EncodingManager(encoding_file=ENCODING_FILE)
+            _ai_recognizer = FaceRecognizer(encoding_manager=_ai_manager, tolerance=RECOGNITION_TOLERANCE)
+        except ImportError as e:
+            raise RuntimeError(f"Could not load AI models: {e}")
+            
+    return _ai_detector, _ai_manager, _ai_recognizer
 
 
+_dataset_cache = {}
+
+@ai_router.post("/recognize-frame")
+def recognize_frame(
+    payload: attendance_schema.RecognizeFrameRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
+    """
+    Endpoint for Web UI to send a frame and get it recognized.
+    Checks all photos in the dataset folder directly to compare with the student in the camera.
+    """
+    import sys
+    import os
+    from app.config import settings
+
+    # Inject AI Module's virtual environment site-packages to sys.path
+    # so we can import face_recognition, dlib, and cv2 directly
+    ai_venv_site = os.path.join(settings.AI_MODULE_DIR, "venv", "lib", f"python{sys.version_info.major}.{sys.version_info.minor}", "site-packages")
+    if os.path.exists(ai_venv_site) and ai_venv_site not in sys.path:
+        sys.path.append(ai_venv_site)
+
+    import cv2
+    import numpy as np
+    import face_recognition
+
+    # 1. Decode base64 image
+    img_data = payload.image_base64
+    if "," in img_data:
+        img_data = img_data.split(",")[1]
+    
+    img_bytes = base64.b64decode(img_data)
+    
+    # 2. Convert to CV2 frame
+    nparr = np.frombuffer(img_bytes, np.uint8)
+    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    if frame is None:
+        return success_response(data={"status": "error", "message": "Failed to decode image"}, message="Recognition failed", status_code=500)
+
+    try:
+        # Dynamically check dataset folder and keep in cache
+        global _dataset_cache
+        dataset_dir = settings.AI_DATASET_DIR
+
+        # 1. Prune folders from cache if they are no longer in the physical directory
+        existing_folders = set()
+        if os.path.exists(dataset_dir):
+            existing_folders = {f for f in os.listdir(dataset_dir) if os.path.isdir(os.path.join(dataset_dir, f))}
+        for cached_folder in list(_dataset_cache.keys()):
+            if cached_folder not in existing_folders:
+                del _dataset_cache[cached_folder]
+
+        # 2. Get active student IDs from DB to filter out orphan directories
+        from app.models.student import Student
+        active_student_ids = {s.id for s in db.query(Student.id).all()}
+
+        # 3. Load/update encodings from dataset folders
+        if os.path.exists(dataset_dir):
+            for student_folder in os.listdir(dataset_dir):
+                folder_path = os.path.join(dataset_dir, student_folder)
+                if os.path.isdir(folder_path):
+                    # Parse student_id from folder name (e.g. "12_Aayushi" -> 12)
+                    try:
+                        student_id = int(student_folder.split('_')[0]) if '_' in student_folder else int(student_folder)
+                    except ValueError:
+                        continue
+
+                    # Skip folders for students that do not exist in the database
+                    if student_id not in active_student_ids:
+                        if student_folder in _dataset_cache:
+                            del _dataset_cache[student_folder]
+                        continue
+
+                    files = sorted(
+                        f for f in os.listdir(folder_path)
+                        if f.lower().endswith(('.jpg', '.jpeg', '.png'))
+                    )
+                    signature = tuple(
+                        (
+                            f,
+                            os.path.getmtime(os.path.join(folder_path, f)),
+                            os.path.getsize(os.path.join(folder_path, f)),
+                        )
+                        for f in files
+                    )
+                    cache_entry = _dataset_cache.get(student_folder)
+                    cache_signature = cache_entry.get("signature") if isinstance(cache_entry, dict) else None
+
+                    if cache_signature != signature:
+                        encodings = []
+                        for img_name in files:
+                            img_path = os.path.join(folder_path, img_name)
+                            img = face_recognition.load_image_file(img_path)
+                            face_locs = face_recognition.face_locations(img)
+                            if face_locs:
+                                # Sort face locations by area (descending) to ensure we always grab the largest face (the student)
+                                face_locs.sort(key=lambda loc: (loc[1] - loc[3]) * (loc[2] - loc[0]), reverse=True)
+                                encs = face_recognition.face_encodings(img, [face_locs[0]])
+                                if encs:
+                                    encodings.append(encs[0])
+                        _dataset_cache[student_folder] = {
+                            "signature": signature,
+                            "encodings": encodings,
+                        }
+
+        # 3. Detect faces
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # Resize for speed
+        small_frame = cv2.resize(rgb_frame, (0, 0), fx=0.25, fy=0.25)
+        face_locations_small = face_recognition.face_locations(small_frame)
+
+        if not face_locations_small:
+            ai_response = {"status": "no_face_found"}
+        else:
+            face_locations = []
+            for (top, right, bottom, left) in face_locations_small:
+                face_locations.append((top * 4, right * 4, bottom * 4, left * 4))
+
+            live_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
+            
+            best_name = "Unknown"
+            best_confidence = 0.0
+            best_box = None
+
+            # Compare with all photos in dataset
+            for face_loc, live_enc in zip(face_locations, live_encodings):
+                for student_name, cache_entry in _dataset_cache.items():
+                    photo_encodings = (
+                        cache_entry.get("encodings", [])
+                        if isinstance(cache_entry, dict)
+                        else cache_entry
+                    )
+                    if not photo_encodings:
+                        continue
+                    distances = face_recognition.face_distance(photo_encodings, live_enc)
+                    if len(distances) == 0:
+                        continue
+                    match_idx = int(np.argmin(distances))
+                    distance = float(distances[match_idx])
+                    if distance <= 0.5:
+                        confidence = max(0, (0.5 - distance) / 0.5) * 100
+                        final_confidence = 75 + (confidence * 0.24)
+                        
+                        if final_confidence > best_confidence:
+                            best_confidence = final_confidence
+                            best_name = student_name
+                            best_box = face_loc
+
+            if best_name in ("Unknown", "Unknown Person"):
+                ai_response = {"status": "unrecognized", "confidence": 0.0}
+            else:
+                ai_response = {
+                    "status": "success",
+                    "student_id": best_name.split('_')[0] if '_' in best_name else best_name,
+                    "name": best_name,
+                    "confidence": best_confidence,
+                    "box": best_box
+                }
+            
+        if ai_response.get("status") == "success":
+            # 4. Mark attendance
+            student_id = int(ai_response["student_id"])
+            confidence = ai_response["confidence"]
+            
+            mark_request = attendance_schema.AttendanceMarkRequest(
+                student_id=student_id,
+                confidence_score=confidence / 100.0,
+                source="web_ui_recognition",
+            )
+            try:
+                record = attendance_service.mark_attendance(db, mark_request)
+                
+                event = {
+                    "type": "attendance_marked",
+                    "student_id": record.student_id,
+                    "student_name": record.student.full_name if record.student else str(student_id),
+                    "status": record.status,
+                    "time": record.time.isoformat() if record.time else None,
+                    "confidence": confidence,
+                    "box": ai_response.get("box")
+                }
+                background_tasks.add_task(broadcast_attendance_event, event)
+                return success_response(data=event, message="Match found", status_code=200)
+            except DuplicateAttendanceException as e:
+                existing = attendance_service.get_student_attendance_for_date(db, student_id=student_id)
+                return success_response(
+                    data={
+                        "type": "attendance_duplicate",
+                        "status": "duplicate",
+                        "student_id": student_id,
+                        "time": existing.time.isoformat() if existing and existing.time else None,
+                        "message": str(e),
+                    },
+                    message=str(e),
+                    status_code=200,
+                )
+            except Exception as e:
+                return success_response(
+                    data={"status": "error", "message": str(e)},
+                    message="Attendance could not be marked",
+                    status_code=500,
+                )
+
+        elif ai_response.get("status") == "unrecognized":
+            event = {
+                "type": "unrecognized_face",
+                "timestamp": datetime.now().isoformat(),
+                "confidence": ai_response.get("confidence", 0.0),
+            }
+            background_tasks.add_task(broadcast_attendance_event, event)
+            return success_response(
+                data={
+                    "status": "unrecognized",
+                    "message": "Student should register first.",
+                },
+                message="Unknown person, please first register yourself",
+                status_code=200,
+            )
+            
+        return success_response(data=ai_response, message="No actionable face found", status_code=200)
+    except Exception as e:
+        return success_response(data={"status": "error", "message": str(e)}, message="Recognition failed", status_code=500)
+            
 def _serialize_record(record) -> dict:
     data = attendance_schema.AttendanceRecordResponse(
         id=record.id,
@@ -151,7 +432,7 @@ def list_attendance(
     return success(data=response, message="Attendance records retrieved successfully")
 
 
-@router.get("/summary/daily")
+@ai_router.get("/summary/daily")
 def daily_summary(
     target_date: date | None = None,
     db: Session = Depends(get_db),

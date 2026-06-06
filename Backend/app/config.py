@@ -47,6 +47,7 @@ class Settings:
     # Scheduler (Phase 7 Step 1-2)
     SCHEDULER_ENABLED = os.getenv("SCHEDULER_ENABLED", "True").lower() == "true"
     SCHEDULER_TIMEZONE = os.getenv("SCHEDULER_TIMEZONE", "Asia/Kolkata")
+    ATTENDANCE_TIMEZONE = os.getenv("ATTENDANCE_TIMEZONE", "Asia/Kolkata")
     AUTO_ABSENT_HOUR = int(os.getenv("AUTO_ABSENT_HOUR", 17))
     AUTO_ABSENT_MINUTE = int(os.getenv("AUTO_ABSENT_MINUTE", 0))
     AUTO_ABSENT_RETRY_LIMIT = int(os.getenv("AUTO_ABSENT_RETRY_LIMIT", 2))

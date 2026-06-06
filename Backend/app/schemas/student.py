@@ -163,6 +163,9 @@ class StudentResponse(StudentBase):
     id: int
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
+    attendance_rate: Optional[float] = None
+    status: Optional[str] = None
+    arrival_time: Optional[str] = None
 
     @field_validator("created_at", "updated_at", mode="before")
     @classmethod
