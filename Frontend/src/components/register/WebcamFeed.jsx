@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Camera, CameraOff, Scissors, RefreshCw } from 'lucide-react';
 import Button from '../Button';
 
-const WebcamFeed = ({ onCapture, onStreamStart, onStreamStop, onError }) => {
+const WebcamFeed = ({ onCapture, onStreamStart, onStreamStop, onError, autoStart = false, autoInterval = 0, onLiveFrame }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [isActive, setIsActive] = useState(false);
@@ -80,9 +80,38 @@ const WebcamFeed = ({ onCapture, onStreamStart, onStreamStop, onError }) => {
     if (onCapture) onCapture(null);
   };
 
+  const captureSingleFrame = () => {
+    if (videoRef.current && isActive && !isCapturing) {
+      const video = videoRef.current;
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 1280;
+      canvas.height = video.videoHeight || 720;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL('image/jpeg', 0.8);
+    }
+    return null;
+  };
+
   useEffect(() => {
+    if (autoStart) {
+      startCamera();
+    }
     return () => stopCamera();
   }, []);
+
+  useEffect(() => {
+    let interval;
+    if (isActive && autoInterval && onLiveFrame) {
+      interval = setInterval(() => {
+        const frame = captureSingleFrame();
+        if (frame) {
+          onLiveFrame(frame);
+        }
+      }, autoInterval);
+    }
+    return () => clearInterval(interval);
+  }, [isActive, autoInterval, onLiveFrame]);
 
   return (
     <div className="space-y-4">

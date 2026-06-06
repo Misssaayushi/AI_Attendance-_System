@@ -10,6 +10,7 @@ import Register from '../pages/Register';
 import Attendance from '../pages/Attendance';
 import Dashboard from '../pages/Dashboard';
 import Records from '../pages/Records';
+import Students from '../pages/Students';
 import SYNEXIntro from '../components/intro/SYNEXIntro';
 
 const ProtectedRoute = ({ children }) => {
@@ -43,6 +44,7 @@ const AppRoutes = () => {
       <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/records" element={<Records />} />
+        <Route path="/students" element={<Students />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

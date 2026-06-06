@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, AlertCircle, Loader, UserX } from 'lucide-react';
+import { CheckCircle, AlertCircle, Loader, UserX, ShieldX } from 'lucide-react';
 
 const StatusPanel = ({ state, student }) => {
   const configs = {
@@ -18,20 +18,26 @@ const StatusPanel = ({ state, student }) => {
     success: {
       color: 'bg-green-600/20 border-green-500/50',
       icon: <CheckCircle className="text-green-500" />,
-      title: 'Attendance Marked',
-      desc: `Welcome back, ${student?.name || 'Student'}`
+      title: 'Match found ✅',
+      desc: `Welcome, ${student?.name || 'Student'}!`
+    },
+    unrecognized: {
+      color: 'bg-red-600/20 border-red-500/50',
+      icon: <ShieldX className="text-red-500" />,
+      title: 'Unknown Person ❌',
+      desc: 'Please register yourself first.'
     },
     duplicate: {
       color: 'bg-orange-600/20 border-orange-500/50',
       icon: <AlertCircle className="text-orange-500" />,
       title: 'Already Marked',
-      desc: 'Attendance already recorded for today.'
+      desc: student?.message || 'Attendance already recorded for today.'
     },
-    unknown: {
+    error: {
       color: 'bg-red-600/20 border-red-500/50',
       icon: <UserX className="text-red-500" />,
-      title: 'Unknown Person',
-      desc: 'Face not recognized in database.'
+      title: 'Error',
+      desc: student?.message || 'Something went wrong. Please try again.'
     }
   };
 
@@ -44,10 +50,15 @@ const StatusPanel = ({ state, student }) => {
       </div>
       <div>
         <h3 className="text-lg font-bold text-white tracking-tight">{current.title}</h3>
-        <p className="text-sm text-gray-400">{current.desc}</p>
+        <p className="text-sm text-gray-400">{student?.message && state === 'unrecognized' ? student.message : current.desc}</p>
         {state === 'success' && student && (
           <p className="text-[10px] text-green-400/70 font-mono mt-1 uppercase">
-            ID: {student.id} | Confidence: {student.confidence ? `${student.confidence.toFixed(1)}%` : '100%'} | Time: {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+            ID: {student.id} | Confidence: {student.confidence ? `${student.confidence.toFixed(1)}%` : '100%'} | Arrival: {student.arrivalTime || 'Now'}
+          </p>
+        )}
+        {state === 'duplicate' && student?.arrivalTime && (
+          <p className="text-[10px] text-orange-400/80 font-mono mt-1 uppercase">
+            First arrival: {student.arrivalTime}
           </p>
         )}
       </div>

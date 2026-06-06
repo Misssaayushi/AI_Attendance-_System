@@ -4,13 +4,7 @@ import Card from '../Card';
 import { listStudents } from '../../services/api';
 import { extractData } from '../../services/apiHelpers';
 
-const mockStudents = [
-  { id: 1, name: 'Rahul Sharma', roll: 'STU-2026-042', dept: 'CS', rate: 88, status: 'Present' },
-  { id: 2, name: 'Aman Verma', roll: 'STU-2026-015', dept: 'IT', rate: 92, status: 'Late' },
-  { id: 3, name: 'Priya Patel', roll: 'STU-2026-103', dept: 'ME', rate: 78, status: 'Absent' },
-  { id: 4, name: 'Rohit Gupta', roll: 'STU-2026-089', dept: 'EE', rate: 85, status: 'Present' },
-  { id: 5, name: 'Neha Sharma', roll: 'STU-2026-056', dept: 'CS', rate: 95, status: 'Present' },
-];
+const mockStudents = [];
 
 const StudentTable = () => {
   const [students, setStudents] = useState([]);
@@ -32,8 +26,9 @@ const StudentTable = () => {
             name: `${s.first_name} ${s.last_name}`,
             roll: s.roll_number,
             dept: s.department,
-            rate: s.attendance_rate || Math.floor(Math.random() * (100 - 75 + 1) + 75), // Fallback
-            status: s.status || ['Present', 'Late', 'Absent'][Math.floor(Math.random() * 3)] // Fallback
+            rate: s.attendance_rate ?? 0,
+            status: s.status,
+            arrivalTime: s.arrival_time
           }));
           setStudents(mappedStudents);
         } else {
@@ -87,7 +82,7 @@ const StudentTable = () => {
       case 'Absent':
         return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20">Absent</span>;
       default:
-        return null;
+        return <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-500/10 text-gray-400 border border-gray-500/20">—</span>;
     }
   };
 
@@ -171,12 +166,13 @@ const StudentTable = () => {
               <th className="px-6 py-3.5 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Department</th>
               <th className="px-6 py-3.5 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Attendance %</th>
               <th className="px-6 py-3.5 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Status</th>
+              <th className="px-6 py-3.5 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Arrival Time</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-800/60 bg-transparent">
             {!loading && paginatedStudents.length === 0 ? (
               <tr>
-                <td colSpan="5" className="px-6 py-12 text-center text-xs text-gray-500 italic">
+                <td colSpan="6" className="px-6 py-12 text-center text-xs text-gray-500 italic">
                   No records found matching filters
                 </td>
               </tr>
@@ -220,6 +216,9 @@ const StudentTable = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {getStatusBadge(student.status)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-400 font-mono">
+                    {student.arrivalTime || '—'}
                   </td>
                 </tr>
               ))

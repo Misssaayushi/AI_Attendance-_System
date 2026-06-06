@@ -19,6 +19,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse, isMobileOpen, closeMobile }) => 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Records', path: '/records', icon: <ClipboardList size={20} /> },
+    { name: 'Students', path: '/students', icon: <Users size={20} /> },
     { name: 'Reports', path: '/reports', icon: <FileText size={20} />, optional: true }
   ];
 

@@ -16,16 +16,18 @@ const HeroSection = () => {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button 
+            type="button"
             size="lg" 
-            onClick={() => navigate('/attendance')}
+            onClick={(e) => { e.preventDefault(); navigate('/attendance'); }}
             className="w-full sm:w-auto"
           >
             Start Attendance
           </Button>
           <Button 
+            type="button"
             size="lg" 
             variant="outline" 
-            onClick={() => navigate('/register')}
+            onClick={(e) => { e.preventDefault(); navigate('/register'); }}
             className="w-full sm:w-auto"
           >
             Register New User

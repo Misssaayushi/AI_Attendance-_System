@@ -1,26 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import Container from '../components/Container';
 import Card from '../components/Card';
 import WebcamFeed from '../components/register/WebcamFeed';
 import DetectionOverlay from '../components/attendance/DetectionOverlay';
 import StatusPanel from '../components/attendance/StatusPanel';
-import ActivityFeed from '../components/attendance/ActivityFeed';
-import { Clock, Activity, Users, Zap, ArrowLeft } from 'lucide-react';
+import { Activity, Users, Zap, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAttendanceFeed } from '../hooks/useAttendanceFeed';
-import { getDailySummary, getHealthStatus } from '../services/api';
+import axios from 'axios';
+import { getDailySummary } from '../services/api';
 import { extractData } from '../services/apiHelpers';
+
+// Raw axios instance that does NOT have the 401 redirect interceptor.
+// The attendance terminal is a public page — no admin JWT required.
+const rawApi = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
+  headers: { 'Content-Type': 'application/json' },
+});
+
+const formatArrivalTime = (timeValue) => {
+  if (!timeValue) {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  if (typeof timeValue === 'string' && /^\d{2}:\d{2}/.test(timeValue)) {
+    const [hourValue, minuteValue] = timeValue.split(':');
+    const hour = parseInt(hourValue, 10);
+    const displayHour = hour % 12 || 12;
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    return `${displayHour}:${minuteValue} ${ampm}`;
+  }
+
+  const parsedDate = new Date(timeValue);
+  if (!Number.isNaN(parsedDate.getTime())) {
+    return parsedDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  return timeValue;
+};
 
 const Attendance = () => {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [recognitionState, setRecognitionState] = useState('idle');
+  // 'idle' | 'scanning' | 'success' | 'duplicate' | 'unrecognized' | 'error'
   const [lastMatch, setLastMatch] = useState(null);
   const [attendanceStats, setAttendanceStats] = useState({ present: 0, total: 0, percentage: 0 });
   const [backendOnline, setBackendOnline] = useState(false);
-  const [aiModuleOnline, setAiModuleOnline] = useState(false);
   const [time, setTime] = useState(new Date());
-
-  const { latestEvent, eventHistory } = useAttendanceFeed();
+  const [cameraSessionKey, setCameraSessionKey] = useState(0);
+  const isBusyRef = useRef(false);
 
   // Keep live clock running
   useEffect(() => {
@@ -32,15 +59,15 @@ const Attendance = () => {
   useEffect(() => {
     const checkHealth = async () => {
       try {
-        await getHealthStatus();
+        await rawApi.get('/api/v1/health');
         setBackendOnline(true);
-      } catch (err) {
+      } catch {
         setBackendOnline(false);
       }
     };
     
     checkHealth();
-    const interval = setInterval(checkHealth, 10000);
+    const interval = setInterval(checkHealth, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -65,45 +92,100 @@ const Attendance = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Update recognition state and last matched student on new WebSocket events
-  useEffect(() => {
-    if (latestEvent) {
-      setRecognitionState('success');
-      setLastMatch({
-        name: latestEvent.student_name,
-        id: latestEvent.student_id,
-        confidence: latestEvent.confidence,
+  const resetTerminalForNextStudent = useCallback((delay = 2500) => {
+    setTimeout(() => {
+      setRecognitionState('idle');
+      setLastMatch(null);
+      setCameraSessionKey(prev => prev + 1);
+      isBusyRef.current = false;
+    }, delay);
+  }, []);
+
+  // The core recognition handler — fires on every camera frame
+  const handleLiveFrame = useCallback(async (frame) => {
+    // Don't send frames while we're showing success/error state or already processing
+    if (isBusyRef.current) return;
+    
+    isBusyRef.current = true;
+    setRecognitionState('scanning');
+    
+    try {
+      const response = await rawApi.post('/api/v1/attendance/recognize-frame', {
+        image_base64: frame,
       });
+
+      const result = response.data?.data;
       
-      // Auto-trigger stats refresh
-      fetchStats();
+      if (!result) {
+        isBusyRef.current = false;
+        return;
+      }
 
-      // Reset to idle state after 4 seconds
-      const timer = setTimeout(() => {
-        setRecognitionState('idle');
-      }, 4000);
-      return () => clearTimeout(timer);
+      if (result.type === 'attendance_marked') {
+        // SUCCESS: Face recognized & attendance marked
+        setRecognitionState('success');
+        setLastMatch({
+          name: result.student_name,
+          id: result.student_id,
+          confidence: result.confidence,
+          box: result.box,
+          status: result.status,
+          arrivalTime: formatArrivalTime(result.time),
+        });
+        fetchStats();
+        resetTerminalForNextStudent(2500);
+        return;
+
+      } else if (result.status === 'cooldown' || result.status === 'duplicate') {
+        // Already marked today
+        setRecognitionState('duplicate');
+        setLastMatch({
+          name: 'Already Marked',
+          id: result.student_id || '',
+          confidence: 100,
+          box: null,
+          arrivalTime: result.time ? formatArrivalTime(result.time) : null,
+          message: result.message || 'Attendance already recorded for today.',
+        });
+        resetTerminalForNextStudent(2200);
+        return;
+
+      } else if (result.status === 'unrecognized') {
+        // NOT REGISTERED — tell the user
+        setRecognitionState('unrecognized');
+        setLastMatch({
+          name: 'Unknown Person',
+          id: 'Please register yourself first',
+          confidence: 0,
+          message: result.message || 'Student should register first.',
+        });
+        resetTerminalForNextStudent(3000);
+        return;
+      }
+
+      // no_face_found or other — silently continue scanning
+      setRecognitionState('idle');
+      isBusyRef.current = false;
+
+    } catch (err) {
+      console.error("Frame recognition error:", err);
+      setRecognitionState('error');
+      setLastMatch({ message: 'Recognition failed. Checking the next frame...' });
+      isBusyRef.current = false;
     }
-  }, [latestEvent]);
+  }, [resetTerminalForNextStudent]);
 
-  // Track AI module activity (mark as active if we received a WebSocket event in the last 60 seconds)
+  // Activity log from matches
+  const [activityLog, setActivityLog] = useState([]);
   useEffect(() => {
-    if (latestEvent) {
-      setAiModuleOnline(true);
-      const timer = setTimeout(() => setAiModuleOnline(false), 60000);
-      return () => clearTimeout(timer);
+    if (recognitionState === 'success' && lastMatch && lastMatch.name !== 'Already Marked') {
+      setActivityLog(prev => [{
+        name: lastMatch.name,
+        time: lastMatch.arrivalTime || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        confidence: lastMatch.confidence,
+      }, ...prev].slice(0, 10));
     }
-  }, [latestEvent]);
-
-  // Transform real-time WebSocket events into the log structure expected by ActivityFeed
-  const logs = eventHistory.map((event, idx) => ({
-    id: idx,
-    name: event.student_name,
-    message: event.status === 'Present' ? 'Attendance Marked' : event.status,
-    type: event.status === 'Present' ? 'success' : 'unknown',
-    time: event.time ? event.time.substring(0, 8) : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-    confidence: event.confidence,
-  }));
+  }, [recognitionState, lastMatch]);
 
   return (
     <div className="min-h-screen bg-[#0a0a0c] text-gray-100 flex flex-col font-sans">
@@ -156,11 +238,11 @@ const Attendance = () => {
 
             {/* AI Module Status */}
             <div className="flex flex-col items-start">
-              <span className="text-[9px] text-gray-500 uppercase font-black tracking-widest leading-none mb-1">AI Module</span>
+              <span className="text-[9px] text-gray-500 uppercase font-black tracking-widest leading-none mb-1">Web UI AI</span>
               <div className="flex items-center gap-2 mt-0.5">
-                <span className={`w-2 h-2 rounded-full ${aiModuleOnline ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'}`}></span>
-                <span className={`text-xs font-bold uppercase leading-none ${aiModuleOnline ? 'text-emerald-400 animate-pulse' : 'text-amber-400'}`}>
-                  {aiModuleOnline ? 'Active' : 'Standby'}
+                <span className={`w-2 h-2 rounded-full ${isCameraActive && backendOnline ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]'}`}></span>
+                <span className={`text-xs font-bold uppercase leading-none ${isCameraActive && backendOnline ? 'text-emerald-400 animate-pulse' : 'text-amber-400'}`}>
+                  {isCameraActive && backendOnline ? 'Active' : 'Standby'}
                 </span>
               </div>
             </div>
@@ -172,6 +254,10 @@ const Attendance = () => {
           <div className="lg:col-span-8 flex flex-col space-y-6">
             <div className="relative group rounded-3xl overflow-hidden border-2 border-gray-700/50 shadow-[0_0_60px_rgba(0,0,0,0.8)] bg-black aspect-video">
               <WebcamFeed 
+                key={cameraSessionKey}
+                autoStart={true}
+                autoInterval={1500}
+                onLiveFrame={handleLiveFrame}
                 onStreamStart={() => setIsCameraActive(true)}
                 onStreamStop={() => {
                   setIsCameraActive(false);
@@ -179,21 +265,35 @@ const Attendance = () => {
                 }}
               />
               {isCameraActive && (
-                <DetectionOverlay isScanning={recognitionState === 'success'} />
+                <DetectionOverlay 
+                  isScanning={recognitionState === 'scanning' || recognitionState === 'success'} 
+                  trackingBox={lastMatch?.box} 
+                />
               )}
               
-              {/* Progress Overlay */}
-              {recognitionState === 'success' && (
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-64 z-30">
-                  <div className="flex justify-between text-[10px] text-green-400 font-bold uppercase mb-1">
-                    <span>Scan Successful</span>
-                    <span>100%</span>
+              {/* Success Overlay */}
+              {recognitionState === 'success' && lastMatch && (
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-72 z-30">
+                  <div className="bg-green-900/80 backdrop-blur-md border border-green-500/50 rounded-2xl px-5 py-3 text-center shadow-[0_0_40px_rgba(34,197,94,0.3)]">
+                    <p className="text-green-400 font-bold text-sm">{lastMatch.name}</p>
+                    <p className="text-green-300/70 text-[10px] font-mono mt-1">
+                      Confidence: {lastMatch.confidence?.toFixed(1)}% | {lastMatch.arrivalTime}
+                    </p>
                   </div>
-                  <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden border border-white/5">
-                    <div 
-                      className="h-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)]"
-                      style={{ width: `100%` }}
-                    ></div>
+                </div>
+              )}
+
+              {/* Unrecognized Overlay */}
+              {recognitionState === 'unrecognized' && (
+                <div className="absolute inset-0 flex items-center justify-center z-30 bg-black/40 backdrop-blur-sm">
+                  <div className="bg-red-900/90 backdrop-blur-md border-2 border-red-500/60 rounded-3xl px-8 py-6 text-center shadow-[0_0_60px_rgba(239,68,68,0.4)] animate-in zoom-in duration-300">
+                    <div className="bg-red-500/20 rounded-full p-3 w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                      <svg className="w-10 h-10 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                      </svg>
+                    </div>
+                    <p className="text-red-300 font-bold text-lg">Unknown Person</p>
+                    <p className="text-red-400/80 text-xs mt-1">Please register yourself first.</p>
                   </div>
                 </div>
               )}
@@ -204,19 +304,19 @@ const Attendance = () => {
                 <Zap className="text-blue-500 fill-blue-500/10 animate-pulse" size={24} />
                 <div>
                   <span className="text-xs font-bold text-white block uppercase tracking-wider">Live AI Recognition Feed</span>
-                  <span className="text-[10px] text-gray-500 block">The system monitors real-time face detections from the desktop OpenCV camera module.</span>
+                  <span className="text-[10px] text-gray-500 block">Camera automatically scans faces and marks attendance in real-time.</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full ${aiModuleOnline ? 'bg-emerald-500 animate-ping' : 'bg-amber-500 animate-pulse'}`}></span>
+                <span className={`w-2 h-2 rounded-full ${isCameraActive && backendOnline ? 'bg-emerald-500 animate-ping' : 'bg-amber-500 animate-pulse'}`}></span>
                 <span className="text-[10px] font-mono uppercase tracking-widest text-gray-400">
-                  {aiModuleOnline ? 'AI Broadcaster Connected' : 'Waiting for AI Module...'}
+                  {isCameraActive && backendOnline ? 'AI Recognition Active' : 'Waiting for connection...'}
                 </span>
               </div>
             </Card>
           </div>
 
-          {/* Right: Sidebar (40%) */}
+          {/* Right: Sidebar (30%) */}
           <div className="lg:col-span-4 flex flex-col h-full space-y-6">
             <StatusPanel state={recognitionState} student={lastMatch} />
 
@@ -238,7 +338,40 @@ const Attendance = () => {
               </Card>
             </div>
 
-            <ActivityFeed logs={logs} onClear={() => {}} />
+            {/* Recent Activity */}
+            <Card className="flex flex-col flex-1 overflow-hidden border border-gray-800/80 bg-gray-900/40 p-0">
+              <div className="p-5 border-b border-gray-800/80 bg-gray-900/20 flex items-center justify-between">
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Recent Activity</h3>
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+              </div>
+              <div className="p-5 space-y-3 overflow-y-auto max-h-[300px]">
+                {activityLog.length === 0 ? (
+                  <div className="text-center py-10">
+                    <p className="text-gray-500 text-sm">No activity recorded yet.</p>
+                  </div>
+                ) : (
+                  activityLog.map((item, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-gray-800/30 border border-gray-700/50">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center">
+                          <svg className="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-white">{item.name}</p>
+                          <p className="text-[10px] text-gray-500">{item.confidence?.toFixed(1)}% match</p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-gray-500 font-mono">{item.time}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </Card>
           </div>
         </div>
       </Container>

@@ -18,7 +18,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && !error.config?.url?.includes('/auth/login')) {
       localStorage.removeItem('auth_token');
       window.location.href = '/';
     }
@@ -59,6 +59,9 @@ export const triggerEncoding = (studentId) =>
 // =================== ATTENDANCE ===================
 export const markAttendance = (payload) =>
   api.post('/api/v1/attendance/mark', payload);
+
+export const recognizeFrame = (payload) =>
+  api.post('/api/v1/attendance/recognize-frame', payload);
 
 export const listAttendance = (params = {}) =>
   api.get('/api/v1/attendance/', { params });

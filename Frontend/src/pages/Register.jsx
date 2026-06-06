@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Card from '../components/Card';
 import Container from '../components/Container';
 import WebcamFeed from '../components/register/WebcamFeed';
@@ -30,9 +30,10 @@ const Register = () => {
 
 
   const handleCapture = (imageData) => {
+    const hasCapturedImages = Array.isArray(imageData) ? imageData.length > 0 : !!imageData;
     setCapturedImage(imageData);
-    setIsFaceCaptured(!!imageData);
-    if (imageData) {
+    setIsFaceCaptured(hasCapturedImages);
+    if (hasCapturedImages) {
       setAlert({ variant: 'success', message: 'Faces captured successfully! Please fill in the details below.' });
     } else {
       setAlert(null);
@@ -54,11 +55,18 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.fullName) newErrors.fullName = "Full Name is required";
-    if (!formData.studentId) newErrors.studentId = "Student ID is required";
-    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.fullName.trim()) newErrors.fullName = "Full Name is required";
+    if (!formData.studentId.trim()) newErrors.studentId = "Student ID is required";
+    if (!formData.email.trim()) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Invalid email format";
     if (!formData.department) newErrors.department = "Department is required";
+    if (!formData.course.trim()) newErrors.course = "Course is required";
+    if (!formData.batch) newErrors.batch = "Year / Batch is required";
+    if (!formData.semester) newErrors.semester = "Semester is required";
+    if (!formData.gender) newErrors.gender = "Gender is required";
+    if (formData.contactNumber && !/^\+?[0-9]{7,15}$/.test(formData.contactNumber)) {
+      newErrors.contactNumber = "Use 7-15 digits, optionally starting with +";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -86,14 +94,14 @@ const Register = () => {
       const payload = {
         first_name: firstName,
         last_name: lastName,
-        email: formData.email,
-        roll_number: formData.studentId,
-        contact_number: formData.contactNumber || null,
+        email: formData.email.trim(),
+        roll_number: formData.studentId.trim(),
+        contact_number: formData.contactNumber.trim() || null,
         department: formData.department,
-        course: formData.course,
+        course: formData.course.trim(),
         year_batch: formData.batch,
-        semester: formData.semester ? parseInt(formData.semester) : null,
-        section: formData.section || null,
+        semester: parseInt(formData.semester, 10),
+        section: formData.section.trim() || null,
         gender: formData.gender,
       };
 

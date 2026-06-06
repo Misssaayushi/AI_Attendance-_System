@@ -362,14 +362,22 @@ export default function SYNEXIntro() {
           }`}>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
-                onClick={() => navigate('/attendance')}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate('/attendance');
+                }}
                 onMouseEnter={playHoverTick}
                 className="flex-1 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white text-[10px] font-black tracking-[3px] uppercase shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_35px_rgba(139,92,246,0.5)] hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 cursor-pointer border border-cyan-400/30"
               >
                 Start Attendance
               </button>
               <button
-                onClick={() => navigate('/register')}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate('/register');
+                }}
                 onMouseEnter={playHoverTick}
                 className="flex-1 py-4 rounded-xl bg-[#050814]/70 backdrop-blur-xl text-cyan-400 text-[10px] font-black tracking-[3px] uppercase shadow-[0_0_20px_rgba(6,182,212,0.1)] hover:bg-cyan-500/10 hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 cursor-pointer border border-cyan-500/30"
               >

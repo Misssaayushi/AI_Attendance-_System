@@ -45,10 +45,10 @@ const ActivityFeed = () => {
   const allActivities = useMemo(() => {
     // Format WebSocket events to match the API data structure
     const wsActivities = eventHistory.map(e => ({
-      status: e.status,
-      student_id: e.student_id,
-      name: e.student_name,
-      timestamp: e.time || new Date().toISOString(),
+      status: e.type === 'unrecognized_face' ? 'Alert' : e.status,
+      student_id: e.student_id || 'UNKNOWN',
+      name: e.student_name || 'Unknown Face',
+      timestamp: e.time || e.timestamp || new Date().toISOString(),
       confidence: e.confidence,
     }));
     

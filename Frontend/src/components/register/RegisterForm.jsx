@@ -1,4 +1,3 @@
-import React from 'react';
 import Button from '../Button';
 
 const RegisterForm = ({ formData, errors, onChange, onSubmit, onReset, isDisabled }) => {
@@ -44,8 +43,9 @@ const RegisterForm = ({ formData, errors, onChange, onSubmit, onReset, isDisable
           <input 
             type="tel" id="contactNumber" value={formData.contactNumber} 
             onChange={onChange} className={inputClasses('contactNumber')} 
-            placeholder="+1 234 567 890" 
+            placeholder="+1234567890" 
           />
+          {errors.contactNumber && <p className="mt-1 text-xs text-red-400">{errors.contactNumber}</p>}
         </div>
 
         {/* Academic Info */}
@@ -64,16 +64,18 @@ const RegisterForm = ({ formData, errors, onChange, onSubmit, onReset, isDisable
         <div>
           <label htmlFor="course" className={labelClasses}>Course</label>
           <input type="text" id="course" value={formData.course} onChange={onChange} className={inputClasses('course')} placeholder="e.g. B.Tech" />
+          {errors.course && <p className="mt-1 text-xs text-red-400">{errors.course}</p>}
         </div>
 
         <div>
           <label htmlFor="batch" className={labelClasses}>Year / Batch</label>
           <select id="batch" value={formData.batch} onChange={onChange} className={inputClasses('batch')}>
             <option value="">Select Batch</option>
-            <option value="2022">2022-2026</option>
-            <option value="2023">2023-2027</option>
-            <option value="2024">2024-2028</option>
+            <option value="2022-2026">2022-2026</option>
+            <option value="2023-2027">2023-2027</option>
+            <option value="2024-2028">2024-2028</option>
           </select>
+          {errors.batch && <p className="mt-1 text-xs text-red-400">{errors.batch}</p>}
         </div>
 
         <div>
@@ -84,6 +86,7 @@ const RegisterForm = ({ formData, errors, onChange, onSubmit, onReset, isDisable
               <option key={sem} value={sem}>Semester {sem}</option>
             ))}
           </select>
+          {errors.semester && <p className="mt-1 text-xs text-red-400">{errors.semester}</p>}
         </div>
 
         <div>
@@ -95,10 +98,11 @@ const RegisterForm = ({ formData, errors, onChange, onSubmit, onReset, isDisable
           <label htmlFor="gender" className={labelClasses}>Gender</label>
           <select id="gender" value={formData.gender} onChange={onChange} className={inputClasses('gender')}>
             <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
           </select>
+          {errors.gender && <p className="mt-1 text-xs text-red-400">{errors.gender}</p>}
         </div>
       </div>
 
