@@ -3,8 +3,8 @@ import face_recognition
 import pickle
 import os
 from pathlib import Path
-from ai_module.utils import get_logger
-from ai_module.config import DATASET_DIR, ENCODINGS_DIR, ENCODING_FILE
+from utils import get_logger
+from config import DATASET_DIR, ENCODINGS_DIR, ENCODING_FILE
 
 def generate_encodings():
     logger = get_logger("EncodingGenerator")
@@ -19,6 +19,30 @@ def generate_encodings():
     
     if not student_folders:
         logger.warning("No student folders found in dataset.")
+        if ENCODING_FILE.exists():
+            try:
+                ENCODING_FILE.unlink()
+                logger.info(f"Deleted consolidated encoding file: {ENCODING_FILE}")
+            except Exception as e:
+                logger.error(f"Failed to delete {ENCODING_FILE}: {str(e)}")
+        
+        # Trigger cache reload (it will load empty array)
+        try:
+            from ai_module.optimization import EncodingCache
+        except ImportError:
+            try:
+                from optimization import EncodingCache
+            except ImportError:
+                import sys
+                sys.path.append(str(Path(__file__).resolve().parent))
+                from optimization import EncodingCache
+        
+        try:
+            cache = EncodingCache.get_instance()
+            cache.load(ENCODING_FILE)
+            logger.info("Successfully reloaded empty cache.")
+        except Exception as e:
+            logger.warning(f"Could not trigger cache reload: {str(e)}")
         return
 
     for folder in student_folders:

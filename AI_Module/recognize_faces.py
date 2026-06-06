@@ -268,6 +268,9 @@ def start_recognition():
         face_confidences = []
         face_statuses = []
 
+        last_unknown_event_time = 0
+        UNKNOWN_COOLDOWN_SECONDS = 30
+
         logger.info("Recognition system active. Press 'ESC' to exit.")
 
         while True:
@@ -338,6 +341,13 @@ def start_recognition():
                         api_dispatcher.dispatch(
                             api_service, student_id, name, confidence
                         )
+                    elif name == UNKNOWN_LABEL:
+                        now_time = time.time()
+                        if now_time - last_unknown_event_time > UNKNOWN_COOLDOWN_SECONDS:
+                            last_unknown_event_time = now_time
+                            import threading
+                            threading.Thread(target=api_service.send_unrecognized_event, daemon=True).start()
+                            logger.info("Dispatched unrecognized face event to backend.")
 
                     # Check for completed async dispatcher results or pending states  # noqa: E501
                     if api_dispatcher.is_pending(student_id):

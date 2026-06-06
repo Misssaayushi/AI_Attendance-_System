@@ -21,6 +21,7 @@ try:
         API_SUCCESS_MESSAGE,
         API_TIMEOUT_SECONDS,
         ATTENDANCE_VERIFY_URL,
+        ATTENDANCE_UNRECOGNIZED_URL,
     )
     from ai_module.utils import get_logger
 except ImportError:
@@ -34,6 +35,7 @@ except ImportError:
         API_SUCCESS_MESSAGE,
         API_TIMEOUT_SECONDS,
         ATTENDANCE_VERIFY_URL,
+        ATTENDANCE_UNRECOGNIZED_URL,
     )
     from utils import get_logger
 
@@ -67,6 +69,7 @@ class AttendanceAPIService:
     def __init__(
         self,
         verify_url: str = ATTENDANCE_VERIFY_URL,
+        unrecognized_url: str = ATTENDANCE_UNRECOGNIZED_URL,
         timeout_seconds: float = API_TIMEOUT_SECONDS,
         retry_count: int = API_RETRY_COUNT,
         retry_delay_seconds: float = API_RETRY_DELAY_SECONDS,
@@ -75,6 +78,7 @@ class AttendanceAPIService:
         mock_response_delay_seconds: float = API_MOCK_RESPONSE_DELAY_SECONDS,
     ) -> None:
         self.verify_url = verify_url
+        self.unrecognized_url = unrecognized_url
         self.timeout_seconds = timeout_seconds
         self.retry_count = max(0, retry_count)
         self.retry_delay_seconds = max(0.0, retry_delay_seconds)
@@ -123,6 +127,52 @@ class AttendanceAPIService:
             timestamp=timestamp,
         )
         return self.send_payload(payload)
+
+    def send_unrecognized_event(self) -> AttendanceAPIResponse:
+        """
+        Send an unrecognized face event to the backend.
+        """
+        payload = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "confidence": 0.0
+        }
+        
+        if self.mock_mode:
+            return self._send_mock({"student_id": "unknown", "name": "unknown", "confidence": 0.0, "status": "unknown", "timestamp": payload["timestamp"]})
+            
+        attempts = self.retry_count + 1
+        last_error = None
+        
+        for attempt in range(1, attempts + 1):
+            try:
+                response = requests.post(
+                    self.unrecognized_url,
+                    json=payload,
+                    timeout=self.timeout_seconds,
+                    headers={"X-API-Key": self.api_key},
+                )
+                return self._build_response_from_http(response)
+            except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as exc:
+                last_error = str(exc)
+                if attempt < attempts and self.retry_delay_seconds > 0:
+                    time.sleep(self.retry_delay_seconds)
+            except requests.exceptions.RequestException as exc:
+                last_error = str(exc)
+                return AttendanceAPIResponse(
+                    success=False,
+                    message=API_ERROR_MESSAGE,
+                    status_code=None,
+                    mocked=False,
+                    error=last_error,
+                )
+
+        return AttendanceAPIResponse(
+            success=False,
+            message=API_ERROR_MESSAGE,
+            status_code=None,
+            mocked=False,
+            error=last_error or "Unknown network error",
+        )
 
     def send_payload(self, payload: AttendancePayload) -> AttendanceAPIResponse:
         """
