@@ -1,0 +1,691 @@
+[2026-05-29 01:09:14] INFO [ai_attendance] - event=attendance_marked attendance_id=2 student_id=3 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:09:14] INFO [ai_attendance] - event=attendance_marked attendance_id=3 student_id=4 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:09:14] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=4 attendance_date=2026-05-28
+[2026-05-29 01:09:14] WARNING [ai_attendance] - event=attendance_mark_rejected reason=student_not_found student_id=999999
+[2026-05-29 01:09:14] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 01:09:14] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 01:09:14] INFO [ai_attendance] - event=request_completed request_id=19d30a01-dd39-4f2a-a8f1-86862e8c001f method=POST path=/api/v1/auth/login status=200 duration_ms=412.15
+[2026-05-29 01:09:14] INFO [ai_attendance] - event=attendance_mark_request student_id=5 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 01:09:14] INFO [ai_attendance] - event=attendance_marked attendance_id=4 student_id=5 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:09:15] INFO [ai_attendance] - event=attendance_mark_request student_id=5 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 01:09:15] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=5 attendance_date=2026-05-28
+[2026-05-29 01:09:15] WARNING [ai_attendance] - event=app_exception request_id=14dda40d-9166-461b-8b07-ada2ea26f835 path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 01:09:15] INFO [ai_attendance] - event=request_completed request_id=14dda40d-9166-461b-8b07-ada2ea26f835 method=POST path=/api/v1/attendance/mark status=400 duration_ms=7.40
+[2026-05-29 01:09:15] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 01:09:15] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 01:09:15] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 01:09:16] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 01:09:16] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 01:09:51] INFO [ai_attendance] - event=attendance_marked attendance_id=5 student_id=6 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:09:51] INFO [ai_attendance] - event=attendance_marked attendance_id=6 student_id=7 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:09:51] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=7 attendance_date=2026-05-28
+[2026-05-29 01:09:51] WARNING [ai_attendance] - event=attendance_mark_rejected reason=student_not_found student_id=999999
+[2026-05-29 01:09:51] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 01:09:52] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=request_completed request_id=06503d64-502a-439b-b6b0-e0da45528ea7 method=POST path=/api/v1/auth/login status=200 duration_ms=346.36
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=attendance_mark_request student_id=8 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=attendance_marked attendance_id=7 student_id=8 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=request_completed request_id=3e60ce3f-80e2-461b-bbf9-2f67222d420c method=POST path=/api/v1/attendance/mark status=200 duration_ms=13.29
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=attendance_mark_request student_id=8 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 01:09:52] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=8 attendance_date=2026-05-28
+[2026-05-29 01:09:52] WARNING [ai_attendance] - event=app_exception request_id=fdf720a3-e23a-4b9a-8b2b-2ed46c086cf1 path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=request_completed request_id=fdf720a3-e23a-4b9a-8b2b-2ed46c086cf1 method=POST path=/api/v1/attendance/mark status=400 duration_ms=6.88
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=request_completed request_id=98f88663-fbef-4db2-ae71-8a239c4a9672 method=GET path=/api/v1/attendance/ status=200 duration_ms=13.90
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 01:09:52] INFO [ai_attendance] - event=request_completed request_id=bc8f099a-8b08-43fa-a541-a90cc9a545a0 method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=39.50
+[2026-05-29 01:10:40] INFO [ai_attendance] - event=attendance_marked attendance_id=8 student_id=9 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=attendance_marked attendance_id=9 student_id=10 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:10:41] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=10 attendance_date=2026-05-28
+[2026-05-29 01:10:41] WARNING [ai_attendance] - event=attendance_mark_rejected reason=student_not_found student_id=999999
+[2026-05-29 01:10:41] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 01:10:41] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=request_completed request_id=ec022363-88b2-4dbc-a2a3-7239439803a3 method=POST path=/api/v1/auth/login status=200 duration_ms=341.50
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=attendance_mark_request student_id=11 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=attendance_marked attendance_id=10 student_id=11 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=request_completed request_id=bd096d82-ba09-4b29-a768-5d32b6d5b00f method=POST path=/api/v1/attendance/mark status=201 duration_ms=15.44
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=attendance_mark_request student_id=11 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 01:10:41] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=11 attendance_date=2026-05-28
+[2026-05-29 01:10:41] WARNING [ai_attendance] - event=app_exception request_id=4db0e4a5-af77-43be-ac3a-63e0f2924b45 path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=request_completed request_id=4db0e4a5-af77-43be-ac3a-63e0f2924b45 method=POST path=/api/v1/attendance/mark status=400 duration_ms=7.35
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=request_completed request_id=308de416-0081-421c-b16e-521ab08342f7 method=GET path=/api/v1/attendance/ status=200 duration_ms=13.00
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=attendance_daily_summary date=2026-05-28 total_students=2 present=2 absent=0 late=0 percentage=100.0
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=request_completed request_id=e43f8bc7-df13-461f-b592-c09a9215646d method=GET path=/api/v1/attendance/summary/daily status=200 duration_ms=8.30
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 01:10:41] INFO [ai_attendance] - event=request_completed request_id=64d749ed-c87e-4a6d-8968-4290eb417959 method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=8.52
+[2026-05-29 01:11:21] INFO [ai_attendance] - event=attendance_marked attendance_id=11 student_id=12 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=attendance_marked attendance_id=12 student_id=13 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:11:22] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=13 attendance_date=2026-05-28
+[2026-05-29 01:11:22] WARNING [ai_attendance] - event=attendance_mark_rejected reason=student_not_found student_id=999999
+[2026-05-29 01:11:22] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 01:11:22] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=request_completed request_id=c35f541d-89e0-432c-a35b-5ba457722be9 method=POST path=/api/v1/auth/login status=200 duration_ms=347.83
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=attendance_mark_request student_id=14 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=attendance_marked attendance_id=13 student_id=14 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=request_completed request_id=1b1e7297-92df-4f06-96bc-3170fa011794 method=POST path=/api/v1/attendance/mark status=201 duration_ms=14.90
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=attendance_mark_request student_id=14 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 01:11:22] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=14 attendance_date=2026-05-28
+[2026-05-29 01:11:22] WARNING [ai_attendance] - event=app_exception request_id=f2648ca7-e5ef-4dca-88a4-740c30a33920 path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=request_completed request_id=f2648ca7-e5ef-4dca-88a4-740c30a33920 method=POST path=/api/v1/attendance/mark status=400 duration_ms=6.57
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=request_completed request_id=17bc1bcd-c261-48a2-8780-3571583d38cd method=GET path=/api/v1/attendance/ status=200 duration_ms=18.22
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=attendance_daily_summary date=2026-05-28 total_students=2 present=2 absent=0 late=0 percentage=100.0
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=request_completed request_id=e1be78b0-a302-4c58-9b5b-c883e1621d4a method=GET path=/api/v1/attendance/summary/daily status=200 duration_ms=9.48
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 01:11:22] INFO [ai_attendance] - event=request_completed request_id=f3a9b1a6-507d-4e80-8c3d-190d868382ec method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=9.14
+[2026-05-29 01:17:05] INFO [ai_attendance] - event=attendance_marked attendance_id=17 student_id=18 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:17:05] INFO [ai_attendance] - event=attendance_marked attendance_id=18 student_id=19 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:17:05] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=19 attendance_date=2026-05-28
+[2026-05-29 01:17:05] WARNING [ai_attendance] - event=attendance_mark_rejected reason=student_not_found student_id=999999
+[2026-05-29 01:17:05] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 01:17:06] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=request_completed request_id=51fa0c4e-4b2a-4486-bdf4-967b7634ee74 method=POST path=/api/v1/auth/login status=200 duration_ms=349.47
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=attendance_mark_request student_id=20 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=attendance_marked attendance_id=19 student_id=20 attendance_date=2026-05-28 status=Present
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=request_completed request_id=d6f5b3a0-5a7c-4fb6-8553-423339063671 method=POST path=/api/v1/attendance/mark status=201 duration_ms=20.88
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=attendance_mark_request student_id=20 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 01:17:06] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=20 attendance_date=2026-05-28
+[2026-05-29 01:17:06] WARNING [ai_attendance] - event=app_exception request_id=ccb1b066-b8e5-40f5-970d-7050efdd63db path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=request_completed request_id=ccb1b066-b8e5-40f5-970d-7050efdd63db method=POST path=/api/v1/attendance/mark status=400 duration_ms=6.45
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=request_completed request_id=da026d2e-72f9-45e0-8453-b92c5cf66697 method=GET path=/api/v1/attendance/ status=200 duration_ms=12.76
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=attendance_daily_summary date=2026-05-28 total_students=2 present=2 absent=0 late=0 percentage=100.0
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=request_completed request_id=6f063389-3c16-4f09-9175-18c298c2bd01 method=GET path=/api/v1/attendance/summary/daily status=200 duration_ms=7.53
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 01:17:06] INFO [ai_attendance] - event=request_completed request_id=27a31ea6-6ad1-4780-958a-78a1639e1ca8 method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=7.74
+[2026-05-29 12:41:15] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 12:41:15] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 12:46:58] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 12:46:58] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 12:49:30] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 12:49:30] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 12:53:44] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 12:53:44] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 12:55:42] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 12:55:42] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 12:55:43] INFO [ai_attendance] - 🔑 Login attempt for user: test_scheduler_route_admin
+[2026-05-29 12:55:43] INFO [ai_attendance] - ✅ Login successful for user: test_scheduler_route_admin
+[2026-05-29 12:55:43] INFO [ai_attendance] - event=request_completed request_id=39d9f936-bc90-4a62-8aba-dda05202a941 method=POST path=/api/v1/auth/login status=200 duration_ms=371.07
+[2026-05-29 12:55:43] INFO [ai_attendance] - event=scheduler_executions_list_request limit=10
+[2026-05-29 12:55:43] INFO [ai_attendance] - event=request_completed request_id=e2ea3e14-d7bd-4b69-85f4-e9c2bc6eba09 method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=6.61
+[2026-05-29 12:55:43] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
+[2026-05-29 12:55:43] INFO [ai_attendance] - event=request_completed request_id=1b296cb0-946a-4520-a51a-160fc59fd361 method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=4.41
+[2026-05-29 14:32:01] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 14:32:01] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 14:36:25] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 14:36:26] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 14:36:26] INFO [ai_attendance] - event=request_completed request_id=11942408-3756-4580-9a1a-1306fd47188c method=POST path=/api/v1/auth/login status=200 duration_ms=472.64
+[2026-05-29 14:36:26] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin
+[2026-05-29 14:36:26] INFO [ai_attendance] - event=request_completed request_id=cea8ebf8-dfbc-4e3c-af10-49ace5bb285c method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=7.88
+[2026-05-29 14:36:26] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None
+[2026-05-29 14:36:26] INFO [ai_attendance] - event=request_completed request_id=282e409a-6f44-49ae-a7a9-366dda29d355 method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=7.69
+[2026-05-29 14:36:26] INFO [ai_attendance] - 🔑 Login attempt for user: test_scheduler_route_admin
+[2026-05-29 14:36:27] INFO [ai_attendance] - ✅ Login successful for user: test_scheduler_route_admin
+[2026-05-29 14:36:27] INFO [ai_attendance] - event=request_completed request_id=01251f02-72fb-4257-a97e-e7fed6a69aa3 method=POST path=/api/v1/auth/login status=200 duration_ms=455.81
+[2026-05-29 14:36:27] INFO [ai_attendance] - event=scheduler_executions_list_request limit=10
+[2026-05-29 14:36:27] INFO [ai_attendance] - event=request_completed request_id=d77f9ebf-6392-41cc-a129-50d3d83f2ff9 method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=6.80
+[2026-05-29 14:36:27] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
+[2026-05-29 14:36:27] INFO [ai_attendance] - event=request_completed request_id=21e76e14-5abc-4802-adc6-bac02ab429de method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=7.01
+[2026-05-29 14:41:28] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 14:41:28] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 14:41:28] INFO [ai_attendance] - event=request_completed request_id=21d4d9e4-aac7-466d-852a-3434f455445e method=POST path=/api/v1/auth/login status=200 duration_ms=463.12
+[2026-05-29 14:41:28] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin
+[2026-05-29 14:41:28] INFO [ai_attendance] - event=request_completed request_id=6fece49c-4ce7-486b-b5d0-b351bb773796 method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=7.80
+[2026-05-29 14:41:28] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None
+[2026-05-29 14:41:28] INFO [ai_attendance] - event=request_completed request_id=63a829b7-8d6f-462f-81d9-707a9d77e417 method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=6.92
+[2026-05-29 14:47:36] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 14:47:36] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 14:47:36] INFO [ai_attendance] - event=request_completed request_id=3ed655bf-f674-4c09-8932-4493e59f9a98 method=POST path=/api/v1/auth/login status=200 duration_ms=460.45
+[2026-05-29 14:47:36] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin force_send=False
+[2026-05-29 14:47:36] INFO [ai_attendance] - event=request_completed request_id=b6ef9738-5bf8-4d74-bdf7-ae177f6e6779 method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=9.56
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=email_deliveries_list_request limit=10
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=request_completed request_id=3a6c0789-77e4-42d9-9482-ca736215d601 method=GET path=/api/v1/attendance/reports/email/deliveries status=200 duration_ms=7.66
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=email_delivery_summary_request last_n=30
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=request_completed request_id=3441079d-5852-4b37-9f1a-5f428a28145d method=GET path=/api/v1/attendance/reports/email/summary status=200 duration_ms=6.26
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 14:47:37] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 14:47:38] INFO [ai_attendance] - 🔑 Login attempt for user: test_scheduler_route_admin
+[2026-05-29 14:47:38] INFO [ai_attendance] - ✅ Login successful for user: test_scheduler_route_admin
+[2026-05-29 14:47:38] INFO [ai_attendance] - event=request_completed request_id=280b468f-e01a-4b40-a4a4-92799a1eaa9c method=POST path=/api/v1/auth/login status=200 duration_ms=438.28
+[2026-05-29 14:47:38] INFO [ai_attendance] - event=scheduler_executions_list_request limit=10
+[2026-05-29 14:47:38] INFO [ai_attendance] - event=request_completed request_id=23b3d2e7-7ca4-432d-9c79-a2c8819e0801 method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=8.11
+[2026-05-29 14:47:38] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
+[2026-05-29 14:47:38] INFO [ai_attendance] - event=request_completed request_id=81d9b83b-0199-4418-9916-2e0f0efeba3c method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=7.69
+[2026-05-29 14:48:10] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 14:48:10] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=request_completed request_id=0af0de82-7e48-49f5-a242-757eee810c89 method=POST path=/api/v1/auth/login status=200 duration_ms=460.47
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin force_send=False
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=request_completed request_id=8d8d3c0c-70f4-4290-9714-88461c360432 method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=9.50
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None force_send=False
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=request_completed request_id=854e7f24-1f30-47cb-ab35-a89bf4cf858b method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=6.51
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=email_deliveries_list_request limit=10
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=request_completed request_id=2b2083b9-fe0a-4f1e-8db8-066f06a51f35 method=GET path=/api/v1/attendance/reports/email/deliveries status=200 duration_ms=6.79
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=email_delivery_summary_request last_n=30
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=request_completed request_id=6e139d49-d6c7-4f08-8948-f986846afdb4 method=GET path=/api/v1/attendance/reports/email/summary status=200 duration_ms=6.74
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=scheduler_job_registered job_id=auto_absent_daily_job hour=17 minute=0 timezone=Asia/Kolkata
+[2026-05-29 14:48:10] INFO [ai_attendance] - event=scheduler_job_exists job_id=auto_absent_daily_job
+[2026-05-29 14:48:11] INFO [ai_attendance] - 🔑 Login attempt for user: test_scheduler_route_admin
+[2026-05-29 14:48:11] INFO [ai_attendance] - ✅ Login successful for user: test_scheduler_route_admin
+[2026-05-29 14:48:11] INFO [ai_attendance] - event=request_completed request_id=52f41dfb-b52d-4d92-b932-d24ae67b374c method=POST path=/api/v1/auth/login status=200 duration_ms=459.31
+[2026-05-29 14:48:11] INFO [ai_attendance] - event=scheduler_executions_list_request limit=10
+[2026-05-29 14:48:11] INFO [ai_attendance] - event=request_completed request_id=10b3684b-c8a8-4351-a312-287a32496f6c method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=7.40
+[2026-05-29 14:48:11] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
+[2026-05-29 14:48:11] INFO [ai_attendance] - event=request_completed request_id=0ff0cb5e-8b6a-4693-bdb3-708b9d099db1 method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=6.56
+[2026-05-29 14:50:26] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 14:50:26] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=request_completed request_id=b023bf09-1c17-4b23-86cc-80dce3fbbc52 method=POST path=/api/v1/auth/login status=200 duration_ms=480.05
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin force_send=False
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=request_completed request_id=f14156a7-0f3d-4186-b88f-f1621bd7c30d method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=8.76
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None force_send=False
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=request_completed request_id=3645e94e-1d15-46b7-b781-4da407cc3edf method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=9.40
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=email_deliveries_list_request limit=10
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=request_completed request_id=64aeb23d-3436-4351-93dd-6dbaa11fa6fc method=GET path=/api/v1/attendance/reports/email/deliveries status=200 duration_ms=8.10
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=email_delivery_summary_request last_n=30
+[2026-05-29 14:50:26] INFO [ai_attendance] - event=request_completed request_id=7af3581e-378d-4537-8ba5-23eac538bfde method=GET path=/api/v1/attendance/reports/email/summary status=200 duration_ms=7.09
+[2026-05-29 14:56:15] INFO [ai_attendance] - 🔑 Login attempt for user: test_dashboard_admin
+[2026-05-29 14:56:15] INFO [ai_attendance] - ✅ Login successful for user: test_dashboard_admin
+[2026-05-29 14:56:15] INFO [ai_attendance] - event=request_completed request_id=01b6fc2e-4429-4772-9140-f7fe178618ac method=POST path=/api/v1/auth/login status=200 duration_ms=497.38
+[2026-05-29 14:56:15] INFO [ai_attendance] - event=dashboard_summary_request date=2026-05-29 department=Computer Science
+[2026-05-29 14:56:15] INFO [ai_attendance] - event=request_completed request_id=4feeaa94-1a1d-4649-8c8b-07ceac175c48 method=GET path=/api/v1/dashboard/summary status=200 duration_ms=9.97
+[2026-05-29 14:56:16] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 14:56:16] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 14:56:16] INFO [ai_attendance] - event=request_completed request_id=99eaf2c7-d5fc-415f-a6d0-7bde68ea734f method=POST path=/api/v1/auth/login status=200 duration_ms=431.31
+[2026-05-29 14:56:16] INFO [ai_attendance] - event=attendance_mark_request student_id=24 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 14:56:16] INFO [ai_attendance] - event=attendance_marked attendance_id=23 student_id=24 attendance_date=2026-05-29 status=Present
+[2026-05-29 14:56:16] INFO [ai_attendance] - event=request_completed request_id=be3c1b75-ed9f-4189-a943-7cb9436219d3 method=POST path=/api/v1/attendance/mark status=201 duration_ms=34.98
+[2026-05-29 14:56:17] INFO [ai_attendance] - event=attendance_mark_request student_id=24 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 14:56:17] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=24 attendance_date=2026-05-29
+[2026-05-29 14:56:17] WARNING [ai_attendance] - event=app_exception request_id=00786bb8-b935-4748-9de6-a3faf8b75e79 path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 14:56:17] INFO [ai_attendance] - event=request_completed request_id=00786bb8-b935-4748-9de6-a3faf8b75e79 method=POST path=/api/v1/attendance/mark status=400 duration_ms=16.78
+[2026-05-29 14:56:17] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 14:56:17] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 14:56:17] INFO [ai_attendance] - event=request_completed request_id=71cc92f5-3717-46f8-a475-187b7d22d567 method=GET path=/api/v1/attendance/ status=200 duration_ms=28.56
+[2026-05-29 14:56:17] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 14:56:17] INFO [ai_attendance] - event=attendance_daily_summary date=2026-05-29 total_students=2 present=1 absent=0 late=0 percentage=50.0
+[2026-05-29 14:56:17] INFO [ai_attendance] - event=request_completed request_id=e2663005-318c-48c3-8cea-d61bdc3b6963 method=GET path=/api/v1/attendance/summary/daily status=200 duration_ms=17.97
+[2026-05-29 14:56:17] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 14:56:17] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 14:56:17] INFO [ai_attendance] - event=request_completed request_id=3c2347f6-1872-4749-a45e-47dc5415c1fd method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=14.50
+[2026-05-29 14:56:17] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 14:56:18] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 14:56:18] INFO [ai_attendance] - event=request_completed request_id=4824b062-d0a1-4319-a48a-c3fcb0957664 method=POST path=/api/v1/auth/login status=200 duration_ms=473.99
+[2026-05-29 14:56:18] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin force_send=False
+[2026-05-29 14:56:18] INFO [ai_attendance] - event=request_completed request_id=39635920-666f-4cf0-9cd7-15e314c4622a method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=8.12
+[2026-05-29 14:56:18] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None force_send=False
+[2026-05-29 14:56:18] INFO [ai_attendance] - event=request_completed request_id=106e5da2-44f7-4fa5-9a60-3bd57134bd05 method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=7.80
+[2026-05-29 14:56:18] INFO [ai_attendance] - event=email_deliveries_list_request limit=10
+[2026-05-29 14:56:18] INFO [ai_attendance] - event=request_completed request_id=2407aa31-cb49-4f25-9eba-ab4d97c48d4e method=GET path=/api/v1/attendance/reports/email/deliveries status=200 duration_ms=7.66
+[2026-05-29 14:56:18] INFO [ai_attendance] - event=email_delivery_summary_request last_n=30
+[2026-05-29 14:56:18] INFO [ai_attendance] - event=request_completed request_id=23fe275c-65ef-4b6a-b4e1-f82875e28c63 method=GET path=/api/v1/attendance/reports/email/summary status=200 duration_ms=7.23
+[2026-05-29 14:58:57] INFO [ai_attendance] - 🔑 Login attempt for user: test_dashboard_admin
+[2026-05-29 14:58:57] INFO [ai_attendance] - ✅ Login successful for user: test_dashboard_admin
+[2026-05-29 14:58:57] INFO [ai_attendance] - event=request_completed request_id=245b43ee-34e1-4479-be9c-872b628f5d57 method=POST path=/api/v1/auth/login status=200 duration_ms=482.75
+[2026-05-29 14:58:57] INFO [ai_attendance] - event=dashboard_summary_request date=2026-05-29 department=Computer Science
+[2026-05-29 14:58:57] INFO [ai_attendance] - event=request_completed request_id=0d3f11fb-d7e2-44aa-8aa7-3977f869158f method=GET path=/api/v1/dashboard/summary status=200 duration_ms=8.63
+[2026-05-29 14:58:57] INFO [ai_attendance] - event=dashboard_daily_stats_request date=2026-05-29 department=IT
+[2026-05-29 14:58:57] INFO [ai_attendance] - event=request_completed request_id=53fdccad-8a65-40aa-bc29-efd1e6eeb623 method=GET path=/api/v1/dashboard/stats/daily status=200 duration_ms=7.48
+[2026-05-29 14:58:57] INFO [ai_attendance] - event=dashboard_monthly_stats_request year=2026 month=5 department=Computer Science
+[2026-05-29 14:58:57] INFO [ai_attendance] - event=request_completed request_id=c72c47bb-797e-42b0-a578-2d6ea07f9093 method=GET path=/api/v1/dashboard/stats/monthly status=200 duration_ms=7.28
+[2026-05-29 14:58:57] INFO [ai_attendance] - event=dashboard_department_stats_request date=2026-05-29
+[2026-05-29 14:58:57] INFO [ai_attendance] - event=request_completed request_id=f2b883a9-71af-4b37-9bd6-c6468f4e412f method=GET path=/api/v1/dashboard/stats/department status=200 duration_ms=7.16
+[2026-05-29 14:58:58] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 14:58:59] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=request_completed request_id=f34da1c6-89bb-480c-9368-547cffe49834 method=POST path=/api/v1/auth/login status=200 duration_ms=481.61
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=attendance_mark_request student_id=25 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=attendance_marked attendance_id=24 student_id=25 attendance_date=2026-05-29 status=Present
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=request_completed request_id=e96cbd59-9033-4183-b12b-6ae579d81228 method=POST path=/api/v1/attendance/mark status=201 duration_ms=32.12
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=attendance_mark_request student_id=25 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 14:58:59] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=25 attendance_date=2026-05-29
+[2026-05-29 14:58:59] WARNING [ai_attendance] - event=app_exception request_id=a07a892f-6472-44c2-81fa-bd39f87c63e3 path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=request_completed request_id=a07a892f-6472-44c2-81fa-bd39f87c63e3 method=POST path=/api/v1/attendance/mark status=400 duration_ms=16.51
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=request_completed request_id=79b93042-3309-418b-8d86-0212be1dd775 method=GET path=/api/v1/attendance/ status=200 duration_ms=30.20
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=attendance_daily_summary date=2026-05-29 total_students=2 present=1 absent=0 late=0 percentage=50.0
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=request_completed request_id=747541ff-6534-464c-b427-f644caeeb295 method=GET path=/api/v1/attendance/summary/daily status=200 duration_ms=18.36
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 14:58:59] INFO [ai_attendance] - event=request_completed request_id=b38199d7-0a94-47e3-b388-656deed8a239 method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=17.58
+[2026-05-29 15:02:27] INFO [ai_attendance] - 🔑 Login attempt for user: test_dashboard_admin
+[2026-05-29 15:02:27] INFO [ai_attendance] - ✅ Login successful for user: test_dashboard_admin
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=request_completed request_id=85439b1a-55bc-4184-8092-169cd438f3a2 method=POST path=/api/v1/auth/login status=200 duration_ms=497.91
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=dashboard_summary_request date=2026-05-29 department=Computer Science
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=request_completed request_id=44f497f9-6b95-4d62-89fb-544814c9b424 method=GET path=/api/v1/dashboard/summary status=200 duration_ms=8.55
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=dashboard_daily_stats_request date=2026-05-29 department=IT
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=request_completed request_id=c5a3dd80-58be-49fd-ae0b-1f3967bdd0d2 method=GET path=/api/v1/dashboard/stats/daily status=200 duration_ms=7.52
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=dashboard_monthly_stats_request year=2026 month=5 department=Computer Science
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=request_completed request_id=cf3f15fd-55a5-4fa9-ba3e-3737d2c50a84 method=GET path=/api/v1/dashboard/stats/monthly status=200 duration_ms=7.36
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=dashboard_department_stats_request date=2026-05-29
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=request_completed request_id=f673ae45-c307-45bd-b778-852c9da36d4f method=GET path=/api/v1/dashboard/stats/department status=200 duration_ms=7.14
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=dashboard_weekly_graph_request end_date=2026-05-29 days=7 department=CSE
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=request_completed request_id=c349fed5-f959-41cf-92eb-540de41b3fdb method=GET path=/api/v1/dashboard/graphs/weekly status=200 duration_ms=7.61
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=dashboard_monthly_graph_request year=2026 month=5 department=IT
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=request_completed request_id=c35cbe11-a6d9-407b-843f-e94ae6cc2e52 method=GET path=/api/v1/dashboard/graphs/monthly status=200 duration_ms=8.15
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=dashboard_department_graph_request date=2026-05-29
+[2026-05-29 15:02:28] INFO [ai_attendance] - event=request_completed request_id=bcf8632d-cf95-439c-9704-f515820f78f3 method=GET path=/api/v1/dashboard/graphs/department status=200 duration_ms=7.62
+[2026-05-29 15:08:58] INFO [ai_attendance] - 🔑 Login attempt for user: test_dashboard_admin
+[2026-05-29 15:08:59] INFO [ai_attendance] - ✅ Login successful for user: test_dashboard_admin
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=request_completed request_id=07359ba3-60d0-44b1-86fa-a5ed0e789de7 method=POST path=/api/v1/auth/login status=200 duration_ms=498.44
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=dashboard_summary_request date=2026-05-29 department=Computer Science
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=request_completed request_id=409663fa-877d-4b10-8415-abdc1b0a4fd2 method=GET path=/api/v1/dashboard/summary status=200 duration_ms=9.42
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=dashboard_daily_stats_request date=2026-05-29 department=IT
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=request_completed request_id=f80f02d7-adee-460a-a426-a8ba8160a955 method=GET path=/api/v1/dashboard/stats/daily status=200 duration_ms=8.06
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=dashboard_monthly_stats_request year=2026 month=5 department=Computer Science
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=request_completed request_id=fa28dc05-e897-40ee-8f7b-b90ef57341f8 method=GET path=/api/v1/dashboard/stats/monthly status=200 duration_ms=7.50
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=dashboard_department_stats_request date=2026-05-29
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=request_completed request_id=e1d968ce-a203-4389-a529-c6aa84a1ee3f method=GET path=/api/v1/dashboard/stats/department status=200 duration_ms=8.06
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=dashboard_weekly_graph_request end_date=2026-05-29 days=7 department=CSE
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=request_completed request_id=e69e2384-a70c-4695-b661-f65cd0566b4a method=GET path=/api/v1/dashboard/graphs/weekly status=200 duration_ms=7.53
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=dashboard_monthly_graph_request year=2026 month=5 department=IT
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=request_completed request_id=b5464932-f49a-40af-8a3c-f2072500f982 method=GET path=/api/v1/dashboard/graphs/monthly status=200 duration_ms=6.56
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=dashboard_department_graph_request date=2026-05-29
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=request_completed request_id=ecd0e1bf-f290-4976-bf9f-2138a146dd50 method=GET path=/api/v1/dashboard/graphs/department status=200 duration_ms=7.28
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=dashboard_monitoring_summary_request
+[2026-05-29 15:08:59] INFO [ai_attendance] - event=request_completed request_id=5163e495-7990-4739-9ec6-267722674c70 method=GET path=/api/v1/dashboard/monitoring/summary status=200 duration_ms=8.37
+[2026-05-29 15:09:29] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 15:09:29] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 15:09:29] INFO [ai_attendance] - event=request_completed request_id=df504d65-0d1b-43df-901e-e848b90a169a method=POST path=/api/v1/auth/login status=200 duration_ms=500.86
+[2026-05-29 15:09:29] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin force_send=False
+[2026-05-29 15:09:29] INFO [ai_attendance] - event=request_completed request_id=bbd3943c-c224-488d-9cde-313167662c37 method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=10.39
+[2026-05-29 15:09:29] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None force_send=False
+[2026-05-29 15:09:29] INFO [ai_attendance] - event=request_completed request_id=ab5587c2-249a-42c3-8f0f-b4453a371d99 method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=7.94
+[2026-05-29 15:09:29] INFO [ai_attendance] - event=email_deliveries_list_request limit=10
+[2026-05-29 15:09:29] INFO [ai_attendance] - event=request_completed request_id=e95d2352-12a5-4c5e-8234-624a8238531d method=GET path=/api/v1/attendance/reports/email/deliveries status=200 duration_ms=7.32
+[2026-05-29 15:09:29] INFO [ai_attendance] - event=email_delivery_summary_request last_n=30
+[2026-05-29 15:09:29] INFO [ai_attendance] - event=request_completed request_id=3410f7ee-3f8b-42c5-bb7c-93fa738c16cb method=GET path=/api/v1/attendance/reports/email/summary status=200 duration_ms=7.83
+[2026-05-29 15:09:30] INFO [ai_attendance] - 🔑 Login attempt for user: test_scheduler_route_admin
+[2026-05-29 15:09:30] INFO [ai_attendance] - ✅ Login successful for user: test_scheduler_route_admin
+[2026-05-29 15:09:30] INFO [ai_attendance] - event=request_completed request_id=4ac1c9ed-aae8-41c0-aa76-a0295f63afa4 method=POST path=/api/v1/auth/login status=200 duration_ms=459.13
+[2026-05-29 15:09:30] INFO [ai_attendance] - event=scheduler_executions_list_request limit=10
+[2026-05-29 15:09:30] INFO [ai_attendance] - event=request_completed request_id=223ccf58-9450-4638-b513-41fc2b647818 method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=7.96
+[2026-05-29 15:09:30] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
+[2026-05-29 15:09:30] INFO [ai_attendance] - event=request_completed request_id=9384625b-68e1-450f-a5ba-e2c1f2cfe7b9 method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=7.35
+[2026-05-29 15:14:06] INFO [ai_attendance] - 🔑 Login attempt for user: test_dashboard_admin
+[2026-05-29 15:14:06] INFO [ai_attendance] - ✅ Login successful for user: test_dashboard_admin
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=request_completed request_id=f753db7f-a93d-4876-b886-b6d265a6ca5b method=POST path=/api/v1/auth/login status=200 duration_ms=482.54
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=dashboard_summary_request date=2026-05-29 department=Computer Science
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=request_completed request_id=540cb8a7-6180-45ae-8303-6d162c42ceb4 method=GET path=/api/v1/dashboard/summary status=200 duration_ms=8.80
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=dashboard_daily_stats_request date=2026-05-29 department=IT
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=request_completed request_id=614c4db6-40a9-4316-91c2-8b188c1890cc method=GET path=/api/v1/dashboard/stats/daily status=200 duration_ms=7.86
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=dashboard_monthly_stats_request year=2026 month=5 department=Computer Science
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=request_completed request_id=9d6421b3-e9e1-4ee3-b6fc-4de1793fffce method=GET path=/api/v1/dashboard/stats/monthly status=200 duration_ms=7.21
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=dashboard_department_stats_request date=2026-05-29
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=request_completed request_id=b33fb066-1c40-4580-93e2-14603adeaef2 method=GET path=/api/v1/dashboard/stats/department status=200 duration_ms=8.45
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=dashboard_weekly_graph_request end_date=2026-05-29 days=7 department=CSE
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=request_completed request_id=7eae18a8-b120-4c6e-81fa-5b9975df48ff method=GET path=/api/v1/dashboard/graphs/weekly status=200 duration_ms=7.68
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=dashboard_monthly_graph_request year=2026 month=5 department=IT
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=request_completed request_id=ee38a06a-796e-4c0e-8667-79961f9a4cb8 method=GET path=/api/v1/dashboard/graphs/monthly status=200 duration_ms=7.89
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=dashboard_department_graph_request date=2026-05-29
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=request_completed request_id=4b99ae83-d9d8-48f1-86e2-b255ee08fd2e method=GET path=/api/v1/dashboard/graphs/department status=200 duration_ms=7.17
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=dashboard_monitoring_summary_request
+[2026-05-29 15:14:06] INFO [ai_attendance] - event=request_completed request_id=19da93e4-5a8e-4725-b4e9-bfa3e150f391 method=GET path=/api/v1/dashboard/monitoring/summary status=200 duration_ms=6.94
+[2026-05-29 15:14:07] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 15:14:07] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=request_completed request_id=64b7202e-4e9b-45f7-8a62-31964f0f5d58 method=POST path=/api/v1/auth/login status=200 duration_ms=464.17
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=attendance_mark_request student_id=26 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=attendance_marked attendance_id=25 student_id=26 attendance_date=2026-05-29 status=Present
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=request_completed request_id=aca3fe2e-88fe-4a8f-874d-3bd71aa2f69a method=POST path=/api/v1/attendance/mark status=201 duration_ms=33.51
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=attendance_mark_request student_id=26 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 15:14:07] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=26 attendance_date=2026-05-29
+[2026-05-29 15:14:07] WARNING [ai_attendance] - event=app_exception request_id=7acc909e-f9e6-4622-b6de-25403a30c404 path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=request_completed request_id=7acc909e-f9e6-4622-b6de-25403a30c404 method=POST path=/api/v1/attendance/mark status=400 duration_ms=12.57
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=request_completed request_id=e36d3feb-0c36-4f06-a50f-5b1df3526176 method=GET path=/api/v1/attendance/ status=200 duration_ms=25.22
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=attendance_daily_summary date=2026-05-29 total_students=2 present=1 absent=0 late=0 percentage=50.0
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=request_completed request_id=6f8bd203-6b88-401a-a5fe-d32ca7787a5c method=GET path=/api/v1/attendance/summary/daily status=200 duration_ms=16.43
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 15:14:07] INFO [ai_attendance] - event=request_completed request_id=2ff56471-ff8b-4086-8caa-6782d6906cea method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=16.69
+[2026-05-29 17:48:11] INFO [ai_attendance] - 🔑 Login attempt for user: test_diag_admin
+[2026-05-29 17:48:11] INFO [ai_attendance] - ✅ Login successful for user: test_diag_admin
+[2026-05-29 17:48:11] INFO [ai_attendance] - event=request_completed request_id=e0ca3575-2d3e-45ba-a6ab-e8f4fb18fdc1 method=POST path=/api/v1/auth/login status=200 duration_ms=176.80
+[2026-05-29 17:48:11] INFO [ai_attendance] - event=diagnostics_readiness_request
+[2026-05-29 17:48:11] INFO [ai_attendance] - event=request_completed request_id=9274db58-7dea-441d-9265-2895dfbfa266 method=GET path=/api/v1/diagnostics/readiness status=200 duration_ms=2.33
+[2026-05-29 17:48:11] INFO [ai_attendance] - event=diagnostics_api_coverage_request
+[2026-05-29 17:48:11] INFO [ai_attendance] - event=request_completed request_id=f699602b-3d77-43cd-befe-83faed38d58b method=GET path=/api/v1/diagnostics/api-coverage status=200 duration_ms=1.67
+[2026-05-29 17:48:12] INFO [ai_attendance] - 🔑 Login attempt for user: test_dashboard_admin
+[2026-05-29 17:48:12] INFO [ai_attendance] - ✅ Login successful for user: test_dashboard_admin
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=dab70751-b0bc-47a4-b0c7-f0c9b88b0c06 method=POST path=/api/v1/auth/login status=200 duration_ms=173.22
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=dashboard_summary_request date=2026-05-29 department=Computer Science
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=e60ddf61-0d8f-4b2d-8654-0be03b8b3490 method=GET path=/api/v1/dashboard/summary status=200 duration_ms=2.39
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=dashboard_daily_stats_request date=2026-05-29 department=IT
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=0950d423-6cae-4b87-8582-34191727bedf method=GET path=/api/v1/dashboard/stats/daily status=200 duration_ms=1.93
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=dashboard_monthly_stats_request year=2026 month=5 department=Computer Science
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=9514defe-3906-49f2-b8dd-a9b4543b48bd method=GET path=/api/v1/dashboard/stats/monthly status=200 duration_ms=1.72
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=dashboard_department_stats_request date=2026-05-29
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=e73b6946-67dc-46f8-8996-95a35d32b011 method=GET path=/api/v1/dashboard/stats/department status=200 duration_ms=1.73
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=dashboard_weekly_graph_request end_date=2026-05-29 days=7 department=CSE
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=6a528bd0-c779-41c5-a22d-d89a730adb63 method=GET path=/api/v1/dashboard/graphs/weekly status=200 duration_ms=1.72
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=dashboard_monthly_graph_request year=2026 month=5 department=IT
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=d538db86-9084-4ce8-b63f-be3e7746e30b method=GET path=/api/v1/dashboard/graphs/monthly status=200 duration_ms=1.70
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=dashboard_department_graph_request date=2026-05-29
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=956924b2-9948-4caa-9636-e55819f69f51 method=GET path=/api/v1/dashboard/graphs/department status=200 duration_ms=1.69
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=dashboard_monitoring_summary_request
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=478964c1-c233-40cc-8c07-e61ed77daec9 method=GET path=/api/v1/dashboard/monitoring/summary status=200 duration_ms=1.71
+[2026-05-29 17:48:12] INFO [ai_attendance] - 🔑 Login attempt for user: test_scheduler_route_admin
+[2026-05-29 17:48:12] INFO [ai_attendance] - ✅ Login successful for user: test_scheduler_route_admin
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=d3ed6d29-f427-4ff2-9eaf-7d7a6bcc9902 method=POST path=/api/v1/auth/login status=200 duration_ms=170.72
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=scheduler_executions_list_request limit=10
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=c3136d0b-55ca-4913-8217-6ff3c159fae6 method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=2.95
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
+[2026-05-29 17:48:12] INFO [ai_attendance] - event=request_completed request_id=2c308747-ef81-47f5-a78c-a3caf9757371 method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=1.74
+[2026-05-29 17:48:12] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 17:48:13] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 17:48:13] INFO [ai_attendance] - event=request_completed request_id=0b971654-62c5-404e-a98f-2cbeb655f30c method=POST path=/api/v1/auth/login status=200 duration_ms=167.89
+[2026-05-29 17:48:13] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin force_send=False
+[2026-05-29 17:48:13] INFO [ai_attendance] - event=request_completed request_id=b5e72743-38e1-4f57-a4af-1f66672b4e64 method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=2.31
+[2026-05-29 17:48:13] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None force_send=False
+[2026-05-29 17:48:13] INFO [ai_attendance] - event=request_completed request_id=e282c14d-dbd3-4db7-aeca-226c2745de3d method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=2.29
+[2026-05-29 17:48:13] INFO [ai_attendance] - event=email_deliveries_list_request limit=10
+[2026-05-29 17:48:13] INFO [ai_attendance] - event=request_completed request_id=57066399-471a-4581-961f-cac46708733c method=GET path=/api/v1/attendance/reports/email/deliveries status=200 duration_ms=1.98
+[2026-05-29 17:48:13] INFO [ai_attendance] - event=email_delivery_summary_request last_n=30
+[2026-05-29 17:48:13] INFO [ai_attendance] - event=request_completed request_id=2fc1314c-b69a-4f4f-801a-fcf5240ed15a method=GET path=/api/v1/attendance/reports/email/summary status=200 duration_ms=1.84
+[2026-05-29 17:50:25] INFO [ai_attendance] - event=request_completed request_id=48ee351c-b1d9-4273-9741-96dd2ad3b356 method=GET path=/ status=200 duration_ms=0.54
+[2026-05-29 17:50:25] INFO [ai_attendance] - event=request_completed request_id=aa2af22b-a035-403f-99ad-b0369d05d513 method=GET path=/api/v1/health status=200 duration_ms=17.08
+[2026-05-29 17:50:25] INFO [ai_attendance] - event=request_completed request_id=315c4ed8-a1e1-42c7-a78d-8ffbb293233f method=GET path=/ status=200 duration_ms=0.20
+[2026-05-29 17:50:25] WARNING [ai_attendance] - event=http_exception request_id=6d5b1039-9db9-4359-b219-7dd21b763f41 path=/non-existent-route status=404 message=Not Found
+[2026-05-29 17:50:25] INFO [ai_attendance] - event=request_completed request_id=6d5b1039-9db9-4359-b219-7dd21b763f41 method=GET path=/non-existent-route status=404 duration_ms=0.28
+[2026-05-29 17:50:25] INFO [ai_attendance] - event=request_completed request_id=7e9219c3-2723-4562-b3ef-3df4e2a4ab5e method=GET path=/docs status=200 duration_ms=0.34
+[2026-05-29 17:50:25] INFO [ai_attendance] - event=request_completed request_id=de556068-d985-406b-8e7e-fcd34f82702f method=GET path=/ status=200 duration_ms=0.16
+[2026-05-29 17:50:25] WARNING [ai_attendance] - event=validation_error request_id=2be1a28f-f0cd-4196-9213-3a783736c48e path=/api/v1/auth/login status=422 errors=1
+[2026-05-29 17:50:25] INFO [ai_attendance] - event=request_completed request_id=2be1a28f-f0cd-4196-9213-3a783736c48e method=POST path=/api/v1/auth/login status=422 duration_ms=1.56
+[2026-05-29 17:50:25] INFO [ai_attendance] - 🔑 Login attempt for user: test_auth_admin
+[2026-05-29 17:50:25] INFO [ai_attendance] - ✅ Login successful for user: test_auth_admin
+[2026-05-29 17:50:25] INFO [ai_attendance] - event=request_completed request_id=c0fde8ac-c52e-461d-8dc2-572fe3c4423f method=POST path=/api/v1/auth/login status=200 duration_ms=176.02
+[2026-05-29 17:50:25] INFO [ai_attendance] - 🔑 Login attempt for user: test_auth_admin
+[2026-05-29 17:50:26] WARNING [ai_attendance] - event=http_exception request_id=f93d65cc-8062-4407-92c6-0f4b80be38c6 path=/api/v1/auth/login status=401 message=Invalid username or password
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=f93d65cc-8062-4407-92c6-0f4b80be38c6 method=POST path=/api/v1/auth/login status=401 duration_ms=172.39
+[2026-05-29 17:50:26] WARNING [ai_attendance] - event=http_exception request_id=9c054cfd-0628-4608-8975-8cc95aaadac1 path=/api/v1/auth/me status=401 message=Not authenticated
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=9c054cfd-0628-4608-8975-8cc95aaadac1 method=GET path=/api/v1/auth/me status=401 duration_ms=0.40
+[2026-05-29 17:50:26] INFO [ai_attendance] - 🔑 Login attempt for user: test_auth_admin
+[2026-05-29 17:50:26] INFO [ai_attendance] - ✅ Login successful for user: test_auth_admin
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=3b4b96e1-86cf-42f7-97d4-08e6049edd4b method=POST path=/api/v1/auth/login status=200 duration_ms=171.98
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=4e11247e-cdc6-4880-b273-6202757778ed method=GET path=/api/v1/auth/me status=200 duration_ms=1.95
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=009e575a-f113-450a-a4c5-907298fd28d0 method=POST path=/api/v1/auth/logout status=200 duration_ms=0.25
+[2026-05-29 17:50:26] INFO [ai_attendance] - 🔑 Login attempt for user: test_dashboard_admin
+[2026-05-29 17:50:26] INFO [ai_attendance] - ✅ Login successful for user: test_dashboard_admin
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=2dae3abe-eafa-4f7c-9d79-85d2d94b4481 method=POST path=/api/v1/auth/login status=200 duration_ms=172.26
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=dashboard_summary_request date=2026-05-29 department=Computer Science
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=b73bd8f5-cf2d-416f-ae66-d694be26fc06 method=GET path=/api/v1/dashboard/summary status=200 duration_ms=2.26
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=dashboard_daily_stats_request date=2026-05-29 department=IT
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=b2b852c3-1d3b-45a6-a3c2-123984d2ae05 method=GET path=/api/v1/dashboard/stats/daily status=200 duration_ms=1.61
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=dashboard_monthly_stats_request year=2026 month=5 department=Computer Science
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=373618a2-9430-4ec9-8501-b62cbf3bc510 method=GET path=/api/v1/dashboard/stats/monthly status=200 duration_ms=1.71
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=dashboard_department_stats_request date=2026-05-29
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=f51d2451-6313-4c00-a3c9-0703f36a2866 method=GET path=/api/v1/dashboard/stats/department status=200 duration_ms=1.66
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=dashboard_weekly_graph_request end_date=2026-05-29 days=7 department=CSE
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=c4fa24df-084d-491a-a0d9-9c97063dc37c method=GET path=/api/v1/dashboard/graphs/weekly status=200 duration_ms=1.60
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=dashboard_monthly_graph_request year=2026 month=5 department=IT
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=f41044b2-bb1f-4cd0-9316-7c4b9967c236 method=GET path=/api/v1/dashboard/graphs/monthly status=200 duration_ms=1.62
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=dashboard_department_graph_request date=2026-05-29
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=5b6b1d7f-3cb5-4bee-abd0-e3e79cd930a7 method=GET path=/api/v1/dashboard/graphs/department status=200 duration_ms=1.85
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=dashboard_monitoring_summary_request
+[2026-05-29 17:50:26] INFO [ai_attendance] - event=request_completed request_id=01b8c234-3f78-4721-aca0-66ac357eddeb method=GET path=/api/v1/dashboard/monitoring/summary status=200 duration_ms=1.55
+[2026-05-29 17:55:10] INFO [ai_attendance] - 🔑 Login attempt for user: test_diag_admin
+[2026-05-29 17:55:10] INFO [ai_attendance] - ✅ Login successful for user: test_diag_admin
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=0a474a12-f1a4-4cc6-bdf6-af1baea64559 method=POST path=/api/v1/auth/login status=200 duration_ms=176.22
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=diagnostics_readiness_request
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=a5bc365f-632a-4e5a-a952-de36652fad1c method=GET path=/api/v1/diagnostics/readiness status=200 duration_ms=2.59
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=diagnostics_api_coverage_request
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=b570f920-b11c-4e19-82c9-b2e39eef1e24 method=GET path=/api/v1/diagnostics/api-coverage status=200 duration_ms=2.01
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=diagnostics_runtime_metrics_request
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=0a8a5231-b577-489d-95d5-1375163e528a method=GET path=/api/v1/diagnostics/metrics status=200 duration_ms=1.63
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=diagnostics_stability_snapshot_request
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=76b88258-cb78-4672-a01c-e83f1fb9f6e5 method=GET path=/api/v1/diagnostics/stability status=200 duration_ms=1.76
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=b6c2b809-9b46-4516-b909-adf20fcb0428 method=GET path=/ status=200 duration_ms=0.36
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=7af0c563-4125-49ff-88af-2d0742ee5e3a method=GET path=/api/v1/health status=200 duration_ms=1.07
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=4b65492b-f4c7-40a4-83a9-3380ac867ce3 method=GET path=/ status=200 duration_ms=0.17
+[2026-05-29 17:55:10] WARNING [ai_attendance] - event=http_exception request_id=a02951f8-9ce7-4dd1-a4d8-a49de7146973 path=/non-existent-route status=404 message=Not Found
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=a02951f8-9ce7-4dd1-a4d8-a49de7146973 method=GET path=/non-existent-route status=404 duration_ms=0.27
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=147b601a-a2c9-4dce-9a21-fb8cca8de672 method=GET path=/docs status=200 duration_ms=0.10
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=07c03099-b3ba-4356-b493-5940f20420ec method=GET path=/ status=200 duration_ms=0.13
+[2026-05-29 17:55:10] WARNING [ai_attendance] - event=validation_error request_id=f5332ab0-46d4-42ec-bdc2-f3ab81d91541 path=/api/v1/auth/login status=422 errors=1
+[2026-05-29 17:55:10] INFO [ai_attendance] - event=request_completed request_id=f5332ab0-46d4-42ec-bdc2-f3ab81d91541 method=POST path=/api/v1/auth/login status=422 duration_ms=0.86
+[2026-05-29 17:55:20] INFO [ai_attendance] - 🔑 Login attempt for user: test_dashboard_admin
+[2026-05-29 17:55:20] INFO [ai_attendance] - ✅ Login successful for user: test_dashboard_admin
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=6826a89c-65b6-4c74-bc0b-8ebd91593a84 method=POST path=/api/v1/auth/login status=200 duration_ms=171.14
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=dashboard_summary_request date=2026-05-29 department=Computer Science
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=cd1eb440-7c1e-4be0-b845-e87fa4be797e method=GET path=/api/v1/dashboard/summary status=200 duration_ms=2.33
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=dashboard_daily_stats_request date=2026-05-29 department=IT
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=9ca0dc11-15a1-4805-8cd4-d1f3f58621db method=GET path=/api/v1/dashboard/stats/daily status=200 duration_ms=1.68
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=dashboard_monthly_stats_request year=2026 month=5 department=Computer Science
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=9803b98e-8e2b-4711-98e3-6cbe5d55c22b method=GET path=/api/v1/dashboard/stats/monthly status=200 duration_ms=1.74
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=dashboard_department_stats_request date=2026-05-29
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=3e755a02-2bd7-4203-a843-2d213a162fa2 method=GET path=/api/v1/dashboard/stats/department status=200 duration_ms=1.60
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=dashboard_weekly_graph_request end_date=2026-05-29 days=7 department=CSE
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=5bd03413-a97c-4e1e-8aae-095cd6ce768d method=GET path=/api/v1/dashboard/graphs/weekly status=200 duration_ms=1.60
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=dashboard_monthly_graph_request year=2026 month=5 department=IT
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=2078f727-1201-451a-97da-f9560be2746c method=GET path=/api/v1/dashboard/graphs/monthly status=200 duration_ms=1.61
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=dashboard_department_graph_request date=2026-05-29
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=769e0ec2-4868-4c04-ab9c-b2a8de242754 method=GET path=/api/v1/dashboard/graphs/department status=200 duration_ms=1.53
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=dashboard_monitoring_summary_request
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=525e29a5-43ff-4b26-a69f-d865a2da4108 method=GET path=/api/v1/dashboard/monitoring/summary status=200 duration_ms=1.62
+[2026-05-29 17:55:20] INFO [ai_attendance] - 🔑 Login attempt for user: test_scheduler_route_admin
+[2026-05-29 17:55:20] INFO [ai_attendance] - ✅ Login successful for user: test_scheduler_route_admin
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=bbeac770-ed0d-4d55-bbb9-eb5dfcc3a4e0 method=POST path=/api/v1/auth/login status=200 duration_ms=171.82
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=scheduler_executions_list_request limit=10
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=49e8dd71-2bbc-4868-98c3-0a5978f0d6af method=GET path=/api/v1/attendance/automation/executions status=200 duration_ms=3.09
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=scheduler_summary_request last_n=15
+[2026-05-29 17:55:20] INFO [ai_attendance] - event=request_completed request_id=604b4ecb-0b28-4222-994d-9665ffce3836 method=GET path=/api/v1/attendance/automation/summary status=200 duration_ms=2.46
+[2026-05-29 17:55:21] INFO [ai_attendance] - 🔑 Login attempt for user: test_email_route_admin
+[2026-05-29 17:55:21] INFO [ai_attendance] - ✅ Login successful for user: test_email_route_admin
+[2026-05-29 17:55:21] INFO [ai_attendance] - event=request_completed request_id=b840e8eb-6958-4290-80aa-7b5a975f7e67 method=POST path=/api/v1/auth/login status=200 duration_ms=173.19
+[2026-05-29 17:55:21] INFO [ai_attendance] - event=report_email_daily_request date=2026-05-29 recipient_group=admin force_send=False
+[2026-05-29 17:55:21] INFO [ai_attendance] - event=request_completed request_id=9d4dc2fa-4990-4878-9989-09289b9f7f71 method=POST path=/api/v1/attendance/reports/email/daily status=200 duration_ms=2.46
+[2026-05-29 17:55:21] INFO [ai_attendance] - event=report_email_monthly_request year=2026 month=5 recipient_group=admin department=None student_id=None force_send=False
+[2026-05-29 17:55:21] INFO [ai_attendance] - event=request_completed request_id=fdc87fcb-ee84-474b-bbb6-8c4a6c5ca52b method=POST path=/api/v1/attendance/reports/email/monthly status=200 duration_ms=2.01
+[2026-05-29 17:55:21] INFO [ai_attendance] - event=email_deliveries_list_request limit=10
+[2026-05-29 17:55:21] INFO [ai_attendance] - event=request_completed request_id=e2d82f6b-b9ee-46a7-87dc-66378cdaaa18 method=GET path=/api/v1/attendance/reports/email/deliveries status=200 duration_ms=1.94
+[2026-05-29 17:55:21] INFO [ai_attendance] - event=email_delivery_summary_request last_n=30
+[2026-05-29 17:55:21] INFO [ai_attendance] - event=request_completed request_id=c0b39453-de67-48c3-a206-1cd3065294c0 method=GET path=/api/v1/attendance/reports/email/summary status=200 duration_ms=1.89
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=6185f07c-6214-40f1-9f24-043261ddf0a3 method=GET path=/ status=200 duration_ms=0.59
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=68279b5a-1791-4a91-85e2-4017d6414e3d method=GET path=/api/v1/health status=200 duration_ms=17.07
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=6e94dea1-d6e2-4eff-ae8c-ff1363f6b936 method=GET path=/ status=200 duration_ms=0.23
+[2026-05-29 17:59:56] WARNING [ai_attendance] - event=http_exception request_id=4fefbd35-2f5a-4d43-9842-b9efd6adc433 path=/non-existent-route status=404 message=Not Found
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=4fefbd35-2f5a-4d43-9842-b9efd6adc433 method=GET path=/non-existent-route status=404 duration_ms=0.32
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=a1fad173-9d4e-4d17-9996-4e31f9f7600e method=GET path=/docs status=200 duration_ms=0.16
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=e2fb521a-1ee4-464d-ba03-3340da3c3104 method=GET path=/ status=200 duration_ms=0.23
+[2026-05-29 17:59:56] WARNING [ai_attendance] - event=validation_error request_id=e91d8798-d6ae-4513-8bdd-b254bbee6aa8 path=/api/v1/auth/login status=422 errors=1
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=e91d8798-d6ae-4513-8bdd-b254bbee6aa8 method=POST path=/api/v1/auth/login status=422 duration_ms=1.45
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=0d5f20b7-a6dc-4eec-8d14-cf5b227173ea method=POST path=/api/v1/auth/login status=413 duration_ms=0.07
+[2026-05-29 17:59:56] WARNING [ai_attendance] - event=http_exception request_id=9e34c4c6-eeb3-40e6-8c7a-4ec4f19fe4fb path=/api/v1/students/ status=401 message=Not authenticated
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=9e34c4c6-eeb3-40e6-8c7a-4ec4f19fe4fb method=GET path=/api/v1/students/ status=401 duration_ms=0.61
+[2026-05-29 17:59:56] INFO [ai_attendance] - 🔑 Login attempt for user: test_student_route_admin
+[2026-05-29 17:59:56] INFO [ai_attendance] - ✅ Login successful for user: test_student_route_admin
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=fcc728bb-e020-4dff-a75d-55802fa5c671 method=POST path=/api/v1/auth/login status=200 duration_ms=177.57
+[2026-05-29 17:59:56] WARNING [ai_attendance] - event=validation_error request_id=e8513eaa-c715-43b5-b0f7-d506002c677e path=/api/v1/students/ status=422 errors=1
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=e8513eaa-c715-43b5-b0f7-d506002c677e method=POST path=/api/v1/students/ status=422 duration_ms=4.70
+[2026-05-29 17:59:56] WARNING [ai_attendance] - event=validation_error request_id=1f22908a-ee18-4386-ba81-2bb5fd18e55c path=/api/v1/students/ status=422 errors=1
+[2026-05-29 17:59:56] INFO [ai_attendance] - event=request_completed request_id=1f22908a-ee18-4386-ba81-2bb5fd18e55c method=POST path=/api/v1/students/ status=422 duration_ms=3.22
+[2026-05-29 17:59:57] WARNING [ai_attendance] - event=app_exception request_id=e1875a52-1b55-4c1a-a1ea-01b19bca2fdf path=/api/v1/students/ status=400 error_type=BadRequestException message=search must be 100 characters or fewer
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=request_completed request_id=e1875a52-1b55-4c1a-a1ea-01b19bca2fdf method=GET path=/api/v1/students/ status=400 duration_ms=2.67
+[2026-05-29 17:59:57] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 17:59:57] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=request_completed request_id=d8c00038-0e68-46bb-b9ef-9b1c3eb51f6c method=POST path=/api/v1/auth/login status=200 duration_ms=174.88
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=attendance_mark_request student_id=27 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=attendance_marked attendance_id=26 student_id=27 attendance_date=2026-05-29 status=Present
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=request_completed request_id=58fe9489-1b39-4bd8-8288-e8e309e9c11c method=POST path=/api/v1/attendance/mark status=201 duration_ms=9.99
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=attendance_mark_request student_id=27 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 17:59:57] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=27 attendance_date=2026-05-29
+[2026-05-29 17:59:57] WARNING [ai_attendance] - event=app_exception request_id=83380de8-f7f8-41ea-bdd8-be5d608920f5 path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=request_completed request_id=83380de8-f7f8-41ea-bdd8-be5d608920f5 method=POST path=/api/v1/attendance/mark status=400 duration_ms=3.50
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=request_completed request_id=b8a0c865-1ecf-45ea-b9c5-eb3eac5a483a method=GET path=/api/v1/attendance/ status=200 duration_ms=6.72
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=attendance_daily_summary date=2026-05-29 total_students=2 present=1 absent=0 late=0 percentage=50.0
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=request_completed request_id=940db679-1cfd-447c-9e35-9710cc5440e3 method=GET path=/api/v1/attendance/summary/daily status=200 duration_ms=3.88
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=request_completed request_id=7909ad79-80ba-41a8-a70f-5f1cd84e2f89 method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=4.44
+[2026-05-29 17:59:57] WARNING [ai_attendance] - event=app_exception request_id=2b8678ae-5cc5-4d42-a22b-426ea5e611ab path=/api/v1/attendance/ status=400 error_type=BadRequestException message=search must be 100 characters or fewer
+[2026-05-29 17:59:57] INFO [ai_attendance] - event=request_completed request_id=2b8678ae-5cc5-4d42-a22b-426ea5e611ab method=GET path=/api/v1/attendance/ status=400 duration_ms=1.98
+[2026-05-29 18:00:29] INFO [ai_attendance] - event=request_completed request_id=60b7b6ef-c5f7-4685-a527-5696b3edd0b3 method=GET path=/ status=200 duration_ms=0.57
+[2026-05-29 18:00:29] INFO [ai_attendance] - event=request_completed request_id=d64c8a18-95e5-42b5-a489-d7aea1408245 method=GET path=/api/v1/health status=200 duration_ms=21.41
+[2026-05-29 18:00:29] INFO [ai_attendance] - event=request_completed request_id=c2d04542-358b-405b-9ebc-b020ce30a74e method=GET path=/ status=200 duration_ms=0.22
+[2026-05-29 18:00:29] WARNING [ai_attendance] - event=http_exception request_id=a6b06253-697a-4fb8-bda6-d5e92658d537 path=/non-existent-route status=404 message=Not Found
+[2026-05-29 18:00:29] INFO [ai_attendance] - event=request_completed request_id=a6b06253-697a-4fb8-bda6-d5e92658d537 method=GET path=/non-existent-route status=404 duration_ms=0.35
+[2026-05-29 18:00:29] INFO [ai_attendance] - event=request_completed request_id=bdd04853-df62-4559-a24b-fb5148349b1a method=GET path=/docs status=200 duration_ms=0.15
+[2026-05-29 18:00:29] INFO [ai_attendance] - event=request_completed request_id=6dbe6ade-7201-4088-9be2-ab317da933c3 method=GET path=/ status=200 duration_ms=0.17
+[2026-05-29 18:00:29] WARNING [ai_attendance] - event=validation_error request_id=c11d9826-2aa8-473d-9eb3-5d964b2d69fa path=/api/v1/auth/login status=422 errors=1
+[2026-05-29 18:00:29] INFO [ai_attendance] - event=request_completed request_id=c11d9826-2aa8-473d-9eb3-5d964b2d69fa method=POST path=/api/v1/auth/login status=422 duration_ms=1.36
+[2026-05-29 18:00:29] INFO [ai_attendance] - event=request_completed request_id=7635a5ce-e316-499a-ac3c-b68b7b8dc039 method=POST path=/api/v1/auth/login status=413 duration_ms=0.07
+[2026-05-29 18:00:30] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 18:00:30] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=request_completed request_id=2a93f55e-7a7a-47c2-bdb0-9db420e2a563 method=POST path=/api/v1/auth/login status=200 duration_ms=176.94
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=attendance_mark_request student_id=28 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=attendance_marked attendance_id=27 student_id=28 attendance_date=2026-05-29 status=Present
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=request_completed request_id=c40d5464-233e-4cba-8b70-b3d207a39913 method=POST path=/api/v1/attendance/mark status=201 duration_ms=9.52
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=attendance_mark_request student_id=28 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 18:00:30] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=28 attendance_date=2026-05-29
+[2026-05-29 18:00:30] WARNING [ai_attendance] - event=app_exception request_id=358bd24d-3033-4058-b582-2fbca421349d path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=request_completed request_id=358bd24d-3033-4058-b582-2fbca421349d method=POST path=/api/v1/attendance/mark status=400 duration_ms=3.85
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=request_completed request_id=d7b2faef-b048-4da8-bdd8-5b8868766e99 method=GET path=/api/v1/attendance/ status=200 duration_ms=7.12
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=attendance_daily_summary date=2026-05-29 total_students=2 present=1 absent=0 late=0 percentage=50.0
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=request_completed request_id=ed47120a-edbf-428f-b2ae-f27971ea9ee6 method=GET path=/api/v1/attendance/summary/daily status=200 duration_ms=4.46
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=request_completed request_id=b7c7d3c6-9a13-4e62-adb4-062a91f42d7a method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=6.48
+[2026-05-29 18:00:30] WARNING [ai_attendance] - event=app_exception request_id=3477b59c-8754-4652-bed4-2dd1fb395fc1 path=/api/v1/attendance/ status=400 error_type=BadRequestException message=search must be 100 characters or fewer
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=request_completed request_id=3477b59c-8754-4652-bed4-2dd1fb395fc1 method=GET path=/api/v1/attendance/ status=400 duration_ms=2.53
+[2026-05-29 18:00:30] WARNING [ai_attendance] - event=http_exception request_id=effdd6d8-fc45-4fa8-a691-136260dbcfeb path=/api/v1/students/ status=401 message=Not authenticated
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=request_completed request_id=effdd6d8-fc45-4fa8-a691-136260dbcfeb method=GET path=/api/v1/students/ status=401 duration_ms=0.82
+[2026-05-29 18:00:30] INFO [ai_attendance] - 🔑 Login attempt for user: test_student_route_admin
+[2026-05-29 18:00:30] INFO [ai_attendance] - ✅ Login successful for user: test_student_route_admin
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=request_completed request_id=76ac4ed7-068c-4e52-9f61-0ff231916fc4 method=POST path=/api/v1/auth/login status=200 duration_ms=172.82
+[2026-05-29 18:00:30] WARNING [ai_attendance] - event=validation_error request_id=e52858da-e282-4c4c-beaa-fa9834dff5f1 path=/api/v1/students/ status=422 errors=1
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=request_completed request_id=e52858da-e282-4c4c-beaa-fa9834dff5f1 method=POST path=/api/v1/students/ status=422 duration_ms=4.92
+[2026-05-29 18:00:30] WARNING [ai_attendance] - event=validation_error request_id=f107f55a-6daa-4446-beae-fdf8bc80fa7e path=/api/v1/students/ status=422 errors=1
+[2026-05-29 18:00:30] INFO [ai_attendance] - event=request_completed request_id=f107f55a-6daa-4446-beae-fdf8bc80fa7e method=POST path=/api/v1/students/ status=422 duration_ms=3.33
+[2026-05-29 18:00:31] WARNING [ai_attendance] - event=app_exception request_id=bcf9706e-5571-4545-a058-c90c83beb153 path=/api/v1/students/ status=400 error_type=BadRequestException message=search must be 100 characters or fewer
+[2026-05-29 18:00:31] INFO [ai_attendance] - event=request_completed request_id=bcf9706e-5571-4545-a058-c90c83beb153 method=GET path=/api/v1/students/ status=400 duration_ms=2.76
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=ee185368-9da2-4563-8a0e-06a140a54fd5 method=GET path=/ status=200 duration_ms=0.55
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=7b4f7921-15e5-4614-9057-b314642f7e91 method=GET path=/api/v1/health status=200 duration_ms=21.83
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=a7837ec7-2f0c-4a69-9eb4-970e032b08d5 method=GET path=/ status=200 duration_ms=0.21
+[2026-05-29 18:02:11] WARNING [ai_attendance] - event=http_exception request_id=b72bfbc6-4d31-44fe-b877-64ff742e666a path=/non-existent-route status=404 message=Not Found
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=b72bfbc6-4d31-44fe-b877-64ff742e666a method=GET path=/non-existent-route status=404 duration_ms=0.30
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=f307ea5c-f71c-41c3-b40d-2169317b3f48 method=GET path=/docs status=200 duration_ms=0.15
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=3a521796-0ee0-4d07-885f-836e2d8251f6 method=GET path=/ status=200 duration_ms=0.18
+[2026-05-29 18:02:11] WARNING [ai_attendance] - event=validation_error request_id=33eac267-306d-480b-84f8-0059a187c49f path=/api/v1/auth/login status=422 errors=1
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=33eac267-306d-480b-84f8-0059a187c49f method=POST path=/api/v1/auth/login status=422 duration_ms=1.36
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=352f9080-405e-4577-86e7-5a38f05b31ba method=POST path=/api/v1/auth/login status=413 duration_ms=0.08
+[2026-05-29 18:02:11] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 18:02:11] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=cab5aaa5-e3b1-4645-8569-65fcb2461716 method=POST path=/api/v1/auth/login status=200 duration_ms=175.76
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=attendance_mark_request student_id=29 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=attendance_marked attendance_id=28 student_id=29 attendance_date=2026-05-29 status=Present
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=8e170a5a-022b-47ec-b824-c32de5c3ad4b method=POST path=/api/v1/attendance/mark status=201 duration_ms=8.78
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=attendance_mark_request student_id=29 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 18:02:11] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=29 attendance_date=2026-05-29
+[2026-05-29 18:02:11] WARNING [ai_attendance] - event=app_exception request_id=bb615622-0f0d-456b-aa6a-3ee59e5ab96d path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=bb615622-0f0d-456b-aa6a-3ee59e5ab96d method=POST path=/api/v1/attendance/mark status=400 duration_ms=3.96
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=a58181e9-4c2f-4be3-b5d2-076454a57353 method=GET path=/api/v1/attendance/ status=200 duration_ms=6.80
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=attendance_daily_summary date=2026-05-29 total_students=2 present=1 absent=0 late=0 percentage=50.0
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=8a1314a3-4860-460b-b395-2a30987256c1 method=GET path=/api/v1/attendance/summary/daily status=200 duration_ms=4.32
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=cea885f6-70a5-4484-b7cc-bcce1404188d method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=6.06
+[2026-05-29 18:02:11] WARNING [ai_attendance] - event=app_exception request_id=80134011-0d2e-4000-857c-2f03ac05f8bf path=/api/v1/attendance/ status=400 error_type=BadRequestException message=search must be 100 characters or fewer
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=80134011-0d2e-4000-857c-2f03ac05f8bf method=GET path=/api/v1/attendance/ status=400 duration_ms=2.48
+[2026-05-29 18:02:11] WARNING [ai_attendance] - event=http_exception request_id=2600551e-20f0-4344-a1e7-8e3f1868e5df path=/api/v1/students/ status=401 message=Not authenticated
+[2026-05-29 18:02:11] INFO [ai_attendance] - event=request_completed request_id=2600551e-20f0-4344-a1e7-8e3f1868e5df method=GET path=/api/v1/students/ status=401 duration_ms=0.71
+[2026-05-29 18:02:11] INFO [ai_attendance] - 🔑 Login attempt for user: test_student_route_admin
+[2026-05-29 18:02:12] INFO [ai_attendance] - ✅ Login successful for user: test_student_route_admin
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=f2b1c301-b8c9-4a42-9414-a42bc461f2a4 method=POST path=/api/v1/auth/login status=200 duration_ms=170.83
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=5adbb05b-b164-46d0-9b22-a4f055b21297 method=POST path=/api/v1/students/ status=200 duration_ms=39.73
+[2026-05-29 18:02:12] WARNING [ai_attendance] - event=app_exception request_id=9eec3d9a-f9a7-4253-bc39-a3e93d7e6e33 path=/api/v1/students/ status=400 error_type=BadRequestException message=Roll number already registered
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=9eec3d9a-f9a7-4253-bc39-a3e93d7e6e33 method=POST path=/api/v1/students/ status=400 duration_ms=4.08
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=86a02cc1-69db-40c2-9805-4c1bfe61f002 method=GET path=/api/v1/students/ status=200 duration_ms=6.86
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=618cb49e-6a73-4e08-85f9-1e231f8389a1 method=GET path=/api/v1/students/ status=200 duration_ms=3.17
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=7c3b6e54-5dc9-4401-8df0-49c671aed9d7 method=GET path=/api/v1/students/30 status=200 duration_ms=2.14
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=5b126820-20dc-45b0-8dbe-8125a4687848 method=GET path=/api/v1/students/ status=200 duration_ms=2.85
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=2908a140-0c64-42d8-a020-174d35f0a99d method=PUT path=/api/v1/students/30 status=200 duration_ms=8.30
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=2b51101a-e875-447d-9b06-4bf1ad259783 method=GET path=/api/v1/students/ status=200 duration_ms=2.95
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=f93ce07f-290b-4a8f-a2d9-3008d2f0d43e method=DELETE path=/api/v1/students/30 status=200 duration_ms=26.03
+[2026-05-29 18:02:12] WARNING [ai_attendance] - event=app_exception request_id=ca73b177-78b3-43b1-babf-426fe4150566 path=/api/v1/students/30 status=404 error_type=NotFoundException message=Student not found
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=ca73b177-78b3-43b1-babf-426fe4150566 method=GET path=/api/v1/students/30 status=404 duration_ms=3.31
+[2026-05-29 18:02:12] WARNING [ai_attendance] - event=app_exception request_id=9668a946-25a6-4870-9945-65757fe6f426 path=/api/v1/students/ status=400 error_type=BadRequestException message=search must be 100 characters or fewer
+[2026-05-29 18:02:12] INFO [ai_attendance] - event=request_completed request_id=9668a946-25a6-4870-9945-65757fe6f426 method=GET path=/api/v1/students/ status=400 duration_ms=2.12
+[2026-05-29 18:02:33] INFO [ai_attendance] - event=request_completed request_id=b8dc9b69-e8ad-4a87-a4be-a5cca5a19049 method=GET path=/ status=200 duration_ms=0.54
+[2026-05-29 18:02:33] INFO [ai_attendance] - event=request_completed request_id=774ce922-12f2-4a3a-bac6-af951c0729a0 method=GET path=/api/v1/health status=200 duration_ms=15.49
+[2026-05-29 18:02:33] INFO [ai_attendance] - event=request_completed request_id=17420f23-f5c1-40a0-af37-827db38e3e5f method=GET path=/ status=200 duration_ms=0.21
+[2026-05-29 18:02:33] WARNING [ai_attendance] - event=http_exception request_id=296ecf26-3eff-457c-9a5f-58e26d5ffb93 path=/non-existent-route status=404 message=Not Found
+[2026-05-29 18:02:33] INFO [ai_attendance] - event=request_completed request_id=296ecf26-3eff-457c-9a5f-58e26d5ffb93 method=GET path=/non-existent-route status=404 duration_ms=0.35
+[2026-05-29 18:02:33] INFO [ai_attendance] - event=request_completed request_id=536376fa-d2b6-41c9-bf06-2e164227306c method=GET path=/docs status=200 duration_ms=0.14
+[2026-05-29 18:02:33] INFO [ai_attendance] - event=request_completed request_id=b92cfb95-ed8d-4b9b-b080-4030f3314b44 method=GET path=/ status=200 duration_ms=0.18
+[2026-05-29 18:02:33] WARNING [ai_attendance] - event=validation_error request_id=f011edd8-2533-4413-acc1-eb47d97ac454 path=/api/v1/auth/login status=422 errors=1
+[2026-05-29 18:02:33] INFO [ai_attendance] - event=request_completed request_id=f011edd8-2533-4413-acc1-eb47d97ac454 method=POST path=/api/v1/auth/login status=422 duration_ms=1.37
+[2026-05-29 18:02:33] INFO [ai_attendance] - event=request_completed request_id=f135849c-b8c2-4440-ab11-13a212d075bd method=POST path=/api/v1/auth/login status=413 duration_ms=0.08
+[2026-05-29 18:02:34] INFO [ai_attendance] - 🔑 Login attempt for user: test_attendance_route_admin
+[2026-05-29 18:02:34] INFO [ai_attendance] - ✅ Login successful for user: test_attendance_route_admin
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=7706ea2b-3987-4142-b496-13adafbbee4a method=POST path=/api/v1/auth/login status=200 duration_ms=175.93
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=attendance_mark_request student_id=31 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=attendance_marked attendance_id=29 student_id=31 attendance_date=2026-05-29 status=Present
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=da49969a-9a30-45c4-98cc-52e863f4aa9a method=POST path=/api/v1/attendance/mark status=201 duration_ms=10.33
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=attendance_mark_request student_id=31 status=Present confidence=0.98 source=ai_recognition
+[2026-05-29 18:02:34] WARNING [ai_attendance] - event=attendance_mark_rejected reason=duplicate student_id=31 attendance_date=2026-05-29
+[2026-05-29 18:02:34] WARNING [ai_attendance] - event=app_exception request_id=117115e2-ea5c-4dbf-9989-2eac5d5ac325 path=/api/v1/attendance/mark status=400 error_type=BadRequestException message=Attendance already marked for this student on this date
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=117115e2-ea5c-4dbf-9989-2eac5d5ac325 method=POST path=/api/v1/attendance/mark status=400 duration_ms=3.91
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=attendance_list_request page=1 page_size=20 student_id=None department=None status=None from_date=None to_date=None search=None
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=attendance_listed page=1 page_size=20 total=2 student_id=None department=None status=None from_date=None to_date=None
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=99abcbf3-dbe8-44e9-8ac4-ed71d9b6321b method=GET path=/api/v1/attendance/ status=200 duration_ms=7.06
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=attendance_daily_summary_request target_date=None
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=attendance_daily_summary date=2026-05-29 total_students=2 present=1 absent=0 late=0 percentage=50.0
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=f23c2ebb-4400-4394-b810-522e80186dc5 method=GET path=/api/v1/attendance/summary/daily status=200 duration_ms=4.33
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=attendance_export_preview_request from_date=None to_date=None student_id=None
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=attendance_export_preview rows=2 from_date=None to_date=None student_id=None
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=3a561cfa-137a-47a4-8076-5c9f0d9301d5 method=GET path=/api/v1/attendance/export/preview status=200 duration_ms=6.07
+[2026-05-29 18:02:34] WARNING [ai_attendance] - event=app_exception request_id=0826265e-d2d4-43e1-a56f-fe43e8611f6f path=/api/v1/attendance/ status=400 error_type=BadRequestException message=search must be 100 characters or fewer
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=0826265e-d2d4-43e1-a56f-fe43e8611f6f method=GET path=/api/v1/attendance/ status=400 duration_ms=2.38
+[2026-05-29 18:02:34] WARNING [ai_attendance] - event=http_exception request_id=2c668641-ae64-43f3-83b0-80ddf18bbbff path=/api/v1/students/ status=401 message=Not authenticated
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=2c668641-ae64-43f3-83b0-80ddf18bbbff method=GET path=/api/v1/students/ status=401 duration_ms=0.77
+[2026-05-29 18:02:34] INFO [ai_attendance] - 🔑 Login attempt for user: test_student_route_admin
+[2026-05-29 18:02:34] INFO [ai_attendance] - ✅ Login successful for user: test_student_route_admin
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=83ede5fc-9397-456e-bf43-b24815e573a1 method=POST path=/api/v1/auth/login status=200 duration_ms=167.81
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=c04400f6-1ba8-4709-9cba-96844c4f52e2 method=POST path=/api/v1/students/ status=201 duration_ms=10.90
+[2026-05-29 18:02:34] WARNING [ai_attendance] - event=app_exception request_id=d5130ee4-f274-4c19-b550-8695ec02772d path=/api/v1/students/ status=400 error_type=BadRequestException message=Roll number already registered
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=d5130ee4-f274-4c19-b550-8695ec02772d method=POST path=/api/v1/students/ status=400 duration_ms=3.51
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=6da8b51f-66bc-4dfa-b3aa-85faaf3952cb method=GET path=/api/v1/students/ status=200 duration_ms=4.65
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=c7f9befc-bfc8-4010-89e0-35e8acb4393d method=GET path=/api/v1/students/ status=200 duration_ms=3.47
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=936c1b9b-5a88-4cc4-856a-e8f52df7959a method=GET path=/api/v1/students/32 status=200 duration_ms=2.32
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=ec14c38e-a85a-44bf-b983-8726ae25c977 method=GET path=/api/v1/students/ status=200 duration_ms=2.97
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=cb7877d0-c798-4164-b986-3107c8b2fb20 method=PUT path=/api/v1/students/32 status=200 duration_ms=7.18
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=fc13063a-ff1c-43d1-aba8-2483e4c2de55 method=GET path=/api/v1/students/ status=200 duration_ms=3.53
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=44e99197-cd7a-4b7d-8b3f-2340815a9188 method=DELETE path=/api/v1/students/32 status=200 duration_ms=6.48
+[2026-05-29 18:02:34] WARNING [ai_attendance] - event=app_exception request_id=80ad274b-c22f-406a-895b-11d77bd40eff path=/api/v1/students/32 status=404 error_type=NotFoundException message=Student not found
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=80ad274b-c22f-406a-895b-11d77bd40eff method=GET path=/api/v1/students/32 status=404 duration_ms=2.38
+[2026-05-29 18:02:34] WARNING [ai_attendance] - event=app_exception request_id=08ecb4d0-fbd7-4635-8f7b-e06c1803bcbd path=/api/v1/students/ status=400 error_type=BadRequestException message=search must be 100 characters or fewer
+[2026-05-29 18:02:34] INFO [ai_attendance] - event=request_completed request_id=08ecb4d0-fbd7-4635-8f7b-e06c1803bcbd method=GET path=/api/v1/students/ status=400 duration_ms=2.21
+[2026-05-29 18:04:30] INFO [ai_attendance] - 🔑 Login attempt for user: test_diag_admin
+[2026-05-29 18:04:30] INFO [ai_attendance] - ✅ Login successful for user: test_diag_admin
+[2026-05-29 18:04:30] INFO [ai_attendance] - event=request_completed request_id=511249df-83df-4896-adbd-fb69568b5dd8 method=POST path=/api/v1/auth/login status=200 duration_ms=173.31
+[2026-05-29 18:04:30] INFO [ai_attendance] - event=diagnostics_readiness_request
+[2026-05-29 18:04:30] INFO [ai_attendance] - event=request_completed request_id=9d6e79ac-a276-4e68-bae4-61a783a21762 method=GET path=/api/v1/diagnostics/readiness status=200 duration_ms=2.36
+[2026-05-29 18:04:30] INFO [ai_attendance] - event=diagnostics_api_coverage_request
+[2026-05-29 18:04:30] INFO [ai_attendance] - event=request_completed request_id=a1ffd75e-4be4-489b-8389-40b7378ef543 method=GET path=/api/v1/diagnostics/api-coverage status=200 duration_ms=1.68
+[2026-05-29 18:04:30] INFO [ai_attendance] - event=diagnostics_runtime_metrics_request
+[2026-05-29 18:04:30] INFO [ai_attendance] - event=request_completed request_id=7f8e3209-10d1-4147-a4d9-0b4c95781f58 method=GET path=/api/v1/diagnostics/metrics status=200 duration_ms=1.67
+[2026-05-29 18:04:30] INFO [ai_attendance] - event=diagnostics_stability_snapshot_request
+[2026-05-29 18:04:30] INFO [ai_attendance] - event=request_completed request_id=c05ee110-c9ad-4cc2-800c-ca199506d2e7 method=GET path=/api/v1/diagnostics/stability status=200 duration_ms=1.58

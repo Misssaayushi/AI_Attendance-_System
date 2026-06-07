@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #3b82f6; /* blue-500 */
+  --color-primary-hover: #2563eb; /* blue-600 */
+  --color-secondary: #8b5cf6; /* violet-500 */
+  --color-bg-base: var(--gray-950);
+  --color-bg-card: var(--gray-900);
+  --color-text-base: var(--text-main);
+  --color-text-muted: var(--text-400);
+  
+  --color-gray-950: var(--gray-950);
+  --color-gray-900: var(--gray-900);
+  --color-gray-850: var(--gray-850);
+  --color-gray-800: var(--gray-800);
+  --color-gray-750: var(--gray-750);
+  --color-gray-700: var(--gray-700);
+  --color-white: var(--text-main);
+  --color-gray-100: var(--text-100);
+  --color-gray-300: var(--text-300);
+  --color-gray-400: var(--text-400);
+  --color-gray-500: var(--text-500);
+  
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  --gray-950: #090d16;
+  --gray-900: #111827;
+  --gray-850: #1b2330;
+  --gray-800: #1f2937;
+  --gray-750: #2c3545;
+  --gray-700: #374151;
+  --text-main: #ffffff;
+  --text-100: #f3f4f6;
+  --text-300: #d1d5db;
+  --text-400: #9ca3af;
+  --text-500: #6b7280;
+}
+
+.light {
+  --gray-950: #f3f4f6;
+  --gray-900: #ffffff;
+  --gray-850: #f9fafb;
+  --gray-800: #e5e7eb;
+  --gray-750: #d1d5db;
+  --gray-700: #9ca3af;
+  --text-main: #0f172a;
+  --text-100: #1e293b;
+  --text-300: #334155;
+  --text-400: #475569;
+  --text-500: #64748b;
+}
+
+@layer base {
+  body {
+    @apply bg-gray-950 text-white antialiased transition-colors duration-300;
+    font-family: var(--font-sans);
+  }
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.animate-scan {
+  animation: scan 3s linear infinite;
+}
