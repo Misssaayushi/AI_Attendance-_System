@@ -5,9 +5,7 @@ FROM python:3.11-slim
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
-    gfortran \
-    libatlas-base-dev \
-    libjpeg-dev \
+    libjpeg62-turbo-dev \
     libpng-dev \
     libx11-dev \
     libgl1 \
