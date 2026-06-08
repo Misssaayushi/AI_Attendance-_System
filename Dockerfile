@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libx11-dev \
     libgl1 \
     libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 # Prevent compiler out-of-memory issues by restricting dlib/cmake compilation to a single thread
