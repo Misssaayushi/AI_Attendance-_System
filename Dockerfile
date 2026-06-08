@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
     gfortran \
-    libatlas-base-dev \
+    libopenblas-dev \
+    liblapack-dev \
     libjpeg-dev \
     libpng-dev \
     libx11-dev \
