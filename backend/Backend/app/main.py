@@ -17,6 +17,7 @@ from app.utils.logger import logger
 async def lifespan(app: FastAPI):
     # Startup
     logger.info("AI Attendance System Backend starting")
+    logger.info(f"🔍 Database connection config - Host: '{settings.DB_HOST}', User: '{settings.DB_USER}', Password length: {len(settings.DB_PASSWORD)}")
 
     if test_db_connection():
         logger.info("Database connection: OK")
