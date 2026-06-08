@@ -7,7 +7,7 @@ from app.middleware.auth_deps import get_current_admin
 from app.schemas.class_timing import ClassTimingCreate, ClassTimingResponse, ClassTimingListResponse
 from app.services import class_timing_service
 from app.utils.logger import logger
-from app.utils.response import success
+from app.utils.response import success, success_response
 
 router = APIRouter(dependencies=[Depends(get_current_admin)])
 
@@ -25,7 +25,7 @@ def upsert_class_timing(
 ):
     logger.info("event=class_timing_upsert_request dept=%s sem=%s", payload.department, payload.semester)
     record = class_timing_service.upsert_timing(db, payload)
-    return success(
+    return success_response(
         data=ClassTimingResponse.model_validate(record).model_dump(mode="json"), 
         message="Class timing rule saved successfully",
         status_code=201

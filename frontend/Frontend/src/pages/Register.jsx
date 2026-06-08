@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import Card from '../components/Card';
 import Container from '../components/Container';
 import WebcamFeed from '../components/register/WebcamFeed';
+import DetectionOverlay from '../components/attendance/DetectionOverlay';
 import RegisterForm from '../components/register/RegisterForm';
 import Alert from '../components/ui/Alert';
-import { createStudent, registerFace, triggerEncoding } from '../services/api';
+import { createStudent, registerFace, triggerEncoding, recognizeFrame } from '../services/api';
 import { extractData, extractErrorMessage } from '../services/apiHelpers';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -27,6 +28,72 @@ const Register = () => {
     course: ''
   });
   const [errors, setErrors] = useState({});
+
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [recognitionState, setRecognitionState] = useState('idle');
+  const [lastMatch, setLastMatch] = useState(null);
+  const isBusyRef = useRef(false);
+
+  const handleLiveFrame = useCallback(async (frame) => {
+    if (isBusyRef.current || isFaceCaptured) return;
+    isBusyRef.current = true;
+    
+    setRecognitionState(prev => prev === 'idle' ? 'scanning' : prev);
+    
+    try {
+      const response = await recognizeFrame({ image_base64: frame });
+      const result = response.data?.data;
+      
+      if (!result) {
+        setRecognitionState('idle');
+        setLastMatch(null);
+        return;
+      }
+
+      if (result.type === 'multi_recognition' && Array.isArray(result.results)) {
+        const recognized = result.results.filter(r => r.type === 'attendance_marked' || r.status === 'duplicate' || r.status === 'cooldown');
+        const allBoxes = result.results.map(r => {
+          const isKnown = r.type === 'attendance_marked' || r.status === 'duplicate' || r.status === 'cooldown';
+          return {
+            box: r.box,
+            type: isKnown ? 'duplicate' : 'unrecognized',
+            name: isKnown ? `Registered: ${r.student_name}` : null,
+          };
+        });
+
+        if (recognized.length > 0) {
+          setRecognitionState('duplicate');
+          setLastMatch({ boxes: allBoxes });
+        } else {
+          setRecognitionState('scanning');
+          setLastMatch(null);
+        }
+      } else {
+        if (result.type === 'attendance_marked' || result.status === 'duplicate' || result.status === 'cooldown') {
+          setRecognitionState('duplicate');
+          setLastMatch({
+            box: result.box,
+            boxes: [{
+              box: result.box,
+              type: 'duplicate',
+              name: `Registered: ${result.student_name}`
+            }]
+          });
+        } else {
+          setRecognitionState('scanning');
+          setLastMatch(null);
+        }
+      }
+    } catch (err) {
+      console.error("Frame recognition error:", err);
+      setRecognitionState('idle');
+      setLastMatch(null);
+    } finally {
+      setTimeout(() => {
+        isBusyRef.current = false;
+      }, 500);
+    }
+  }, [isFaceCaptured]);
 
 
   const handleCapture = (imageData) => {
@@ -154,6 +221,8 @@ const Register = () => {
     setErrors({});
     setCapturedImage(null);
     setIsFaceCaptured(false);
+    setRecognitionState('idle');
+    setLastMatch(null);
     setWebcamKey(prev => prev + 1);
   };
 
@@ -189,6 +258,21 @@ const Register = () => {
               key={webcamKey}
               onCapture={handleCapture}
               onError={handleError}
+              autoInterval={1500}
+              onLiveFrame={handleLiveFrame}
+              onStreamStart={() => setIsCameraActive(true)}
+              onStreamStop={() => {
+                setIsCameraActive(false);
+                setRecognitionState('idle');
+                setLastMatch(null);
+              }}
+              overlay={isCameraActive && !isFaceCaptured ? (
+                <DetectionOverlay 
+                  isScanning={recognitionState === 'scanning' || recognitionState === 'duplicate'} 
+                  trackingBox={lastMatch?.box}
+                  trackingBoxes={lastMatch?.boxes}
+                />
+              ) : null}
             />
 
             <Card className="bg-blue-500/5 border-blue-500/20 p-4">

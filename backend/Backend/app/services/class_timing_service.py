@@ -20,18 +20,32 @@ def resolve_timing(db: Session, department: Optional[str] = None, semester: Opti
     Resolves the applicable timing rules for a given department and semester.
     Fallback chain:
     1. Exact match (department + semester)
-    2. Global default (department=None, semester=None)
-    3. Hardcoded default
+    2. Department only (department, None)
+    3. Semester only (None, semester)
+    4. Global default (None, None)
+    5. Hardcoded default
     
     Returns: (class_start_time, class_end_time, present_cutoff, late_cutoff)
     """
     # 1. Try exact match if both provided
-    if department is not None or semester is not None:
+    if department is not None and semester is not None:
         rule = class_timing_repository.get_by_dept_and_sem(db, department, semester)
         if rule and rule.is_active:
             return rule.class_start_time, rule.class_end_time, rule.present_cutoff, rule.late_cutoff
             
-    # 2. Try global default (both None)
+    # 2. Try department only
+    if department is not None:
+        rule = class_timing_repository.get_by_dept_and_sem(db, department, None)
+        if rule and rule.is_active:
+            return rule.class_start_time, rule.class_end_time, rule.present_cutoff, rule.late_cutoff
+            
+    # 3. Try semester only
+    if semester is not None:
+        rule = class_timing_repository.get_by_dept_and_sem(db, None, semester)
+        if rule and rule.is_active:
+            return rule.class_start_time, rule.class_end_time, rule.present_cutoff, rule.late_cutoff
+            
+    # 4. Try global default (both None)
     global_rule = class_timing_repository.get_by_dept_and_sem(db, None, None)
     if global_rule and global_rule.is_active:
         return global_rule.class_start_time, global_rule.class_end_time, global_rule.present_cutoff, global_rule.late_cutoff

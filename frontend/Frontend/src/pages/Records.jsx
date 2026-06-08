@@ -41,7 +41,6 @@ const Records = () => {
   const [rawSearch, setRawSearch] = useState('');
   const debouncedSearch = useDebounce(rawSearch, 400);
   const [selectedDept, setSelectedDept] = useState('All');
-  const [selectedStatus, setSelectedStatus] = useState('All');
   const [selectedDate, setSelectedDate] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -113,9 +112,6 @@ const Records = () => {
     if (selectedDept !== 'All') {
       result = result.filter(r => r.department === selectedDept);
     }
-    if (selectedStatus !== 'All') {
-      result = result.filter(r => (r.status || 'Absent') === selectedStatus);
-    }
 
     // 2. Sort
     if (sortConfig.key) {
@@ -133,9 +129,6 @@ const Records = () => {
           // Both share the same date since we filter by day, sort by arrival time
           valA = a.arrival_time || '23:59:59';
           valB = b.arrival_time || '23:59:59';
-        } else if (sortConfig.key === 'status') {
-          valA = a.status || 'Absent';
-          valB = b.status || 'Absent';
         }
 
         if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
@@ -145,7 +138,7 @@ const Records = () => {
     }
 
     return result;
-  }, [records, debouncedSearch, selectedDept, selectedStatus, sortConfig]);
+  }, [records, debouncedSearch, selectedDept, sortConfig]);
 
   // Update pagination state when filtered data changes
   useEffect(() => {
@@ -173,7 +166,6 @@ const Records = () => {
   const handleResetFilters = () => {
     setRawSearch('');
     setSelectedDept('All');
-    setSelectedStatus('All');
     setSelectedDate('');
     setCurrentPage(1);
     setSortConfig({ key: 'name', direction: 'asc' });
@@ -203,7 +195,7 @@ const Records = () => {
         return;
       }
 
-      const headers = ['Student ID', 'Student Name', 'Department', 'Date', 'Time', 'Status'];
+      const headers = ['Student ID', 'Student Name', 'Department', 'Date', 'Time'];
       const displayDate = selectedDate || new Date().toISOString().split('T')[0];
 
       const csvRows = filteredAndSortedRecords.map(r => [
@@ -211,8 +203,7 @@ const Records = () => {
         `${r.first_name} ${r.last_name}`.trim(),
         r.department || '',
         displayDate,
-        formatTime(r.arrival_time) || '---',
-        r.status || 'Absent'
+        formatTime(r.arrival_time) || '---'
       ]);
 
       const csvContent = "data:text/csv;charset=utf-8," 
@@ -232,39 +223,7 @@ const Records = () => {
     }
   };
 
-  const getStatusBadge = (status) => {
-    // If null or undefined, assume Absent since we're listing all students
-    const effectiveStatus = status || 'Absent';
-    switch (effectiveStatus) {
-      case 'Present':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-green-500/10 text-green-400 border border-green-500/20">
-            <CheckCircle size={10} />
-            <span>Present</span>
-          </span>
-        );
-      case 'Late':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-500/10 text-orange-400 border border-orange-500/20">
-            <Clock size={10} />
-            <span>Late</span>
-          </span>
-        );
-      case 'Absent':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-500/10 text-red-400 border border-red-500/20">
-            <XCircle size={10} />
-            <span>Absent</span>
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-500/10 text-gray-400 border border-gray-500/20">
-            <span>{effectiveStatus}</span>
-          </span>
-        );
-    }
-  };
+
 
   const handleOpenDetailModal = (record) => {
     setSelectedRecord({
@@ -272,8 +231,7 @@ const Records = () => {
       name: `${record.first_name} ${record.last_name}`.trim(),
       department: record.department || 'General',
       date: selectedDate || new Date().toISOString().split('T')[0],
-      time: formatTime(record.arrival_time),
-      status: record.status || 'Absent'
+      time: formatTime(record.arrival_time)
     });
   };
 
@@ -337,20 +295,7 @@ const Records = () => {
             </select>
           </div>
 
-          {/* Status Selection filter */}
-          <div className="relative">
-            <Tag className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={14} />
-            <select 
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-gray-850/50 border border-gray-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 appearance-none cursor-pointer"
-            >
-              <option value="All">All Statuses</option>
-              <option value="Present">Present</option>
-              <option value="Absent">Absent</option>
-              <option value="Late">Late</option>
-            </select>
-          </div>
+
 
           <Button 
             variant="secondary" 
@@ -388,7 +333,7 @@ const Records = () => {
                   className="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest cursor-pointer hover:text-blue-400 select-none transition-colors"
                 >
                   <div className="flex items-center gap-1.5">
-                    <span>Department</span>
+                    <span>Department / Sem</span>
                     <ArrowUpDown size={10} />
                   </div>
                 </th>
@@ -401,15 +346,7 @@ const Records = () => {
                     <ArrowUpDown size={10} />
                   </div>
                 </th>
-                <th 
-                  onClick={() => handleSort('status')}
-                  className="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest cursor-pointer hover:text-blue-400 select-none transition-colors"
-                >
-                  <div className="flex items-center gap-1.5">
-                    <span>Status</span>
-                    <ArrowUpDown size={10} />
-                  </div>
-                </th>
+
                 <th className="px-6 py-4 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest select-none">
                   Actions
                 </th>
@@ -420,14 +357,14 @@ const Records = () => {
               {isLoading ? (
                 [...Array(pageSize)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    <td colSpan="5" className="px-6 py-5">
+                    <td colSpan="4" className="px-6 py-5">
                       <div className="h-4 bg-gray-800/50 rounded w-full"></div>
                     </td>
                   </tr>
                 ))
               ) : paginatedRecords.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center text-xs text-gray-500 italic">
+                  <td colSpan="4" className="px-6 py-12 text-center text-xs text-gray-500 italic">
                     No students match the current filters.
                   </td>
                 </tr>
@@ -448,17 +385,22 @@ const Records = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-0.5 bg-gray-850 border border-gray-800 rounded-lg text-[9px] font-bold text-gray-400 uppercase tracking-wider">
-                        {record.department || 'General'}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 bg-gray-850 border border-gray-800 rounded-lg text-[9px] font-bold text-gray-400 uppercase tracking-wider">
+                          {record.department || 'General'}
+                        </span>
+                        {record.semester && (
+                          <span className="px-2 py-0.5 bg-gray-850 border border-gray-800 rounded-lg text-[9px] font-bold text-gray-400 uppercase tracking-wider">
+                            Sem {record.semester}
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <p className="text-xs text-gray-300 font-semibold leading-none mb-1">{selectedDate || new Date().toISOString().split('T')[0]}</p>
                       <p className="text-[10px] text-gray-500 font-mono">{formatTime(record.arrival_time)}</p>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(record.status)}
-                    </td>
+
                     <td className="px-6 py-4 whitespace-nowrap text-right text-xs font-bold space-x-2">
                       <button 
                         onClick={() => handleOpenDetailModal(record)}

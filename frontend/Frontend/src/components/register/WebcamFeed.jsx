@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Camera, CameraOff, Scissors, RefreshCw } from 'lucide-react';
 import Button from '../Button';
 
-const WebcamFeed = ({ onCapture, onStreamStart, onStreamStop, onError, autoStart = false, autoInterval = 0, onLiveFrame }) => {
+const WebcamFeed = ({ onCapture, onStreamStart, onStreamStop, onError, autoStart = false, autoInterval = 0, onLiveFrame, overlay }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [isActive, setIsActive] = useState(false);
@@ -159,6 +159,9 @@ const WebcamFeed = ({ onCapture, onStreamStart, onStreamStop, onError, autoStart
             <span className="text-yellow-200">Capturing {captureProgress}/5...</span>
           </div>
         )}
+
+        {/* Custom Overlay (e.g., DetectionOverlay) */}
+        {overlay}
       </div>
 
       <div className="flex flex-wrap gap-3 justify-center">

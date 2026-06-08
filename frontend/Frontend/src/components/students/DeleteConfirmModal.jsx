@@ -1,7 +1,18 @@
-import React from 'react';
-import { AlertTriangle, Trash2, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { AlertTriangle, Trash2, X, Loader2 } from 'lucide-react';
 
 const DeleteConfirmModal = ({ student, onClose, onConfirm }) => {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleConfirm = async () => {
+    setIsDeleting(true);
+    try {
+      await onConfirm(student.id);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   if (!student) return null;
 
   return (
@@ -21,15 +32,25 @@ const DeleteConfirmModal = ({ student, onClose, onConfirm }) => {
         <div className="p-6 pt-2 pb-8 flex justify-center gap-3">
           <button 
             onClick={onClose} 
-            className="px-6 py-2.5 text-sm font-bold text-gray-300 hover:text-white bg-gray-800 rounded-lg transition-colors border border-gray-700 w-full"
+            disabled={isDeleting}
+            className="px-6 py-2.5 text-sm font-bold text-gray-300 hover:text-white bg-gray-800 rounded-lg transition-colors border border-gray-700 w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button 
-            onClick={() => onConfirm(student.id)} 
-            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white text-sm font-bold rounded-lg shadow-lg shadow-red-500/20 transition-all w-full"
+            onClick={handleConfirm} 
+            disabled={isDeleting}
+            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white text-sm font-bold rounded-lg shadow-lg shadow-red-500/20 transition-all w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Trash2 size={16} /> Delete Student
+            {isDeleting ? (
+              <>
+                <Loader2 size={16} className="animate-spin" /> Deleting...
+              </>
+            ) : (
+              <>
+                <Trash2 size={16} /> Delete Student
+              </>
+            )}
           </button>
         </div>
       </div>

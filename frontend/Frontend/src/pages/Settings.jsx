@@ -9,6 +9,7 @@ const Settings = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingTiming, setEditingTiming] = useState(null);
+  const [ruleToDelete, setRuleToDelete] = useState(null);
   const { addToast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -83,15 +84,16 @@ const Settings = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this rule?')) {
-      try {
-        await deleteClassTiming(id);
-        addToast('Rule deleted successfully', 'success');
-        fetchTimings();
-      } catch (error) {
-        addToast('Failed to delete rule', 'error');
-      }
+  const confirmDelete = async () => {
+    if (!ruleToDelete) return;
+    try {
+      await deleteClassTiming(ruleToDelete.id);
+      addToast('Rule deleted successfully', 'success');
+      fetchTimings();
+    } catch (error) {
+      addToast('Failed to delete rule', 'error');
+    } finally {
+      setRuleToDelete(null);
     }
   };
 
@@ -183,7 +185,7 @@ const Settings = () => {
                           <Edit2 size={18} />
                         </button>
                         <button 
-                          onClick={() => handleDelete(t.id)}
+                          onClick={() => setRuleToDelete(t)}
                           className="text-gray-400 hover:text-red-400 transition-colors"
                         >
                           <Trash2 size={18} />
@@ -318,6 +320,44 @@ const Settings = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {ruleToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-gray-900 border border-gray-800 rounded-xl w-full max-w-sm shadow-2xl overflow-hidden">
+            <div className="p-6 text-center">
+              <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4 border border-red-500/20">
+                <AlertCircle className="text-red-500" size={24} />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">Delete Timing Rule?</h3>
+              <p className="text-sm text-gray-400 mb-6">
+                Are you sure you want to delete the rule for{' '}
+                <span className="text-white font-semibold">
+                  {ruleToDelete.department === null && ruleToDelete.semester === null 
+                    ? 'Global Default' 
+                    : `${ruleToDelete.department || 'All Depts'} Sem ${ruleToDelete.semester || 'All'}`}
+                </span>
+                ? This action cannot be undone.
+              </p>
+              
+              <div className="flex gap-3 w-full">
+                <button 
+                  onClick={() => setRuleToDelete(null)}
+                  className="flex-1 py-2.5 rounded-lg border border-gray-700 bg-gray-800 hover:bg-gray-700 text-sm font-medium text-white transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={confirmDelete}
+                  className="flex-1 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-sm font-medium text-white transition-colors shadow-lg shadow-red-600/20"
+                >
+                  Delete Rule
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

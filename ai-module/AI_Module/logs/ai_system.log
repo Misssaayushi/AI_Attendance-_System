@@ -13178,3 +13178,197 @@ Invoked with: <_dlib_pybind11.face_recognition_model_v1 object at 0x111dd6070>, 
 2026-06-07 22:43:45 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.15 ms.
 2026-06-07 22:43:45 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.09 ms.
 2026-06-07 22:43:45 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 08:35:28 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 08:35:28 | EncodingGenerator | INFO | Processing student: 19_Kavyanshi
+2026-06-08 08:35:29 | EncodingGenerator | INFO | Saved 5 encodings to 19_Kavyanshi.pkl
+2026-06-08 08:35:29 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 08:35:29 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.12 ms.
+2026-06-08 08:35:29 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.09 ms.
+2026-06-08 08:35:29 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 08:35:32 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 08:35:32 | EncodingGenerator | WARNING | No student folders found in dataset.
+2026-06-08 08:35:32 | EncodingGenerator | INFO | Deleted consolidated encoding file: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 08:35:32 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-08 08:35:32 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-08 08:35:32 | EncodingGenerator | INFO | Successfully reloaded empty cache.
+2026-06-08 08:40:25 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 08:40:25 | EncodingGenerator | INFO | Processing student: 20_Aayushi
+2026-06-08 08:40:26 | EncodingGenerator | INFO | Saved 5 encodings to 20_Aayushi.pkl
+2026-06-08 08:40:26 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 08:40:26 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.14 ms.
+2026-06-08 08:40:26 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.09 ms.
+2026-06-08 08:40:26 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 08:41:57 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 08:41:57 | EncodingGenerator | INFO | Processing student: 21_Chavi
+2026-06-08 08:41:58 | EncodingGenerator | INFO | Saved 5 encodings to 21_Chavi.pkl
+2026-06-08 08:41:58 | EncodingGenerator | INFO | Processing student: 20_Aayushi
+2026-06-08 08:41:59 | EncodingGenerator | INFO | Saved 5 encodings to 20_Aayushi.pkl
+2026-06-08 08:41:59 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 08:41:59 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.12 ms.
+2026-06-08 08:41:59 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.09 ms.
+2026-06-08 08:41:59 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 08:43:29 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 08:43:29 | EncodingGenerator | INFO | Processing student: 21_Chavi
+2026-06-08 08:43:30 | EncodingGenerator | INFO | Saved 5 encodings to 21_Chavi.pkl
+2026-06-08 08:43:30 | EncodingGenerator | INFO | Processing student: 22_Bhoomika
+2026-06-08 08:43:31 | EncodingGenerator | INFO | Saved 5 encodings to 22_Bhoomika.pkl
+2026-06-08 08:43:31 | EncodingGenerator | INFO | Processing student: 20_Aayushi
+2026-06-08 08:43:31 | EncodingGenerator | INFO | Saved 5 encodings to 20_Aayushi.pkl
+2026-06-08 08:43:31 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 08:43:31 | EncodingCache | INFO | Successfully cached 15 face encodings in 0.15 ms.
+2026-06-08 08:43:31 | EncodingCache | INFO | Successfully cached 15 face encodings in 0.11 ms.
+2026-06-08 08:43:31 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:08:39 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:08:39 | EncodingGenerator | INFO | Processing student: 21_Chavi
+2026-06-08 09:08:40 | EncodingGenerator | INFO | Saved 5 encodings to 21_Chavi.pkl
+2026-06-08 09:08:40 | EncodingGenerator | INFO | Processing student: 22_Bhoomika
+2026-06-08 09:08:41 | EncodingGenerator | INFO | Saved 5 encodings to 22_Bhoomika.pkl
+2026-06-08 09:08:41 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:08:41 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.13 ms.
+2026-06-08 09:08:41 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.09 ms.
+2026-06-08 09:08:41 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:08:53 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:08:53 | EncodingGenerator | INFO | Processing student: 22_Bhoomika
+2026-06-08 09:08:54 | EncodingGenerator | INFO | Saved 5 encodings to 22_Bhoomika.pkl
+2026-06-08 09:08:54 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:08:54 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.11 ms.
+2026-06-08 09:08:54 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.07 ms.
+2026-06-08 09:08:54 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:08:59 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:08:59 | EncodingGenerator | WARNING | No student folders found in dataset.
+2026-06-08 09:08:59 | EncodingGenerator | INFO | Deleted consolidated encoding file: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:08:59 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-08 09:08:59 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-08 09:08:59 | EncodingGenerator | INFO | Successfully reloaded empty cache.
+2026-06-08 09:22:14 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:22:14 | EncodingGenerator | INFO | Processing student: 23_Aayushi
+2026-06-08 09:22:15 | EncodingGenerator | INFO | Saved 5 encodings to 23_Aayushi.pkl
+2026-06-08 09:22:15 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:22:15 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.12 ms.
+2026-06-08 09:22:15 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.09 ms.
+2026-06-08 09:22:15 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:23:29 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:23:29 | EncodingGenerator | INFO | Processing student: 24_Chavi
+2026-06-08 09:23:30 | EncodingGenerator | INFO | Saved 5 encodings to 24_Chavi.pkl
+2026-06-08 09:23:30 | EncodingGenerator | INFO | Processing student: 23_Aayushi
+2026-06-08 09:23:31 | EncodingGenerator | INFO | Saved 5 encodings to 23_Aayushi.pkl
+2026-06-08 09:23:31 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:23:31 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.15 ms.
+2026-06-08 09:23:31 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.11 ms.
+2026-06-08 09:23:31 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:24:50 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:24:50 | EncodingGenerator | INFO | Processing student: 25_Bhoomika
+2026-06-08 09:24:51 | EncodingGenerator | INFO | Saved 5 encodings to 25_Bhoomika.pkl
+2026-06-08 09:24:51 | EncodingGenerator | INFO | Processing student: 24_Chavi
+2026-06-08 09:24:52 | EncodingGenerator | INFO | Saved 5 encodings to 24_Chavi.pkl
+2026-06-08 09:24:52 | EncodingGenerator | INFO | Processing student: 23_Aayushi
+2026-06-08 09:24:53 | EncodingGenerator | INFO | Saved 5 encodings to 23_Aayushi.pkl
+2026-06-08 09:24:53 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:24:53 | EncodingCache | INFO | Successfully cached 15 face encodings in 0.14 ms.
+2026-06-08 09:24:53 | EncodingCache | INFO | Successfully cached 15 face encodings in 0.11 ms.
+2026-06-08 09:24:53 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:36:27 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:36:27 | EncodingGenerator | INFO | Processing student: 25_Bhoomika
+2026-06-08 09:36:28 | EncodingGenerator | INFO | Saved 5 encodings to 25_Bhoomika.pkl
+2026-06-08 09:36:28 | EncodingGenerator | INFO | Processing student: 24_Chavi
+2026-06-08 09:36:29 | EncodingGenerator | INFO | Saved 5 encodings to 24_Chavi.pkl
+2026-06-08 09:36:29 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:36:29 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.14 ms.
+2026-06-08 09:36:29 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.10 ms.
+2026-06-08 09:36:29 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:36:29 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.21 ms.
+2026-06-08 09:36:29 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.11 ms.
+2026-06-08 09:36:33 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:36:33 | EncodingGenerator | INFO | Processing student: 25_Bhoomika
+2026-06-08 09:36:34 | EncodingGenerator | INFO | Saved 5 encodings to 25_Bhoomika.pkl
+2026-06-08 09:36:34 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:36:34 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.14 ms.
+2026-06-08 09:36:34 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.09 ms.
+2026-06-08 09:36:34 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:36:34 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.25 ms.
+2026-06-08 09:36:37 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:36:37 | EncodingGenerator | WARNING | No student folders found in dataset.
+2026-06-08 09:36:37 | EncodingGenerator | INFO | Deleted consolidated encoding file: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:36:37 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-08 09:36:37 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-08 09:36:37 | EncodingGenerator | INFO | Successfully reloaded empty cache.
+2026-06-08 09:36:37 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-08 09:41:20 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:41:20 | EncodingGenerator | INFO | Processing student: 26_Chavi
+2026-06-08 09:41:21 | EncodingGenerator | INFO | Saved 5 encodings to 26_Chavi.pkl
+2026-06-08 09:41:21 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:41:21 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.12 ms.
+2026-06-08 09:41:21 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.07 ms.
+2026-06-08 09:41:21 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:42:43 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:42:43 | EncodingGenerator | INFO | Processing student: 26_Chavi
+2026-06-08 09:42:44 | EncodingGenerator | INFO | Saved 5 encodings to 26_Chavi.pkl
+2026-06-08 09:42:44 | EncodingGenerator | INFO | Processing student: 27_Bhoomika
+2026-06-08 09:42:44 | EncodingGenerator | INFO | Saved 5 encodings to 27_Bhoomika.pkl
+2026-06-08 09:42:44 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:42:44 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.15 ms.
+2026-06-08 09:42:44 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.11 ms.
+2026-06-08 09:42:44 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:43:19 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:43:19 | EncodingGenerator | INFO | Processing student: 26_Chavi
+2026-06-08 09:43:20 | EncodingGenerator | INFO | Saved 5 encodings to 26_Chavi.pkl
+2026-06-08 09:43:20 | EncodingGenerator | INFO | Processing student: 27_Bhoomika
+2026-06-08 09:43:21 | EncodingGenerator | INFO | Saved 5 encodings to 27_Bhoomika.pkl
+2026-06-08 09:43:21 | EncodingGenerator | INFO | Processing student: 28_Aayushi
+2026-06-08 09:43:21 | EncodingGenerator | INFO | Saved 5 encodings to 28_Aayushi.pkl
+2026-06-08 09:43:21 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:43:21 | EncodingCache | INFO | Successfully cached 15 face encodings in 0.15 ms.
+2026-06-08 09:43:21 | EncodingCache | INFO | Successfully cached 15 face encodings in 0.11 ms.
+2026-06-08 09:43:21 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:44:53 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:44:53 | EncodingGenerator | INFO | Processing student: 27_Bhoomika
+2026-06-08 09:44:54 | EncodingGenerator | INFO | Saved 5 encodings to 27_Bhoomika.pkl
+2026-06-08 09:44:54 | EncodingGenerator | INFO | Processing student: 28_Aayushi
+2026-06-08 09:44:55 | EncodingGenerator | INFO | Saved 5 encodings to 28_Aayushi.pkl
+2026-06-08 09:44:55 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:44:55 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.13 ms.
+2026-06-08 09:44:55 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.09 ms.
+2026-06-08 09:44:55 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:44:55 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.29 ms.
+2026-06-08 09:44:59 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:44:59 | EncodingGenerator | INFO | Processing student: 28_Aayushi
+2026-06-08 09:45:00 | EncodingGenerator | INFO | Saved 5 encodings to 28_Aayushi.pkl
+2026-06-08 09:45:00 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:45:00 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.13 ms.
+2026-06-08 09:45:00 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.09 ms.
+2026-06-08 09:45:00 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:45:00 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.26 ms.
+2026-06-08 09:45:02 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:45:02 | EncodingGenerator | WARNING | No student folders found in dataset.
+2026-06-08 09:45:02 | EncodingGenerator | INFO | Deleted consolidated encoding file: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:45:02 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-08 09:45:02 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-08 09:45:02 | EncodingGenerator | INFO | Successfully reloaded empty cache.
+2026-06-08 09:45:02 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-08 09:45:39 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:45:39 | EncodingGenerator | INFO | Processing student: 29_Aayushi
+2026-06-08 09:45:40 | EncodingGenerator | INFO | Saved 5 encodings to 29_Aayushi.pkl
+2026-06-08 09:45:40 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:45:40 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.12 ms.
+2026-06-08 09:45:40 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.08 ms.
+2026-06-08 09:45:40 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:46:35 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:46:35 | EncodingGenerator | INFO | Processing student: 30_Bhoomika
+2026-06-08 09:46:36 | EncodingGenerator | INFO | Saved 5 encodings to 30_Bhoomika.pkl
+2026-06-08 09:46:36 | EncodingGenerator | INFO | Processing student: 29_Aayushi
+2026-06-08 09:46:37 | EncodingGenerator | INFO | Saved 5 encodings to 29_Aayushi.pkl
+2026-06-08 09:46:37 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:46:37 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.13 ms.
+2026-06-08 09:46:37 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.09 ms.
+2026-06-08 09:46:37 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-08 09:52:39 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-08 09:52:39 | EncodingGenerator | INFO | Processing student: 31_Kashish
+2026-06-08 09:52:40 | EncodingGenerator | INFO | Saved 5 encodings to 31_Kashish.pkl
+2026-06-08 09:52:40 | EncodingGenerator | INFO | Processing student: 30_Bhoomika
+2026-06-08 09:52:41 | EncodingGenerator | INFO | Saved 5 encodings to 30_Bhoomika.pkl
+2026-06-08 09:52:41 | EncodingGenerator | INFO | Processing student: 29_Aayushi
+2026-06-08 09:52:41 | EncodingGenerator | INFO | Saved 5 encodings to 29_Aayushi.pkl
+2026-06-08 09:52:41 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-08 09:52:41 | EncodingCache | INFO | Successfully cached 15 face encodings in 0.16 ms.
+2026-06-08 09:52:41 | EncodingCache | INFO | Successfully cached 15 face encodings in 0.11 ms.
+2026-06-08 09:52:41 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.

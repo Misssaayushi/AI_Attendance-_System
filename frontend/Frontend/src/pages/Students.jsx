@@ -6,6 +6,7 @@ import { listStudents, deleteStudent, updateStudent } from '../services/api';
 import { extractData } from '../services/apiHelpers';
 import EditStudentModal from '../components/students/EditStudentModal';
 import DeleteConfirmModal from '../components/students/DeleteConfirmModal';
+import { useToast } from '../context/ToastContext';
 
 const formatArrivalTime = (timeStr) => {
   if (!timeStr) return '—';
@@ -44,6 +45,7 @@ const Students = () => {
   // Modal State
   const [editingStudent, setEditingStudent] = useState(null);
   const [deletingStudent, setDeletingStudent] = useState(null);
+  const { addToast } = useToast();
 
   const fetchStudents = async () => {
     setLoading(true);
@@ -96,10 +98,11 @@ const Students = () => {
     try {
       await updateStudent(studentId, formData);
       setEditingStudent(null);
+      addToast('Student updated successfully', 'success');
       fetchStudents();
     } catch (error) {
       console.error("Failed to update student:", error);
-      alert("Failed to update student");
+      addToast("Failed to update student", "error");
     }
   };
 
@@ -107,10 +110,17 @@ const Students = () => {
     try {
       await deleteStudent(studentId);
       setDeletingStudent(null);
+      addToast('Student deleted successfully', 'success');
       fetchStudents();
     } catch (error) {
       console.error("Failed to delete student:", error);
-      alert("Failed to delete student");
+      // The student might already be deleted if there was a double-click race condition
+      if (error.response?.status === 404) {
+        setDeletingStudent(null);
+        fetchStudents();
+      } else {
+        addToast("Failed to delete student", "error");
+      }
     }
   };
 
