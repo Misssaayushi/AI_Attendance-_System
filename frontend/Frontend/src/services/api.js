@@ -119,6 +119,6 @@ export const getBackendReadiness = () =>
   api.get('/api/v1/diagnostics/readiness');
 
 export const getHealthStatus = () =>
-  api.get('/api/v1/health/');
+  api.get('/api/v1/health');
 
 export default api;
