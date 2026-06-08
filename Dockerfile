@@ -6,16 +6,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     cmake \
     gfortran \
-    libopenblas-dev \
-    liblapack-dev \
+    libatlas-base-dev \
     libjpeg-dev \
     libpng-dev \
     libx11-dev \
     libgl1 \
     libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
-
 WORKDIR /app
+
+# Prevent compiler out-of-memory issues by restricting dlib/cmake compilation to a single thread
+ENV CMAKE_BUILD_PARALLEL_LEVEL=1
+ENV MAKEFLAGS="-j1"
 
 # Copy backend requirements first
 COPY backend/Backend/requirements.txt ./backend_requirements.txt
