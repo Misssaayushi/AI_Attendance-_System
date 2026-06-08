@@ -39,12 +39,35 @@ def get_db():
 
 def init_db():
     """
-    Initializes the database by creating all tables defined in models.
+    Initializes the database by creating all tables defined in models
+    and seeds a default admin user if none exists.
     """
     try:
         from app.models import Base as ModelsBase
         ModelsBase.metadata.create_all(bind=engine)
         logger.info("✅ Database tables initialized successfully")
+        
+        # Seed default admin if table is empty
+        from app.models.admin import Admin
+        from app.utils.security import get_password_hash
+        
+        db = SessionLocal()
+        try:
+            admin_exists = db.query(Admin).first()
+            if not admin_exists:
+                default_admin = Admin(
+                    username="admin",
+                    password=get_password_hash("admin123")
+                )
+                db.add(default_admin)
+                db.commit()
+                logger.info("👤 Default admin user seeded successfully (username: admin, password: admin123)")
+        except Exception as se:
+            logger.error(f"⚠️ Failed to seed default admin: {se}")
+            db.rollback()
+        finally:
+            db.close()
+            
     except Exception as e:
         logger.error(f"❌ Failed to initialize database tables: {str(e)}")
         raise e
