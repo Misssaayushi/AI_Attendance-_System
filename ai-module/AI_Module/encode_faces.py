@@ -47,8 +47,21 @@ def generate_encodings():
 
     for folder in student_folders:
         student_name = folder.name  # folder name is {id}_{name}
-        logger.info(f"Processing student: {student_name}")
+        individual_pkl = ENCODINGS_DIR / f"{student_name}.pkl"
         
+        # Check if individual encoding cache already exists
+        if individual_pkl.exists():
+            logger.info(f"Loading cached encodings for student: {student_name}")
+            try:
+                with open(individual_pkl, "rb") as f:
+                    student_encodings = pickle.load(f)
+                known_encodings.extend(student_encodings)
+                known_names.extend([student_name] * len(student_encodings))
+                continue
+            except Exception as e:
+                logger.warning(f"Failed to load cached encodings for {student_name}, re-processing images: {str(e)}")
+        
+        logger.info(f"Processing student: {student_name}")
         student_encodings = []
         
         # 2. Process each image in student folder
@@ -71,7 +84,6 @@ def generate_encodings():
 
         # 3. Save individual student encoding file
         if student_encodings:
-            individual_pkl = ENCODINGS_DIR / f"{student_name}.pkl"
             with open(individual_pkl, "wb") as f:
                 pickle.dump(student_encodings, f)
             logger.info(f"Saved {len(student_encodings)} encodings to {individual_pkl.name}")
