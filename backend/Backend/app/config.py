@@ -97,7 +97,12 @@ class Settings:
         """Computes the SQLAlchemy Database URL."""
         import urllib.parse
         safe_password = urllib.parse.quote_plus(self.DB_PASSWORD)
-        return f"mysql+mysqlconnector://{self.DB_USER}:{safe_password}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        base_url = f"mysql+mysqlconnector://{self.DB_USER}:{safe_password}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        
+        # Aiven requires SSL. Adding standard SSL arguments for mysqlconnector
+        if "aivencloud.com" in self.DB_HOST:
+            return base_url + "?ssl_disabled=False"
+        return base_url
 
     def validate_scheduler_settings(self) -> None:
         if not (0 <= self.AUTO_ABSENT_HOUR <= 23):
