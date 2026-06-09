@@ -282,8 +282,16 @@ def recognize_frame(
                         continue
                     match_idx = int(np.argmin(distances))
                     distance = float(distances[match_idx])
-                    if distance <= 0.5:
-                        confidence = max(0, (0.5 - distance) / 0.5) * 100
+                    
+                    tolerance = 0.6  # Default face_recognition tolerance, adjust to 0.65 for looser matching
+                    try:
+                        from config import RECOGNITION_TOLERANCE
+                        tolerance = RECOGNITION_TOLERANCE
+                    except ImportError:
+                        pass
+                        
+                    if distance <= tolerance:
+                        confidence = max(0, (tolerance - distance) / tolerance) * 100
                         final_confidence = 75 + (confidence * 0.24)
 
                         if final_confidence > face_best_confidence:

@@ -21,7 +21,7 @@ FRAME_HEIGHT = 480
 
 # Recognition Settings
 # Lower tolerance = stricter matching, Higher tolerance = more loose
-RECOGNITION_TOLERANCE = 0.6  
+RECOGNITION_TOLERANCE = 0.65  
 ENCODING_FILE = ENCODINGS_DIR / "encodings.pickle"
 RECOGNITION_PROCESS_INTERVAL = 10  # Process every 10th frame (Smoother video)
 UNKNOWN_LABEL = "Unknown Person"
