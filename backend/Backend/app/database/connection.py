@@ -53,8 +53,8 @@ def init_db():
         
         db = SessionLocal()
         try:
-            admin_exists = db.query(Admin).first()
-            if not admin_exists:
+            admin_user = db.query(Admin).filter_by(username="admin").first()
+            if not admin_user:
                 default_admin = Admin(
                     username="admin",
                     password=get_password_hash("admin123")
@@ -62,6 +62,10 @@ def init_db():
                 db.add(default_admin)
                 db.commit()
                 logger.info("👤 Default admin user seeded successfully (username: admin, password: admin123)")
+            else:
+                admin_user.password = get_password_hash("admin123")
+                db.commit()
+                logger.info("👤 Existing 'admin' user password reset to 'admin123'")
         except Exception as se:
             logger.error(f"⚠️ Failed to seed default admin: {se}")
             db.rollback()
