@@ -215,16 +215,31 @@ def recognize_frame(
 
                     if cache_signature != signature:
                         encodings = []
-                        for img_name in files:
-                            img_path = os.path.join(folder_path, img_name)
-                            img = face_recognition.load_image_file(img_path)
-                            face_locs = face_recognition.face_locations(img)
-                            if face_locs:
-                                # Sort face locations by area (descending) to ensure we always grab the largest face (the student)
-                                face_locs.sort(key=lambda loc: (loc[1] - loc[3]) * (loc[2] - loc[0]), reverse=True)
-                                encs = face_recognition.face_encodings(img, [face_locs[0]])
-                                if encs:
-                                    encodings.append(encs[0])
+                        # 1. Try to load pre-calculated individual student pickle
+                        import pickle
+                        from pathlib import Path
+                        individual_pkl = Path(settings.AI_MODULE_DIR) / "encodings" / f"{student_folder}.pkl"
+                        
+                        if individual_pkl.exists():
+                            try:
+                                with open(individual_pkl, "rb") as f:
+                                    encodings = pickle.load(f)
+                                logger.info(f"Loaded cached encodings from pickle for student {student_folder}")
+                            except Exception as e:
+                                logger.warning(f"Failed to load pickle for {student_folder}, falling back to raw images: {e}")
+                        
+                        # 2. Fallback: calculate from raw images if pickle didn't exist or failed
+                        if not encodings:
+                            for img_name in files:
+                                img_path = os.path.join(folder_path, img_name)
+                                img = face_recognition.load_image_file(img_path)
+                                face_locs = face_recognition.face_locations(img)
+                                if face_locs:
+                                    # Sort face locations by area (descending) to ensure we always grab the largest face (the student)
+                                    face_locs.sort(key=lambda loc: (loc[1] - loc[3]) * (loc[2] - loc[0]), reverse=True)
+                                    encs = face_recognition.face_encodings(img, [face_locs[0]])
+                                    if encs:
+                                        encodings.append(encs[0])
                         _dataset_cache[student_folder] = {
                             "signature": signature,
                             "encodings": encodings,
@@ -237,6 +252,7 @@ def recognize_frame(
         face_locations_small = face_recognition.face_locations(small_frame)
 
         if not face_locations_small:
+            results = []
             ai_response = {"status": "no_face_found"}
         else:
             face_locations = []
