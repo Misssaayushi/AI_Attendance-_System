@@ -13380,3 +13380,22 @@ Invoked with: <_dlib_pybind11.face_recognition_model_v1 object at 0x111dd6070>, 
 2026-06-09 13:12:21 | EncodingCache | INFO | Successfully cached 15 face encodings in 0.14 ms.
 2026-06-09 13:12:21 | EncodingCache | INFO | Successfully cached 15 face encodings in 0.12 ms.
 2026-06-09 13:12:21 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-11 09:31:03 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-11 09:31:03 | EncodingGenerator | INFO | Loading cached encodings for student: 31_Kashish
+2026-06-11 09:31:03 | EncodingGenerator | INFO | Loading cached encodings for student: 30_Bhoomika
+2026-06-11 09:31:03 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-11 09:31:03 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.12 ms.
+2026-06-11 09:31:03 | EncodingCache | INFO | Successfully cached 10 face encodings in 0.09 ms.
+2026-06-11 09:31:03 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-11 09:31:07 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-11 09:31:07 | EncodingGenerator | INFO | Loading cached encodings for student: 31_Kashish
+2026-06-11 09:31:07 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-11 09:31:07 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.10 ms.
+2026-06-11 09:31:07 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.07 ms.
+2026-06-11 09:31:07 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.
+2026-06-11 09:31:09 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-11 09:31:09 | EncodingGenerator | WARNING | No student folders found in dataset.
+2026-06-11 09:31:09 | EncodingGenerator | INFO | Deleted consolidated encoding file: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-11 09:31:09 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-11 09:31:09 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
+2026-06-11 09:31:09 | EncodingGenerator | INFO | Successfully reloaded empty cache.

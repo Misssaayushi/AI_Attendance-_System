@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import RecordDetailModal from '../components/records/RecordDetailModal';
+import EditStudentModal from '../components/students/EditStudentModal';
+import DeleteConfirmModal from '../components/students/DeleteConfirmModal';
 import { 
   Search, 
   Filter, 
@@ -15,10 +17,14 @@ import {
   CheckCircle,
   Clock,
   XCircle,
-  AlertTriangle
+  AlertTriangle,
+  X,
+  Edit,
+  Trash2
 } from 'lucide-react';
-import { listStudents } from '../services/api';
+import { listStudents, markAttendance, updateAttendance, deleteAttendance, updateStudent, deleteStudent } from '../services/api';
 import { extractData, extractErrorMessage } from '../services/apiHelpers';
+import { useToast } from '../context/ToastContext';
 
 // Debounce custom hook to optimize search inputs
 const useDebounce = (value, delay = 400) => {
@@ -44,6 +50,17 @@ const Records = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRecord, setSelectedRecord] = useState(null);
+  
+  // Edit/Delete States
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editRecord, setEditRecord] = useState(null);
+  const [editStatus, setEditStatus] = useState('Present');
+  const [editTime, setEditTime] = useState('');
+  
+  // Student Edit/Delete States
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [deletingStudent, setDeletingStudent] = useState(null);
+  const { addToast } = useToast();
   
   // Sorting State
   const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
@@ -231,8 +248,104 @@ const Records = () => {
       name: `${record.first_name} ${record.last_name}`.trim(),
       department: record.department || 'General',
       date: selectedDate || new Date().toISOString().split('T')[0],
-      time: formatTime(record.arrival_time)
+      time: formatTime(record.arrival_time),
+      status: record.status || 'Absent'
     });
+  };
+
+  const handleOpenEditModal = (record) => {
+    setEditRecord(record);
+    setEditStatus(record.status || 'Present');
+    
+    let timeVal = '';
+    if (record.arrival_time && record.arrival_time !== '---') {
+      timeVal = record.arrival_time.substring(0, 5); // get HH:MM
+    } else {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      timeVal = `${hours}:${minutes}`;
+    }
+    setEditTime(timeVal);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const targetDate = selectedDate || new Date().toISOString().split('T')[0];
+      const timeToSend = editTime ? `${editTime}:00` : null;
+
+      if (editRecord.attendance_id) {
+        await updateAttendance(editRecord.attendance_id, {
+          status: editStatus,
+          attendance_time: timeToSend
+        });
+      } else {
+        await markAttendance({
+          student_id: editRecord.id,
+          attendance_date: targetDate,
+          attendance_time: timeToSend,
+          status: editStatus,
+          source: 'manual_admin'
+        });
+      }
+      setIsEditModalOpen(false);
+      fetchRecords();
+    } catch (err) {
+      console.error('Failed to save attendance record:', err);
+      setError(extractErrorMessage(err) || 'Failed to save attendance record.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteRecord = async (record) => {
+    if (!record.attendance_id) return;
+    if (!window.confirm(`Are you sure you want to delete the attendance log for ${record.first_name} ${record.last_name}?`)) {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      setError(null);
+      await deleteAttendance(record.attendance_id);
+      fetchRecords();
+    } catch (err) {
+      console.error('Failed to delete attendance record:', err);
+      setError(extractErrorMessage(err) || 'Failed to delete attendance record.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleStudentEditSave = async (studentId, formData) => {
+    try {
+      await updateStudent(studentId, formData);
+      setEditingStudent(null);
+      addToast('Student updated successfully', 'success');
+      fetchRecords();
+    } catch (error) {
+      console.error("Failed to update student:", error);
+      addToast("Failed to update student", "error");
+    }
+  };
+
+  const handleStudentDeleteConfirm = async (studentId) => {
+    try {
+      await deleteStudent(studentId);
+      setDeletingStudent(null);
+      addToast('Student deleted successfully', 'success');
+      fetchRecords();
+    } catch (error) {
+      console.error("Failed to delete student:", error);
+      if (error.response?.status === 404) {
+        setDeletingStudent(null);
+        fetchRecords();
+      } else {
+        addToast("Failed to delete student", "error");
+      }
+    }
   };
 
   return (
@@ -347,8 +460,11 @@ const Records = () => {
                   </div>
                 </th>
 
-                <th className="px-6 py-4 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest select-none">
-                  Actions
+                <th className="px-6 py-4 text-center text-[10px] font-black text-gray-500 uppercase tracking-widest select-none border-l border-gray-800">
+                  Attendance Actions
+                </th>
+                <th className="px-6 py-4 text-center text-[10px] font-black text-gray-500 uppercase tracking-widest select-none border-l border-gray-800">
+                  Profile Actions
                 </th>
               </tr>
             </thead>
@@ -401,12 +517,42 @@ const Records = () => {
                       <p className="text-[10px] text-gray-500 font-mono">{formatTime(record.arrival_time)}</p>
                     </td>
 
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-xs font-bold space-x-2">
+                    <td className="px-6 py-4 whitespace-nowrap text-center text-xs font-bold space-x-2 border-l border-gray-800/50">
                       <button 
                         onClick={() => handleOpenDetailModal(record)}
                         className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 px-2.5 py-1.5 rounded-lg border border-transparent hover:border-blue-500/20 transition-all"
                       >
                         View
+                      </button>
+                      <button 
+                        onClick={() => handleOpenEditModal(record)}
+                        className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 px-2.5 py-1.5 rounded-lg border border-transparent hover:border-blue-500/20 transition-all"
+                      >
+                        {record.arrival_time && record.arrival_time !== '---' ? 'Edit' : 'Mark'}
+                      </button>
+                      {record.arrival_time && record.arrival_time !== '---' && (
+                        <button 
+                          onClick={() => handleDeleteRecord(record)}
+                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10 px-2.5 py-1.5 rounded-lg border border-transparent hover:border-red-500/20 transition-all"
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium border-l border-gray-800/50">
+                      <button 
+                        onClick={() => setEditingStudent(record)}
+                        className="text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 p-2 rounded-lg transition-colors mr-2 inline-flex items-center"
+                        title="Edit Student Profile"
+                      >
+                        <Edit size={16} />
+                      </button>
+                      <button 
+                        onClick={() => setDeletingStudent(record)}
+                        className="text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 p-2 rounded-lg transition-colors inline-flex items-center"
+                        title="Delete Student Profile"
+                      >
+                        <Trash2 size={16} />
                       </button>
                     </td>
                   </tr>
@@ -466,6 +612,113 @@ const Records = () => {
         record={selectedRecord} 
         onClose={() => setSelectedRecord(null)} 
       />
+
+      {/* Edit/Mark Attendance Modal Overlay */}
+      {isEditModalOpen && editRecord && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsEditModalOpen(false)}
+          />
+
+          {/* Modal Content */}
+          <Card className="relative w-full max-w-md bg-gray-900 border border-gray-800/80 shadow-2xl overflow-hidden rounded-2xl z-10 animate-in fade-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="p-5 border-b border-gray-800/80 flex items-center justify-between bg-gray-950/40">
+              <div>
+                <h3 className="text-base font-bold text-white uppercase tracking-wider">
+                  {editRecord.arrival_time && editRecord.arrival_time !== '---' ? 'Edit Attendance Log' : 'Mark Attendance'}
+                </h3>
+                <p className="text-[10px] text-gray-500 mt-0.5">
+                  Manual override for {`${editRecord.first_name} ${editRecord.last_name}`}
+                </p>
+              </div>
+              <button 
+                onClick={() => setIsEditModalOpen(false)}
+                className="p-1.5 rounded-lg bg-gray-800/50 hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 space-y-4">
+              {/* Status Selection */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Status</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {['Present', 'Late', 'Absent'].map((status) => (
+                    <button
+                      key={status}
+                      type="button"
+                      onClick={() => setEditStatus(status)}
+                      className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${
+                        editStatus === status
+                          ? status === 'Present'
+                            ? 'bg-green-500/20 border-green-500 text-green-400'
+                            : status === 'Late'
+                              ? 'bg-orange-500/20 border-orange-500 text-orange-400'
+                              : 'bg-red-500/20 border-red-500 text-red-400'
+                          : 'bg-gray-850/50 border-gray-800 text-gray-400 hover:bg-gray-800/50'
+                      }`}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Time Selection */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-500 uppercase tracking-wider">Arrival Time</label>
+                <div className="relative">
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={14} />
+                  <input
+                    type="time"
+                    value={editTime}
+                    onChange={(e) => setEditTime(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2.5 bg-gray-850/50 border border-gray-800 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-gray-800/80 bg-gray-950/20 flex justify-end gap-3">
+              <button 
+                onClick={() => setIsEditModalOpen(false)}
+                className="px-4 py-2 bg-gray-800 hover:bg-gray-750 text-white rounded-xl text-xs font-bold transition-all"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleSaveEdit}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-500/20"
+              >
+                Save Log
+              </button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* Student Profile Modals */}
+      {editingStudent && (
+        <EditStudentModal 
+          student={editingStudent} 
+          onClose={() => setEditingStudent(null)} 
+          onSave={handleStudentEditSave}
+        />
+      )}
+
+      {deletingStudent && (
+        <DeleteConfirmModal 
+          student={deletingStudent} 
+          onClose={() => setDeletingStudent(null)} 
+          onConfirm={handleStudentDeleteConfirm}
+        />
+      )}
     </div>
   );
 };

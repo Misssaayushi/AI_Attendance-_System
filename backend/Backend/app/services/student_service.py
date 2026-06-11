@@ -188,6 +188,7 @@ def enrich_students_with_attendance_stats(db: Session, students: List[models.Stu
     
     today_query = db.query(
         models.Attendance.student_id,
+        models.Attendance.id.label('attendance_id'),
         models.Attendance.status,
         models.Attendance.time
     ).filter(
@@ -210,6 +211,7 @@ def enrich_students_with_attendance_stats(db: Session, students: List[models.Stu
         s_dict['attendance_rate'] = round(rate, 1)
         s_dict['status'] = today_record.status if today_record else None
         s_dict['arrival_time'] = str(today_record.time) if today_record and today_record.time else None
+        s_dict['attendance_id'] = today_record.attendance_id if today_record else None
         
         enriched.append(s_dict)
         

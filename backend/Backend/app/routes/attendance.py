@@ -747,3 +747,33 @@ def get_attendance(attendance_id: int, db: Session = Depends(get_db)):
     logger.info("event=attendance_get_request attendance_id=%s", attendance_id)
     record = attendance_service.get_attendance_by_id(db, attendance_id)
     return success(data=_serialize_record(record), message="Attendance record retrieved successfully")
+
+
+@router.put("/{attendance_id}")
+def update_attendance(
+    attendance_id: int,
+    payload: attendance_schema.AttendanceUpdateRequest,
+    db: Session = Depends(get_db),
+):
+    logger.info("event=attendance_update_request attendance_id=%s status=%s", attendance_id, payload.status.value)
+    status_str = payload.status.value
+    time_val = payload.attendance_time
+    
+    record = attendance_service.update_attendance(
+        db,
+        attendance_id=attendance_id,
+        status=status_str,
+        attendance_time=time_val,
+    )
+    return success(data=_serialize_record(record), message="Attendance record updated successfully")
+
+
+@router.delete("/{attendance_id}")
+def delete_attendance(
+    attendance_id: int,
+    db: Session = Depends(get_db),
+):
+    logger.info("event=attendance_delete_request attendance_id=%s", attendance_id)
+    attendance_service.delete_attendance(db, attendance_id)
+    return success(message="Attendance record deleted successfully")
+

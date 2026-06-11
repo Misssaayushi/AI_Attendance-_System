@@ -106,3 +106,9 @@ class AttendanceSummaryResponse(BaseModel):
     absent_count: int
     late_count: int
     attendance_percentage: float
+
+
+class AttendanceUpdateRequest(BaseModel):
+    status: AttendanceStatus
+    attendance_time: Optional[time] = None
+

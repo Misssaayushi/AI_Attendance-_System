@@ -69,6 +69,13 @@ export const listAttendance = (params = {}) =>
 export const getAttendanceById = (attendanceId) =>
   api.get(`/api/v1/attendance/${attendanceId}`);
 
+export const updateAttendance = (attendanceId, attendanceData) =>
+  api.put(`/api/v1/attendance/${attendanceId}`, attendanceData);
+
+export const deleteAttendance = (attendanceId) =>
+  api.delete(`/api/v1/attendance/${attendanceId}`);
+
+
 export const getStudentAttendance = (studentId, params = {}) =>
   api.get(`/api/v1/attendance/student/${studentId}`, { params });
 

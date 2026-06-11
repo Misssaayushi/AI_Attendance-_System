@@ -245,3 +245,33 @@ def build_export_preview(
         student_id,
     )
     return rows
+
+
+def delete_attendance(db: Session, attendance_id: int) -> None:
+    record = get_attendance_by_id(db, attendance_id)
+    db.delete(record)
+    db.commit()
+    logger.info("event=attendance_deleted attendance_id=%s student_id=%s date=%s", attendance_id, record.student_id, record.date)
+
+
+def update_attendance(
+    db: Session,
+    attendance_id: int,
+    status: str,
+    attendance_time: Optional[time] = None,
+) -> models.Attendance:
+    record = get_attendance_by_id(db, attendance_id)
+    record.status = status
+    if attendance_time is not None:
+        record.time = attendance_time
+    db.commit()
+    db.refresh(record)
+    logger.info(
+        "event=attendance_updated attendance_id=%s student_id=%s status=%s time=%s",
+        attendance_id,
+        record.student_id,
+        record.status,
+        record.time,
+    )
+    return record
+

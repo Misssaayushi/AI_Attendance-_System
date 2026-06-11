@@ -2,10 +2,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { Search, ChevronLeft, ChevronRight, Filter, Edit, Trash2, Users, Calendar } from 'lucide-react';
 import Container from '../components/Container';
 import Card from '../components/Card';
-import { listStudents, deleteStudent, updateStudent } from '../services/api';
+import { listStudents } from '../services/api';
 import { extractData } from '../services/apiHelpers';
-import EditStudentModal from '../components/students/EditStudentModal';
-import DeleteConfirmModal from '../components/students/DeleteConfirmModal';
 import { useToast } from '../context/ToastContext';
 
 const formatArrivalTime = (timeStr) => {
@@ -42,9 +40,6 @@ const Students = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Modal State
-  const [editingStudent, setEditingStudent] = useState(null);
-  const [deletingStudent, setDeletingStudent] = useState(null);
   const { addToast } = useToast();
 
   const fetchStudents = async () => {
@@ -94,35 +89,7 @@ const Students = () => {
     return filteredStudents.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredStudents, currentPage]);
 
-  const handleEditSave = async (studentId, formData) => {
-    try {
-      await updateStudent(studentId, formData);
-      setEditingStudent(null);
-      addToast('Student updated successfully', 'success');
-      fetchStudents();
-    } catch (error) {
-      console.error("Failed to update student:", error);
-      addToast("Failed to update student", "error");
-    }
-  };
-
-  const handleDeleteConfirm = async (studentId) => {
-    try {
-      await deleteStudent(studentId);
-      setDeletingStudent(null);
-      addToast('Student deleted successfully', 'success');
-      fetchStudents();
-    } catch (error) {
-      console.error("Failed to delete student:", error);
-      // The student might already be deleted if there was a double-click race condition
-      if (error.response?.status === 404) {
-        setDeletingStudent(null);
-        fetchStudents();
-      } else {
-        addToast("Failed to delete student", "error");
-      }
-    }
-  };
+  // Removed student update/delete handlers
 
   return (
     <div className="min-h-screen bg-[#0a0a0c] text-gray-100 flex flex-col font-sans">
@@ -201,7 +168,6 @@ const Students = () => {
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Year/Sem</th>
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Status</th>
                   <th className="px-6 py-4 text-left text-[10px] font-black text-gray-500 uppercase tracking-widest">Arrival Time</th>
-                  <th className="px-6 py-4 text-right text-[10px] font-black text-gray-500 uppercase tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-800/60 bg-transparent">
@@ -243,22 +209,6 @@ const Students = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-gray-400">
                         {formatArrivalTime(student.arrival_time)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button 
-                          onClick={() => setEditingStudent(student)}
-                          className="text-blue-400 hover:text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 p-2 rounded-lg transition-colors mr-2 inline-flex items-center"
-                          title="Edit Student"
-                        >
-                          <Edit size={16} />
-                        </button>
-                        <button 
-                          onClick={() => setDeletingStudent(student)}
-                          className="text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 p-2 rounded-lg transition-colors inline-flex items-center"
-                          title="Delete Student"
-                        >
-                          <Trash2 size={16} />
-                        </button>
                       </td>
                     </tr>
                   ))
@@ -309,22 +259,7 @@ const Students = () => {
         </Card>
       </Container>
 
-      {/* Modals */}
-      {editingStudent && (
-        <EditStudentModal 
-          student={editingStudent} 
-          onClose={() => setEditingStudent(null)} 
-          onSave={handleEditSave}
-        />
-      )}
-
-      {deletingStudent && (
-        <DeleteConfirmModal 
-          student={deletingStudent} 
-          onClose={() => setDeletingStudent(null)} 
-          onConfirm={handleDeleteConfirm}
-        />
-      )}
+      {/* Removed modals */}
     </div>
   );
 };
