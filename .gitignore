@@ -2,3 +2,7 @@
 **/node_modules/
 **/__pycache__/
 .DS_Store
+
+# Datasets
+**/dataset/
+**/datasets/
