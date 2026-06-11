@@ -1,0 +1,77 @@
+===================================================================
+AI-ATTENDANCE SYSTEM: COMPLETE API ENDPOINTS LIST
+===================================================================
+
+Total Endpoints: 39 APIs
+
+1. AUTHENTICATION & SECURITY (`/api/v1/auth`)
+-------------------------------------------------------------------
+POST   /auth/login                  - Validates admin credentials and generates a secure JWT login token.
+GET    /auth/me                     - Checks if the current admin session is valid.
+POST   /auth/logout                 - Safely terminates the admin session.
+
+2. STUDENT MANAGEMENT (`/api/v1/students`)
+-------------------------------------------------------------------
+GET    /students/                   - Fetches a complete list of all registered students.
+POST   /students/                   - Registers a new student's text details into the database.
+GET    /students/{id}               - Retrieves details of a specific student by their ID.
+PUT    /students/{id}               - Updates information for a specific student.
+DELETE /students/{id}               - Removes a student from the database.
+POST   /students/{id}/register-face - Receives webcam photos during registration and saves them locally.
+POST   /students/{id}/encode        - Triggers the AI model to calculate and save the 128-dimension blueprint (.pkl) for the student.
+POST   /students/rebuild-encodings  - Re-runs the AI encoding process for all students at once.
+
+3. AI & ATTENDANCE CORE (`/api/v1/attendance`)
+-------------------------------------------------------------------
+POST   /attendance/recognize-frame  - Scans a live camera frame, runs the AI model, and marks attendance if a face matches.
+POST   /attendance/verify           - Direct API for standalone camera scripts to log a verified face match securely.
+POST   /attendance/unrecognized     - Logs failed face recognition attempts for security/auditing.
+POST   /attendance/mark             - Allows admins to manually override or mark someone present without AI.
+GET    /attendance/                 - Gets the master list of all attendance logs.
+GET    /attendance/student/{id}     - Retrieves the complete attendance history for one specific student.
+GET    /attendance/summary/daily    - Fetches the overall daily summary (present, late, absent counts) for today.
+GET    /attendance/{id}             - Fetches details of a specific attendance log.
+PUT    /attendance/{id}             - Allows admin to edit an attendance log.
+DELETE /attendance/{id}             - Deletes a specific attendance log.
+
+4. EXPORTS & REPORTS (`/api/v1/attendance/export` & `/reports`)
+-------------------------------------------------------------------
+GET    /attendance/export/preview   - Generates a quick JSON preview of what the Excel report will look like.
+POST   /attendance/export/monthly   - Compiles monthly data and triggers a download for the final Microsoft Excel report.
+POST   /attendance/export/template  - Generates an empty spreadsheet template.
+POST   /attendance/export/sync/{id} - Syncs an exported report manually.
+POST   /attendance/reports/email/monthly - Emails the monthly attendance report automatically.
+POST   /attendance/reports/email/daily   - Emails the daily end-of-day summary.
+GET    /attendance/reports/email/deliveries - Logs of all automated emails sent.
+GET    /attendance/reports/email/summary    - Analytics on email delivery success rates.
+GET    /attendance/automation/executions    - Logs from the background timer that marks missing people "Absent" at midnight.
+GET    /attendance/automation/summary       - Summary of background timer tasks.
+
+5. DASHBOARD ANALYTICS (`/api/v1/dashboard`)
+-------------------------------------------------------------------
+GET    /dashboard/summary           - Basic top-level counts: Total Students, Total Present Today, etc.
+GET    /dashboard/stats/daily       - Detailed numerical stats for the current day.
+GET    /dashboard/stats/monthly     - Detailed numerical stats aggregated for the month.
+GET    /dashboard/stats/department  - Attendance percentages broken down by department (e.g., CS vs IT).
+GET    /dashboard/graphs/weekly     - Time-series data points to draw the 7-day line chart.
+GET    /dashboard/graphs/monthly    - Time-series data points to draw the 30-day line chart.
+GET    /dashboard/graphs/department - Data points to draw department comparison charts.
+GET    /dashboard/monitoring/summary- A quick snapshot of system health for the dashboard home screen.
+
+6. CLASS TIMING RULES (`/api/v1/class-timings`)
+-------------------------------------------------------------------
+GET    /class-timings/              - Lists the rules for what time a class starts (e.g., 9:00 AM).
+POST   /class-timings/              - Creates a new rule (e.g., anyone after 9:15 AM is marked "Late").
+DELETE /class-timings/{id}          - Deletes a timing rule.
+
+7. SYSTEM HEALTH & DIAGNOSTICS (`/api/v1/health` & `/diagnostics`)
+-------------------------------------------------------------------
+GET    /health                      - Basic ping to ensure the server is running.
+GET    /diagnostics/readiness       - Checks if the AI models and Database are fully loaded and ready to accept connections.
+GET    /diagnostics/metrics         - Returns system stats like Server RAM Usage and CPU load.
+GET    /diagnostics/stability       - Long-term uptime and stability metrics.
+GET    /diagnostics/api-coverage    - Internal development metric for testing.
+
+8. LIVE WEBSOCKETS (`ws://...`)
+-------------------------------------------------------------------
+WS     /ws/attendance               - The persistent, open connection used to push instant "Verified!" alerts to the frontend screen without requiring a page refresh.

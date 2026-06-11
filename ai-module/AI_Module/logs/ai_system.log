@@ -13399,3 +13399,10 @@ Invoked with: <_dlib_pybind11.face_recognition_model_v1 object at 0x111dd6070>, 
 2026-06-11 09:31:09 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
 2026-06-11 09:31:09 | EncodingCache | WARNING | Encoding file /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle not found. Recognition will not work until faces are encoded.
 2026-06-11 09:31:09 | EncodingGenerator | INFO | Successfully reloaded empty cache.
+2026-06-11 11:28:56 | EncodingGenerator | INFO | Starting facial encoding generation...
+2026-06-11 11:28:56 | EncodingGenerator | INFO | Processing student: 32_Aayushi
+2026-06-11 11:28:57 | EncodingGenerator | INFO | Saved 5 encodings to 32_Aayushi.pkl
+2026-06-11 11:28:57 | EncodingGenerator | INFO | Consolidated encoding file saved: /Users/aayushishivnani/Desktop/Projects/AI-Attendance System/ai-module/AI_Module/encodings/encodings.pickle
+2026-06-11 11:28:57 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.11 ms.
+2026-06-11 11:28:57 | EncodingCache | INFO | Successfully cached 5 face encodings in 0.07 ms.
+2026-06-11 11:28:57 | EncodingGenerator | INFO | Successfully reloaded new encodings into the cache.

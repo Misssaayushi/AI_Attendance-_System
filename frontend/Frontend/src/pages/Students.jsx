@@ -1,10 +1,24 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, ChevronLeft, ChevronRight, Filter, Edit, Trash2, Users, Calendar } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Filter, Edit, Trash2, Users, Calendar, Download } from 'lucide-react';
 import Container from '../components/Container';
 import Card from '../components/Card';
 import { listStudents } from '../services/api';
 import { extractData } from '../services/apiHelpers';
 import { useToast } from '../context/ToastContext';
+
+const loadScript = (src) => {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => resolve();
+    script.onerror = (err) => reject(err);
+    document.body.appendChild(script);
+  });
+};
 
 const formatArrivalTime = (timeStr) => {
   if (!timeStr) return '—';
@@ -18,15 +32,25 @@ const formatArrivalTime = (timeStr) => {
 };
 
 const getTodayStatusBadge = (status) => {
+  if (!status) {
+    return (
+      <span className="px-2 py-1 rounded-lg text-[10px] font-bold uppercase border bg-gray-800/80 text-gray-500 border-gray-700/50">
+        Not Marked
+      </span>
+    );
+  }
+
+  const normalizedStatus = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+
   const colors = {
     Present: 'bg-green-500/10 text-green-400 border-green-500/20',
-    Late: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+    Late: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
     Absent: 'bg-red-500/10 text-red-400 border-red-500/20',
   };
 
   return (
-    <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase border ${colors[status] || 'bg-gray-800/80 text-gray-500 border-gray-700/50'}`}>
-      {status || 'Not Marked'}
+    <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase border ${colors[normalizedStatus] || 'bg-gray-800/80 text-gray-500 border-gray-700/50'}`}>
+      {normalizedStatus}
     </span>
   );
 };
@@ -89,6 +113,102 @@ const Students = () => {
     return filteredStudents.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredStudents, currentPage]);
 
+  const exportToExcel = async () => {
+    if (!filteredStudents.length) {
+      if (addToast) addToast('No students to export', 'error');
+      return;
+    }
+
+    if (addToast) addToast('Generating Excel file...', 'info');
+
+    try {
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js');
+      
+      const ExcelJS = window.ExcelJS;
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Students');
+
+      // Define columns
+      worksheet.columns = [
+        { header: 'First Name', key: 'first_name', width: 15 },
+        { header: 'Last Name', key: 'last_name', width: 15 },
+        { header: 'Email', key: 'email', width: 25 },
+        { header: 'Roll Number', key: 'roll_number', width: 15 },
+        { header: 'Department', key: 'department', width: 15 },
+        { header: 'Year', key: 'year_batch', width: 15 },
+        { header: 'Semester', key: 'semester', width: 10 },
+        { header: 'Status', key: 'status', width: 15 },
+        { header: 'Arrival Time', key: 'arrival_time', width: 15 }
+      ];
+
+      // Format headers
+      const headerRow = worksheet.getRow(1);
+      headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      headerRow.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF1E293B' } // slate-800
+      };
+
+      // Add rows
+      filteredStudents.forEach(s => {
+        const row = worksheet.addRow({
+          first_name: s.first_name || '',
+          last_name: s.last_name || '',
+          email: s.email || '',
+          roll_number: s.roll_number || '',
+          department: s.department || '',
+          year_batch: s.year_batch || '',
+          semester: s.semester || '',
+          status: s.status ? (s.status.charAt(0).toUpperCase() + s.status.slice(1).toLowerCase()) : 'Not Marked',
+          arrival_time: formatArrivalTime(s.arrival_time)
+        });
+
+        // Color status cell
+        const statusCell = row.getCell('status');
+        const statusVal = (s.status || '').toLowerCase();
+        if (statusVal === 'present') {
+          statusCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFE6FFED' } // light green
+          };
+          statusCell.font = { color: { argb: 'FF147D36' }, bold: true };
+        } else if (statusVal === 'late') {
+          statusCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFEF3C7' } // light yellow
+          };
+          statusCell.font = { color: { argb: 'FFB45309' }, bold: true };
+        } else if (statusVal === 'absent') {
+          statusCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFEE2E2' } // light red
+          };
+          statusCell.font = { color: { argb: 'FFB91C1C' }, bold: true };
+        }
+      });
+
+      // Write buffer
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `students_export_${selectedDate || 'all'}.xlsx`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      if (addToast) addToast('Exported to Excel successfully', 'success');
+    } catch (error) {
+      console.error('Excel export failed:', error);
+      if (addToast) addToast('Failed to export to Excel', 'error');
+    }
+  };
+
   // Removed student update/delete handlers
 
   return (
@@ -148,6 +268,14 @@ const Students = () => {
                     <option value="EE">Electrical</option>
                   </select>
                 </div>
+
+                <button
+                  onClick={exportToExcel}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 rounded-lg transition-colors ml-auto sm:ml-2"
+                >
+                  <Download size={14} />
+                  <span className="text-[10px] font-bold uppercase tracking-wider">Export Excel</span>
+                </button>
               </div>
             </div>
           </div>
